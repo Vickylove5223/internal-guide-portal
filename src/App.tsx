@@ -13,7 +13,6 @@ import ResetPassword from "./pages/ResetPassword";
 import OTPVerification from "./pages/OTPVerification";
 import SetNewPassword from "./pages/SetNewPassword";
 import NotFound from "./pages/NotFound";
-import Announcements from "./pages/Announcements";
 import CompanyNews from "./pages/CompanyNews";
 import OnboardingDocs from "./pages/OnboardingDocs";
 import KnowledgeBase from "./pages/KnowledgeBase";
@@ -40,16 +39,6 @@ const App = () => (
               <Route path="/" element={
                 <Layout>
                   <CompanyNews />
-                </Layout>
-              } />
-              <Route path="/general-info" element={
-                <Layout>
-                  <CompanyNews />
-                </Layout>
-              } />
-              <Route path="/announcements" element={
-                <Layout>
-                  <Announcements />
                 </Layout>
               } />
               <Route path="/onboarding" element={

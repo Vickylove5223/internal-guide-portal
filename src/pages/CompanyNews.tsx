@@ -106,15 +106,15 @@ const CompanyNews = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-start">
+      {/* Header with Image on Right */}
+      <div className="flex items-start gap-8">
         <div className="flex-1">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            General Info
+            All Updates
           </h1>
           <p className="text-gray-600 mb-6">Stay updated with the latest company news and announcements</p>
           
-          {/* Search Bar - No background */}
+          {/* Search Bar */}
           <div className="relative mb-6">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
@@ -124,10 +124,83 @@ const CompanyNews = () => {
               className="pl-10 bg-transparent border-gray-300"
             />
           </div>
+
+          {/* News Tabs */}
+          <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="events">Events</TabsTrigger>
+              <TabsTrigger value="politics">Politics News</TabsTrigger>
+              <TabsTrigger value="finance">Finance</TabsTrigger>
+              <TabsTrigger value="company">Company News</TabsTrigger>
+            </TabsList>
+
+            {/* News Content */}
+            {newsCategories.map((category) => (
+              <TabsContent key={category} value={category} className="mt-6">
+                <div className="grid gap-6">
+                  {filteredNews.map((item) => (
+                    <Card key={item.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+                      <div className="flex">
+                        <div className="w-48 h-32 flex-shrink-0">
+                          <img 
+                            src={item.image} 
+                            alt={item.title}
+                            className="w-full h-full object-cover rounded-l-lg"
+                          />
+                        </div>
+                        <div className="flex-1 p-6">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex-1">
+                              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                                {item.title}
+                              </h3>
+                              <p className="text-gray-700 mb-3 line-clamp-2">
+                                {item.excerpt}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {item.tags.map((tag) => (
+                              <Badge key={tag} variant="outline" className="text-xs">
+                                <Tag className="h-3 w-3 mr-1" />
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                          
+                          <div className="flex items-center justify-between text-sm text-gray-600">
+                            <div className="flex items-center space-x-4">
+                              <div className="flex items-center">
+                                <User className="h-4 w-4 mr-1" />
+                                {item.author}
+                              </div>
+                              <div className="flex items-center">
+                                <Calendar className="h-4 w-4 mr-1" />
+                                {formatDate(item.publishedAt)}
+                              </div>
+                              <div className="flex items-center">
+                                <Clock className="h-4 w-4 mr-1" />
+                                {item.readTime}
+                              </div>
+                            </div>
+                            <Button variant="outline" size="sm">
+                              Read More
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
+            ))}
+          </Tabs>
         </div>
         
         {/* Image on the right side */}
-        <div className="ml-8">
+        <div className="flex-shrink-0">
           <img 
             src="/lovable-uploads/ffe33128-72d3-4275-8536-d3aa5f60ceb6.png" 
             alt="Company Products" 
@@ -135,78 +208,6 @@ const CompanyNews = () => {
           />
         </div>
       </div>
-
-      {/* News Tabs */}
-      <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="events">Events</TabsTrigger>
-          <TabsTrigger value="politics">Politics News</TabsTrigger>
-          <TabsTrigger value="finance">Finance</TabsTrigger>
-          <TabsTrigger value="company">Company News</TabsTrigger>
-        </TabsList>
-
-        {newsCategories.map((category) => (
-          <TabsContent key={category} value={category} className="mt-6">
-            <div className="grid gap-6">
-              {filteredNews.map((item) => (
-                <Card key={item.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                  <div className="flex">
-                    <div className="w-48 h-32 flex-shrink-0">
-                      <img 
-                        src={item.image} 
-                        alt={item.title}
-                        className="w-full h-full object-cover rounded-l-lg"
-                      />
-                    </div>
-                    <div className="flex-1 p-6">
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex-1">
-                          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                            {item.title}
-                          </h3>
-                          <p className="text-gray-700 mb-3 line-clamp-2">
-                            {item.excerpt}
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {item.tags.map((tag) => (
-                          <Badge key={tag} variant="outline" className="text-xs">
-                            <Tag className="h-3 w-3 mr-1" />
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                      
-                      <div className="flex items-center justify-between text-sm text-gray-600">
-                        <div className="flex items-center space-x-4">
-                          <div className="flex items-center">
-                            <User className="h-4 w-4 mr-1" />
-                            {item.author}
-                          </div>
-                          <div className="flex items-center">
-                            <Calendar className="h-4 w-4 mr-1" />
-                            {formatDate(item.publishedAt)}
-                          </div>
-                          <div className="flex items-center">
-                            <Clock className="h-4 w-4 mr-1" />
-                            {item.readTime}
-                          </div>
-                        </div>
-                        <Button variant="outline" size="sm">
-                          Read More
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-        ))}
-      </Tabs>
 
       {filteredNews.length === 0 && (
         <Card>

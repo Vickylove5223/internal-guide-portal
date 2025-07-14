@@ -33,8 +33,7 @@ const Layout = ({ children }: LayoutProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationItems = [
-    { name: 'General Info', href: '/', current: location.pathname === '/' },
-    { name: 'Announcements', href: '/announcements', current: location.pathname === '/announcements' },
+    { name: 'All Updates', href: '/', current: location.pathname === '/' },
     { name: 'Onboarding', href: '/onboarding', current: location.pathname === '/onboarding' },
     { name: 'Knowledge Base', href: '/knowledge-base', current: location.pathname === '/knowledge-base' },
   ];
@@ -71,9 +70,9 @@ const Layout = ({ children }: LayoutProps) => {
             <div className="flex items-center">
               <div className="flex-shrink-0 flex items-center">
                 <img
-                  className="h-8 w-8"
-                  src="/lovable-uploads/57896a25-fe3a-4385-9a9d-a634bdd46940.png"
-                  alt="Logo"
+                  className="h-8 w-auto"
+                  src="/lovable-uploads/0440891b-68c1-4039-8ea8-39b9a35ce2ea.png"
+                  alt="FUNDiT"
                 />
               </div>
             </div>
