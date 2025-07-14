@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FUNDiT Stakeholder Portal - Master Access to All Products</title>
+    <meta name="description" content="Secure stakeholder portal providing master access to all FUNDiT financial products and services. Centralized management for business partners and authorized personnel." />
+    <meta name="author" content="FUNDiT" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#3B82F6" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="FUNDiT Portal" />
+    <link rel="apple-touch-icon" href="/lovable-uploads/0440891b-68c1-4039-8ea8-39b9a35ce2ea.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <meta property="og:title" content="FUNDiT Stakeholder Portal - Master Access to All Products" />
+    <meta property="og:description" content="Secure stakeholder portal providing master access to all FUNDiT financial products and services. Centralized management for business partners and authorized personnel." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/lovable-uploads/0440891b-68c1-4039-8ea8-39b9a35ce2ea.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@fundit" />
+    <meta name="twitter:image" content="/lovable-uploads/0440891b-68c1-4039-8ea8-39b9a35ce2ea.png" />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,96 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Smartcash Digiti Design System - All colors MUST be HSL */
+
+@layer base {
+  :root {
+    --background: 240 10% 98%;
+    --foreground: 210 20% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 20% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 20% 15%;
+
+    --primary: 210 90% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 210 20% 15%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 210 20% 15%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 210 90% 45%;
+
+    --radius: 0.5rem;
+
+    /* Smartcash specific colors */
+    --smartcash-red: 0 84% 60%;
+    --smartcash-blue: 210 90% 45%;
+    --smartcash-light-blue: 210 100% 50%;
+    --notification-blue: 210 90% 45%;
+    --table-header: 210 20% 96%;
+    --status-running: 210 90% 45%;
+    --status-completed: 142 76% 36%;
+    --status-defaulted: 0 84% 60%;
+    --status-pending: 38 92% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    background: linear-gradient(135deg, hsl(240 30% 98%) 0%, hsl(210 40% 96%) 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  html {
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .bg-gradient-light {
+    background: linear-gradient(135deg, hsl(240 30% 98%) 0%, hsl(210 40% 96%) 100%);
+  }
+  
+  .bg-smartcash-red {
+    background-color: hsl(var(--smartcash-red));
+  }
+  
+  .bg-smartcash-blue {
+    background-color: hsl(var(--smartcash-blue));
+  }
+  
+  .text-smartcash-blue {
+    color: hsl(var(--smartcash-blue));
+  }
+  
+  .border-smartcash-blue {
+    border-color: hsl(var(--smartcash-blue));
+  }
+}
