@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface User {
@@ -6,6 +5,9 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
+  role?: string;
+  avatar?: string;
+  name?: string;
 }
 
 interface AuthContextType {
@@ -51,7 +53,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         id: '1',
         email,
         firstName: 'Ifeoluwa',
-        lastName: 'Adeyemi'
+        lastName: 'Adeyemi',
+        name: 'Ifeoluwa Adeyemi',
+        role: 'admin'
       };
       
       setUser(mockUser);

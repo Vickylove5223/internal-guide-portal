@@ -34,19 +34,31 @@ const Layout = ({ children }: LayoutProps) => {
 
   const navigationItems = [
     { name: 'General Info', href: '/', current: location.pathname === '/' },
-    { name: 'Company News', href: '/announcements', current: location.pathname === '/announcements' },
+    { name: 'Announcements', href: '/announcements', current: location.pathname === '/announcements' },
     { name: 'Onboarding', href: '/onboarding', current: location.pathname === '/onboarding' },
     { name: 'Knowledge Base', href: '/knowledge-base', current: location.pathname === '/knowledge-base' },
   ];
 
   const adminItems = user?.role === 'admin' ? [
     { name: 'Members', href: '/members', current: location.pathname === '/members' },
+    { name: 'Post Management', href: '/post-management', current: location.pathname === '/post-management' },
   ] : [];
 
   const allItems = [...navigationItems, ...adminItems];
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const getUserName = () => {
+    if (user?.name) return user.name;
+    if (user?.firstName && user?.lastName) return `${user.firstName} ${user.lastName}`;
+    return 'User';
+  };
+
+  const getUserInitials = () => {
+    const name = getUserName();
+    return name.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
   };
 
   return (
@@ -90,9 +102,9 @@ const Layout = ({ children }: LayoutProps) => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user?.avatar} alt={user?.name} />
+                      <AvatarImage src={user?.avatar} alt={getUserName()} />
                       <AvatarFallback>
-                        {user?.name?.split(' ').map(n => n[0]).join('') || 'U'}
+                        {getUserInitials()}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -100,7 +112,7 @@ const Layout = ({ children }: LayoutProps) => {
                 <DropdownMenuContent className="w-56" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user?.name}</p>
+                      <p className="text-sm font-medium leading-none">{getUserName()}</p>
                       <p className="text-xs leading-none text-muted-foreground">
                         {user?.email}
                       </p>
