@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Card, 
@@ -37,8 +38,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { DataTable } from '@/components/ui/data-table';
+import { useNavigate } from 'react-router-dom';
 
 const PostManagement = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -140,6 +144,93 @@ const PostManagement = () => {
     { id: 'onboarding', label: 'Onboarding', count: 8 }
   ];
 
+  const columns = [
+    {
+      key: 'title',
+      header: 'Title',
+      className: 'font-medium',
+      render: (value: string, item: any) => (
+        <div>
+          <div className="font-medium">{value}</div>
+          <div className="text-sm text-gray-500">{item.content.substring(0, 60)}...</div>
+        </div>
+      )
+    },
+    {
+      key: 'author',
+      header: 'Author',
+      render: (value: string) => (
+        <div className="flex items-center">
+          <User className="h-4 w-4 mr-2 text-gray-400" />
+          {value}
+        </div>
+      )
+    },
+    {
+      key: 'type',
+      header: 'Category',
+      render: (value: string) => (
+        <Badge className={`text-xs ${getTypeColor(value)}`}>
+          {value.replace('-', ' ')}
+        </Badge>
+      )
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      render: (value: string) => (
+        <Badge className={`text-xs ${getStatusColor(value)}`}>
+          {value}
+        </Badge>
+      )
+    },
+    {
+      key: 'publishedAt',
+      header: 'Date',
+      render: (value: string | null) => (
+        <div className="text-sm text-gray-600">{formatDate(value)}</div>
+      )
+    },
+    {
+      key: 'views',
+      header: 'Views',
+      render: (value: number) => (
+        <div className="text-sm text-gray-600">{value > 0 ? value : '-'}</div>
+      )
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      render: (value: any, item: any) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <Eye className="h-4 w-4 mr-2" />
+              View
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Edit className="h-4 w-4 mr-2" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600">
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    }
+  ];
+
+  const handleNewPost = () => {
+    navigate('/post-management/new');
+  };
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
@@ -150,7 +241,7 @@ const PostManagement = () => {
           </h1>
           <p className="text-gray-600">Create, edit, and manage all posts across the platform</p>
         </div>
-        <Button>
+        <Button onClick={handleNewPost}>
           <Plus className="h-4 w-4 mr-2" />
           New Post
         </Button>
@@ -220,91 +311,12 @@ const PostManagement = () => {
         </CardContent>
       </Card>
 
-      {/* Posts List */}
-      <div className="space-y-4">
-        {filteredPosts.map((post) => {
-          const Icon = post.icon;
-          return (
-            <Card key={post.id} className="hover:shadow-md transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Icon className="h-5 w-5 text-primary" />
-                      <CardTitle className="text-lg">{post.title}</CardTitle>
-                      <Badge className={`text-xs ${getTypeColor(post.type)}`}>
-                        {post.type.replace('-', ' ')}
-                      </Badge>
-                      <Badge className={`text-xs ${getStatusColor(post.status)}`}>
-                        {post.status}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center space-x-4 text-sm text-gray-600">
-                      <div className="flex items-center">
-                        <User className="h-4 w-4 mr-1" />
-                        {post.author}
-                      </div>
-                      <div className="flex items-center">
-                        <Badge variant="outline" className="text-xs">
-                          {post.department}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        {formatDate(post.publishedAt)}
-                      </div>
-                    </div>
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
-                        <Eye className="h-4 w-4 mr-2" />
-                        View Details
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Edit className="h-4 w-4 mr-2" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="text-red-600">
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700 mb-4">{post.content}</p>
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center space-x-4">
-                    {post.views > 0 && (
-                      <span className="flex items-center">
-                        <Eye className="h-4 w-4 mr-1" />
-                        {post.views} views
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button variant="outline" size="sm">
-                      <Eye className="h-4 w-4 mr-2" />
-                      Preview
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+      {/* Posts Table */}
+      <DataTable
+        columns={columns}
+        data={filteredPosts}
+        onRowClick={(item) => console.log('Row clicked:', item)}
+      />
 
       {filteredPosts.length === 0 && (
         <Card>
@@ -317,7 +329,7 @@ const PostManagement = () => {
                 : 'Get started by creating your first post.'
               }
             </p>
-            <Button>
+            <Button onClick={handleNewPost}>
               <Plus className="h-4 w-4 mr-2" />
               Create Post
             </Button>

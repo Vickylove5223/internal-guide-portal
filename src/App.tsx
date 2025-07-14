@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +19,7 @@ import OnboardingDocs from "./pages/OnboardingDocs";
 import KnowledgeBase from "./pages/KnowledgeBase";
 import MemberManagement from "./pages/MemberManagement";
 import PostManagement from "./pages/PostManagement";
+import CreatePost from "./pages/CreatePost";
 import DepartmentDocuments from "./pages/DepartmentDocuments";
 
 const queryClient = new QueryClient();
@@ -37,17 +39,17 @@ const App = () => (
               <Route path="/set-new-password" element={<SetNewPassword />} />
               <Route path="/" element={
                 <Layout>
-                  <Announcements />
+                  <CompanyNews />
+                </Layout>
+              } />
+              <Route path="/general-info" element={
+                <Layout>
+                  <CompanyNews />
                 </Layout>
               } />
               <Route path="/announcements" element={
                 <Layout>
                   <Announcements />
-                </Layout>
-              } />
-              <Route path="/company-news" element={
-                <Layout>
-                  <CompanyNews />
                 </Layout>
               } />
               <Route path="/onboarding" element={
@@ -69,6 +71,13 @@ const App = () => (
                 <ProtectedRoute>
                   <Layout>
                     <PostManagement />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/post-management/new" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <CreatePost />
                   </Layout>
                 </ProtectedRoute>
               } />
