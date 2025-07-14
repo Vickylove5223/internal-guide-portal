@@ -7,12 +7,10 @@ import {
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Search,
-  Filter,
   Calendar,
   User
 } from 'lucide-react';
@@ -70,7 +68,13 @@ const CompanyNews = () => {
     }
   ];
 
-  const categories = ['all', 'Company Updates', 'HR Updates', 'Tech Updates', 'Events'];
+  const categories = [
+    { value: 'all', label: 'All' },
+    { value: 'Company Updates', label: 'Company Updates' },
+    { value: 'HR Updates', label: 'HR Updates' },
+    { value: 'Tech Updates', label: 'Tech Updates' },
+    { value: 'Events', label: 'Events' }
+  ];
 
   const filteredPosts = posts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -87,86 +91,91 @@ const CompanyNews = () => {
     <div className="min-h-screen">
       <div className="flex">
         {/* Main Content */}
-        <div className="flex-1 p-6">
-          {/* Header with Image */}
-          <div className="flex items-start justify-between mb-8">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">All Updates</h1>
-              <p className="text-gray-600 mb-6">Stay informed with the latest company news and announcements</p>
-              
-              {/* Search Bar */}
-              <div className="relative mb-6">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search updates..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 max-w-md"
-                />
-              </div>
-
-              {/* Category Tabs */}
-              <div className="flex space-x-1 mb-8">
-                {categories.map((category) => (
-                  <Button
-                    key={category}
-                    variant={activeTab === category ? 'default' : 'ghost'}
-                    onClick={() => setActiveTab(category)}
-                    className="capitalize"
-                  >
-                    {category}
-                  </Button>
-                ))}
-              </div>
-            </div>
+        <div className="flex-1 p-6 pr-0">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">All Updates</h1>
+            <p className="text-gray-600 mb-6">Stay informed with the latest company news and announcements</p>
             
-            {/* Image */}
-            <div className="ml-8">
-              <img
-                src="/lovable-uploads/57896a25-fe3a-4385-9a9d-a634bdd46940.png"
-                alt="Company Updates"
-                className="w-64 h-48 object-cover rounded-lg"
+            {/* Search Bar */}
+            <div className="relative mb-6">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search updates..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 max-w-md"
               />
             </div>
-          </div>
 
-          {/* Posts Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPosts.map((post) => (
-              <Card 
-                key={post.id} 
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => handleCardClick(post.id)}
-              >
-                {post.image && (
-                  <div className="aspect-video overflow-hidden rounded-t-lg">
-                    <img 
-                      src={post.image} 
-                      alt={post.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-                    {post.content}
-                  </p>
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <div className="flex items-center">
-                      <User className="h-4 w-4 mr-1" />
-                      <span>{post.author}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      <span>{new Date(post.date).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            {/* Category Tabs */}
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
+              <TabsList>
+                {categories.map((category) => (
+                  <TabsTrigger key={category.value} value={category.value}>
+                    {category.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              <TabsContent value={activeTab} className="mt-6">
+                {/* Posts List - 1 per row */}
+                <div className="space-y-6">
+                  {filteredPosts.map((post) => (
+                    <Card 
+                      key={post.id} 
+                      className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
+                      onClick={() => handleCardClick(post.id)}
+                    >
+                      <div className="flex">
+                        {/* Image on the left */}
+                        {post.image && (
+                          <div className="w-48 h-32 flex-shrink-0">
+                            <img 
+                              src={post.image} 
+                              alt={post.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                        
+                        {/* Content on the right */}
+                        <div className="flex-1 flex flex-col">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
+                          </CardHeader>
+                          <CardContent className="pt-0 flex-1">
+                            <p className="text-gray-600 text-sm line-clamp-2 mb-4">
+                              {post.content}
+                            </p>
+                            <div className="flex items-center justify-between text-sm text-gray-500">
+                              <div className="flex items-center">
+                                <User className="h-4 w-4 mr-1" />
+                                <span>{post.author}</span>
+                              </div>
+                              <div className="flex items-center">
+                                <Calendar className="h-4 w-4 mr-1" />
+                                <span>{new Date(post.date).toLocaleDateString()}</span>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
+
+        {/* Sticky Right Sidebar */}
+        <div className="w-80 p-6">
+          <div className="sticky top-6">
+            <img
+              src="/lovable-uploads/3d5b1ac3-5c8f-49a4-b3bb-872eeb6148fe.png"
+              alt="Our Products"
+              className="w-full h-auto rounded-lg shadow-lg"
+            />
           </div>
         </div>
       </div>

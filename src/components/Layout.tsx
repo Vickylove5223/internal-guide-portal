@@ -118,12 +118,16 @@ const Layout = ({ children }: LayoutProps) => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2 px-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user?.avatar} alt={getUserName()} />
-                      <AvatarFallback>
-                        {getUserInitials()}
-                      </AvatarFallback>
-                    </Avatar>
+                    {user ? (
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user?.avatar} alt={getUserName()} />
+                        <AvatarFallback>
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                    ) : (
+                      <User className="h-8 w-8 text-gray-600" />
+                    )}
                     <ChevronDown className="h-4 w-4 text-gray-600" />
                   </Button>
                 </DropdownMenuTrigger>
