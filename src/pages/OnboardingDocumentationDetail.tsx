@@ -1,26 +1,30 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Card, 
   CardContent, 
-  CardDescription, 
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { 
+  ArrowLeft,
   CheckCircle, 
   Clock, 
   FileText,
   Video,
-  Eye
+  Eye,
+  Search
 } from 'lucide-react';
 
-const OnboardingDocs = () => {
+const OnboardingDocumentationDetail = () => {
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const onboardingSteps = [
+  const allOnboardingDocs = [
     {
       id: 1,
       title: 'Welcome & Company Overview',
@@ -107,6 +111,12 @@ const OnboardingDocs = () => {
     }
   ];
 
+  const filteredDocs = allOnboardingDocs.filter(doc =>
+    doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    doc.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    doc.department.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'document': return FileText;
@@ -118,46 +128,58 @@ const OnboardingDocs = () => {
     }
   };
 
-  const handleCardClick = (department: string, docId: number) => {
-    navigate(`/knowledge-base/${department.toLowerCase()}/document/${docId}`);
-  };
-
-  const handleViewAll = () => {
-    navigate('/onboarding/all');
+  const handleDocumentClick = (doc: any) => {
+    navigate(`/knowledge-base/${doc.department.toLowerCase()}/document/${doc.id}`);
   };
 
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-          Onboarding Documentation
-        </h1>
-        <p className="text-gray-600">Your guide to getting started at the company</p>
+      <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+        <Button variant="ghost" onClick={() => navigate('/onboarding')}>
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+            All Onboarding Documentation
+          </h1>
+          <p className="text-gray-600">Complete guide to getting started at the company</p>
+        </div>
       </div>
 
-      {/* Onboarding Steps - Responsive Grid */}
+      {/* Search */}
+      <div className="relative max-w-md">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Input
+          placeholder="Search documentation..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+
+      {/* Documentation Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
-        {onboardingSteps.map((step, index) => {
-          const TypeIcon = getTypeIcon(step.type);
+        {filteredDocs.map((doc, index) => {
+          const TypeIcon = getTypeIcon(doc.type);
           return (
             <Card
-              key={step.id}
+              key={doc.id}
               className={`transition-all cursor-pointer ${
-                step.completed 
+                doc.completed 
                   ? 'bg-green-50 border-green-200' 
                   : 'hover:bg-gray-50 border-gray-200'
               }`}
-              onClick={() => handleCardClick(step.department, step.id)}
+              onClick={() => handleDocumentClick(doc)}
             >
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-start space-x-4">
                   <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                    step.completed 
+                    doc.completed 
                       ? 'bg-green-500 text-white' 
                       : 'bg-gray-200 text-gray-600'
                   }`}>
-                    {step.completed ? (
+                    {doc.completed ? (
                       <CheckCircle className="h-5 w-5" />
                     ) : (
                       <span className="text-sm font-medium">{index + 1}</span>
@@ -165,32 +187,32 @@ const OnboardingDocs = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-2">
-                      <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{step.title}</h3>
-                      {step.required && (
+                      <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{doc.title}</h3>
+                      {doc.required && (
                         <Badge variant="destructive" className="text-xs">Required</Badge>
                       )}
-                      <Badge variant="outline" className="text-xs">{step.department}</Badge>
+                      <Badge variant="outline" className="text-xs">{doc.department}</Badge>
                     </div>
-                    <p className="text-gray-700 mb-3 text-sm">{step.description}</p>
+                    <p className="text-gray-700 mb-3 text-sm">{doc.description}</p>
                     <div className="flex flex-wrap items-center gap-4 mb-3 text-xs sm:text-sm">
                       <div className="flex items-center text-gray-600">
                         <TypeIcon className="h-4 w-4 mr-1" />
-                        {step.type}
+                        {doc.type}
                       </div>
                       <div className="flex items-center text-gray-600">
                         <Clock className="h-4 w-4 mr-1" />
-                        {step.duration}
+                        {doc.duration}
                       </div>
                     </div>
                     <div className="space-y-2 mb-4">
-                      {step.documents.map((doc, docIndex) => {
-                        const FileIcon = getTypeIcon(doc.type);
+                      {doc.documents.map((document, docIndex) => {
+                        const FileIcon = getTypeIcon(document.type);
                         return (
                           <div key={docIndex} className="flex items-center justify-between bg-white rounded border p-2">
                             <div className="flex items-center space-x-2 min-w-0 flex-1">
                               <FileIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
-                              <span className="text-sm text-gray-900 truncate">{doc.name}</span>
-                              <span className="text-xs text-gray-500 flex-shrink-0">({doc.size})</span>
+                              <span className="text-sm text-gray-900 truncate">{document.name}</span>
+                              <span className="text-xs text-gray-500 flex-shrink-0">({document.size})</span>
                             </div>
                             <Button variant="ghost" size="sm" className="flex-shrink-0">
                               <Eye className="h-4 w-4" />
@@ -198,17 +220,6 @@ const OnboardingDocs = () => {
                           </div>
                         );
                       })}
-                    </div>
-                    <div className="flex space-x-2">
-                      <Button 
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleViewAll();
-                        }}
-                      >
-                        View All
-                      </Button>
                     </div>
                   </div>
                 </div>
@@ -221,4 +232,4 @@ const OnboardingDocs = () => {
   );
 };
 
-export default OnboardingDocs;
+export default OnboardingDocumentationDetail;

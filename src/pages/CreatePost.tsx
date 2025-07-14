@@ -125,24 +125,24 @@ const CreatePost = () => {
   ];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0">
         <div className="flex items-center space-x-4">
           <Button variant="ghost" onClick={() => navigate('/post-management')}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Create New Post</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Create New Post</h1>
             <p className="text-gray-600">Write and publish your content</p>
           </div>
         </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" onClick={handlePreview}>
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+          <Button variant="outline" onClick={handlePreview} className="w-full sm:w-auto">
             <Eye className="h-4 w-4 mr-2" />
             Preview
           </Button>
-          <Button onClick={handleSave}>
+          <Button onClick={handleSave} className="w-full sm:w-auto">
             <Save className="h-4 w-4 mr-2" />
             Save Post
           </Button>
@@ -166,6 +166,21 @@ const CreatePost = () => {
                   onChange={(e) => setTitle(e.target.value)}
                   className="text-lg"
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="category">Category</Label>
+                <Select value={category} onValueChange={setCategory}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="events">Events</SelectItem>
+                    <SelectItem value="politics-news">Politics News</SelectItem>
+                    <SelectItem value="finance">Finance</SelectItem>
+                    <SelectItem value="company-news">Company News</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               <div>
@@ -203,21 +218,6 @@ const CreatePost = () => {
                     <SelectItem value="draft">Draft</SelectItem>
                     <SelectItem value="published">Published</SelectItem>
                     <SelectItem value="scheduled">Scheduled</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="category">Category</Label>
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="events">Events</SelectItem>
-                    <SelectItem value="politics-news">Politics News</SelectItem>
-                    <SelectItem value="finance">Finance</SelectItem>
-                    <SelectItem value="company-news">Company News</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
