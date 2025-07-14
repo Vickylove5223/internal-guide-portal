@@ -1,7 +1,22 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Bell, Menu, User, LogOut, Users, Settings, X } from 'lucide-react';
+import { 
+  Bell, 
+  Menu, 
+  User, 
+  LogOut, 
+  Settings, 
+  X, 
+  Home,
+  Megaphone,
+  Newspaper,
+  BookOpen,
+  Database,
+  Users,
+  FolderOpen,
+  Plus
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -22,23 +37,26 @@ const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   
   const navigation = [
-    { name: 'Overview', href: '/' },
-    { name: 'Applications', href: '/applications' },
-    { name: 'Reports', href: '/reports' },
-    { name: 'Settings', href: '/settings' },
+    { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: 'Announcements', href: '/announcements', icon: Megaphone },
+    { name: 'Company News', href: '/company-news', icon: Newspaper },
+    { name: 'Onboarding', href: '/onboarding', icon: BookOpen },
+    { name: 'Knowledge Base', href: '/knowledge-base', icon: Database },
+    { name: 'Members', href: '/members', icon: Users },
+    { name: 'Media Library', href: '/media', icon: FolderOpen },
   ];
 
   const notifications = [
-    { id: 1, title: 'New application submitted', time: '2 min ago', unread: true },
-    { id: 2, title: 'Application approved', time: '1 hour ago', unread: true },
-    { id: 3, title: 'Monthly report ready', time: '3 hours ago', unread: false },
+    { id: 1, title: 'New company announcement posted', time: '5 min ago', unread: true },
+    { id: 2, title: 'Document updated in HR folder', time: '1 hour ago', unread: true },
+    { id: 3, title: 'Upcoming event: Team Meeting', time: '2 hours ago', unread: false },
   ];
 
   const unreadCount = notifications.filter(n => n.unread).length;
 
   const isActivePath = (path: string) => {
-    if (path === '/') {
-      return location.pathname === '/';
+    if (path === '/dashboard') {
+      return location.pathname === '/' || location.pathname === '/dashboard';
     }
     return location.pathname.startsWith(path);
   };
@@ -54,31 +72,42 @@ const Layout = ({ children }: LayoutProps) => {
               <div className="flex-shrink-0 flex items-center">
                 <img 
                   src="/lovable-uploads/0440891b-68c1-4039-8ea8-39b9a35ce2ea.png" 
-                  alt="FUNDiT" 
+                  alt="Company Portal" 
                   className="h-8 w-auto"
                 />
+                <span className="ml-2 text-xl font-semibold text-gray-900">Internal Portal</span>
               </div>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-8">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActivePath(item.href)
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
+            <nav className="hidden md:flex space-x-1">
+              {navigation.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActivePath(item.href)
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4 mr-2" />
+                    {item.name}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Right side */}
             <div className="flex items-center space-x-4">
+              {/* Quick Add Button */}
+              <Button size="sm" className="hidden md:flex">
+                <Plus className="h-4 w-4 mr-2" />
+                Quick Add
+              </Button>
+
               {/* Notifications */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -136,13 +165,11 @@ const Layout = ({ children }: LayoutProps) => {
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Users className="mr-2 h-4 w-4" />
-                    Team Members
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
+                  <DropdownMenuItem asChild>
+                    <Link to="/settings">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Settings
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
@@ -169,20 +196,24 @@ const Layout = ({ children }: LayoutProps) => {
         {isMobileMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                    isActivePath(item.href)
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
+              {navigation.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`flex items-center px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                      isActivePath(item.href)
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Icon className="h-4 w-4 mr-2" />
+                    {item.name}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}
