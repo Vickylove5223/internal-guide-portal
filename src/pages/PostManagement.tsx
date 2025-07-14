@@ -180,21 +180,6 @@ const PostManagement = () => {
     navigate(`/post-management/edit/${item.id}`);
   };
 
-  const handleEdit = (e: React.MouseEvent, item: any) => {
-    e.stopPropagation();
-    navigate(`/post-management/edit/${item.id}`);
-  };
-
-  const handleDelete = (e: React.MouseEvent, item: any) => {
-    e.stopPropagation();
-    console.log('Delete item:', item);
-  };
-
-  const handleView = (e: React.MouseEvent, item: any) => {
-    e.stopPropagation();
-    navigate(`/post/${item.id}`);
-  };
-
   const columns = [
     {
       key: 'title',
@@ -248,20 +233,20 @@ const PostManagement = () => {
       render: (value: any, item: any) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()}>
+            <Button variant="ghost" size="sm">
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={(e) => handleView(e, item)}>
+            <DropdownMenuItem>
               <Eye className="h-4 w-4 mr-2" />
               View
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={(e) => handleEdit(e, item)}>
+            <DropdownMenuItem>
               <Edit className="h-4 w-4 mr-2" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600" onClick={(e) => handleDelete(e, item)}>
+            <DropdownMenuItem className="text-red-600">
               <Trash2 className="h-4 w-4 mr-2" />
               Delete
             </DropdownMenuItem>
@@ -276,11 +261,11 @@ const PostManagement = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900">
             Management
           </h1>
           <p className="text-gray-600">Create, edit, and manage all posts across the platform</p>
@@ -293,12 +278,12 @@ const PostManagement = () => {
 
       {/* Sub Navigation */}
       <div className="border-b">
-        <nav className="flex space-x-8 overflow-x-auto">
+        <nav className="flex space-x-8">
           {menuItems.map((item) => (
             <button
               key={item.id}
               onClick={() => setActiveSection(item.id)}
-              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap ${
+              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                 activeSection === item.id
                   ? 'border-primary text-primary'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -314,58 +299,60 @@ const PostManagement = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="flex-1">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search posts..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+      <Card>
+        <CardContent className="p-4 bg-gray-50">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search posts..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <Select value={filterType} onValueChange={setFilterType}>
+              <SelectTrigger className="w-full md:w-[180px]">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="events">Events</SelectItem>
+                <SelectItem value="politics-news">Politics News</SelectItem>
+                <SelectItem value="finance">Finance</SelectItem>
+                <SelectItem value="company-news">Company News</SelectItem>
+                {activeSection === 'all-internal-docs' && (
+                  <>
+                    <SelectItem value="handbook">Handbook</SelectItem>
+                    <SelectItem value="guidelines">Guidelines</SelectItem>
+                    <SelectItem value="standards">Standards</SelectItem>
+                  </>
+                )}
+              </SelectContent>
+            </Select>
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="w-full md:w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="published">Published</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="scheduled">Scheduled</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        </div>
-        <Select value={filterType} onValueChange={setFilterType}>
-          <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="events">Events</SelectItem>
-            <SelectItem value="politics-news">Politics News</SelectItem>
-            <SelectItem value="finance">Finance</SelectItem>
-            <SelectItem value="company-news">Company News</SelectItem>
-            {activeSection === 'all-internal-docs' && (
-              <>
-                <SelectItem value="handbook">Handbook</SelectItem>
-                <SelectItem value="guidelines">Guidelines</SelectItem>
-                <SelectItem value="standards">Standards</SelectItem>
-              </>
-            )}
-          </SelectContent>
-        </Select>
-        <Select value={filterStatus} onValueChange={setFilterStatus}>
-          <SelectTrigger className="w-full md:w-[140px]">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="published">Published</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="scheduled">Scheduled</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Data Table */}
-      <div className="overflow-x-auto">
-        <DataTable
-          columns={columns}
-          data={filteredData}
-          onRowClick={handleRowClick}
-        />
-      </div>
+      <DataTable
+        columns={columns}
+        data={filteredData}
+        onRowClick={handleRowClick}
+      />
 
       {filteredData.length === 0 && (
         <Card>

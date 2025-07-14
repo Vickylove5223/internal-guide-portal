@@ -89,12 +89,12 @@ const CompanyNews = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="flex flex-col xl:flex-row">
+      <div className="flex">
         {/* Main Content */}
-        <div className="flex-1 p-4 sm:p-6 xl:pr-0">
+        <div className="flex-1 p-6 pr-0">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">All Updates</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">All Updates</h1>
             <p className="text-gray-600 mb-6">Stay informed with the latest company news and announcements</p>
             
             {/* Search Bar */}
@@ -110,15 +110,15 @@ const CompanyNews = () => {
 
             {/* Category Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+              <TabsList>
                 {categories.map((category) => (
-                  <TabsTrigger key={category.value} value={category.value} className="text-xs sm:text-sm">
+                  <TabsTrigger key={category.value} value={category.value}>
                     {category.label}
                   </TabsTrigger>
                 ))}
               </TabsList>
               <TabsContent value={activeTab} className="mt-6">
-                {/* Posts List - 1 per row with responsive layout */}
+                {/* Posts List - 1 per row */}
                 <div className="space-y-6">
                   {filteredPosts.map((post) => (
                     <Card 
@@ -126,10 +126,10 @@ const CompanyNews = () => {
                       className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
                       onClick={() => handleCardClick(post.id)}
                     >
-                      <div className="flex flex-col sm:flex-row">
-                        {/* Image */}
+                      <div className="flex">
+                        {/* Image on the left */}
                         {post.image && (
-                          <div className="w-full sm:w-48 h-48 sm:h-32 flex-shrink-0">
+                          <div className="w-48 h-32 flex-shrink-0">
                             <img 
                               src={post.image} 
                               alt={post.title}
@@ -138,16 +138,16 @@ const CompanyNews = () => {
                           </div>
                         )}
                         
-                        {/* Content */}
+                        {/* Content on the right */}
                         <div className="flex-1 flex flex-col">
                           <CardHeader className="pb-3">
-                            <CardTitle className="text-base sm:text-lg line-clamp-2">{post.title}</CardTitle>
+                            <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
                           </CardHeader>
                           <CardContent className="pt-0 flex-1">
                             <p className="text-gray-600 text-sm line-clamp-2 mb-4">
                               {post.content}
                             </p>
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm text-gray-500 space-y-2 sm:space-y-0">
+                            <div className="flex items-center justify-between text-sm text-gray-500">
                               <div className="flex items-center">
                                 <User className="h-4 w-4 mr-1" />
                                 <span>{post.author}</span>
@@ -169,8 +169,8 @@ const CompanyNews = () => {
         </div>
 
         {/* Sticky Right Sidebar */}
-        <div className="w-full xl:w-80 p-4 sm:p-6">
-          <div className="xl:sticky xl:top-6">
+        <div className="w-80 p-6">
+          <div className="sticky top-6">
             <img
               src="/lovable-uploads/3d5b1ac3-5c8f-49a4-b3bb-872eeb6148fe.png"
               alt="Our Products"

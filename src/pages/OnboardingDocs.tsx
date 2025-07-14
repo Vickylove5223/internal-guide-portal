@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -118,26 +119,26 @@ const OnboardingDocs = () => {
     }
   };
 
-  const handleCardClick = (department: string, docId: number) => {
-    navigate(`/knowledge-base/${department.toLowerCase()}/document/${docId}`);
+  const handleCardClick = (department: string) => {
+    navigate(`/knowledge-base/${department.toLowerCase()}`);
   };
 
-  const handleViewAll = () => {
-    navigate('/onboarding/all');
+  const handleViewAll = (department: string) => {
+    navigate(`/knowledge-base/${department.toLowerCase()}`);
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-gray-900">
           Onboarding Documentation
         </h1>
         <p className="text-gray-600">Your guide to getting started at the company</p>
       </div>
 
-      {/* Onboarding Steps - Responsive Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+      {/* Onboarding Steps - 2 columns */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {onboardingSteps.map((step, index) => {
           const TypeIcon = getTypeIcon(step.type);
           return (
@@ -148,9 +149,9 @@ const OnboardingDocs = () => {
                   ? 'bg-green-50 border-green-200' 
                   : 'hover:bg-gray-50 border-gray-200'
               }`}
-              onClick={() => handleCardClick(step.department, step.id)}
+              onClick={() => handleCardClick(step.department)}
             >
-              <CardContent className="p-4 sm:p-6">
+              <CardContent className="p-6">
                 <div className="flex items-start space-x-4">
                   <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                     step.completed 
@@ -163,21 +164,21 @@ const OnboardingDocs = () => {
                       <span className="text-sm font-medium">{index + 1}</span>
                     )}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2 mb-2">
-                      <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{step.title}</h3>
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <h3 className="font-semibold text-gray-900">{step.title}</h3>
                       {step.required && (
                         <Badge variant="destructive" className="text-xs">Required</Badge>
                       )}
                       <Badge variant="outline" className="text-xs">{step.department}</Badge>
                     </div>
-                    <p className="text-gray-700 mb-3 text-sm">{step.description}</p>
-                    <div className="flex flex-wrap items-center gap-4 mb-3 text-xs sm:text-sm">
-                      <div className="flex items-center text-gray-600">
+                    <p className="text-gray-700 mb-3">{step.description}</p>
+                    <div className="flex items-center space-x-4 mb-3">
+                      <div className="flex items-center text-sm text-gray-600">
                         <TypeIcon className="h-4 w-4 mr-1" />
                         {step.type}
                       </div>
-                      <div className="flex items-center text-gray-600">
+                      <div className="flex items-center text-sm text-gray-600">
                         <Clock className="h-4 w-4 mr-1" />
                         {step.duration}
                       </div>
@@ -187,12 +188,12 @@ const OnboardingDocs = () => {
                         const FileIcon = getTypeIcon(doc.type);
                         return (
                           <div key={docIndex} className="flex items-center justify-between bg-white rounded border p-2">
-                            <div className="flex items-center space-x-2 min-w-0 flex-1">
-                              <FileIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
-                              <span className="text-sm text-gray-900 truncate">{doc.name}</span>
-                              <span className="text-xs text-gray-500 flex-shrink-0">({doc.size})</span>
+                            <div className="flex items-center space-x-2">
+                              <FileIcon className="h-4 w-4 text-gray-500" />
+                              <span className="text-sm text-gray-900">{doc.name}</span>
+                              <span className="text-xs text-gray-500">({doc.size})</span>
                             </div>
-                            <Button variant="ghost" size="sm" className="flex-shrink-0">
+                            <Button variant="ghost" size="sm">
                               <Eye className="h-4 w-4" />
                             </Button>
                           </div>
@@ -204,7 +205,7 @@ const OnboardingDocs = () => {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleViewAll();
+                          handleViewAll(step.department);
                         }}
                       >
                         View All
