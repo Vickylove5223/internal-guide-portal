@@ -126,6 +126,34 @@ const KnowledgeBase = () => {
           );
         })}
       </div>
+
+      {/* Stats Section */}
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-gray-900">269</div>
+            <div className="text-sm text-gray-600">Total Documents</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-green-600">+23</div>
+            <div className="text-sm text-gray-600">Added This Month</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-blue-600">8</div>
+            <div className="text-sm text-gray-600">Departments</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-purple-600">542</div>
+            <div className="text-sm text-gray-600">Avg. Views</div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

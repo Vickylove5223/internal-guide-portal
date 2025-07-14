@@ -7,18 +7,26 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { 
   ArrowLeft,
+  Search,
   FileText,
   Video,
   Image,
+  Download,
+  Eye,
   Clock,
   User,
+  ThumbsUp,
+  MessageCircle
 } from 'lucide-react';
 
 const DepartmentDocuments = () => {
   const { department } = useParams();
+  const [searchTerm, setSearchTerm] = useState('');
 
+  // Sample documents data - in real app this would come from API
   const documents = [
     {
       id: 1,
@@ -31,6 +39,8 @@ const DepartmentDocuments = () => {
       status: 'approved',
       size: '5.2 MB',
       views: 1247,
+      likes: 89,
+      comments: 12,
       department: 'hr'
     },
     {
@@ -44,6 +54,8 @@ const DepartmentDocuments = () => {
       status: 'approved',
       size: '3.8 MB',
       views: 892,
+      likes: 67,
+      comments: 8,
       department: 'it'
     },
     {
@@ -57,6 +69,8 @@ const DepartmentDocuments = () => {
       status: 'approved',
       size: '2.1 MB',
       views: 234,
+      likes: 12,
+      comments: 5,
       department: 'finance'
     },
     {
@@ -70,11 +84,17 @@ const DepartmentDocuments = () => {
       status: 'approved',
       size: '125 MB',
       views: 445,
+      likes: 34,
+      comments: 7,
       department: 'sales'
     }
   ];
 
-  const departmentDocuments = documents.filter(doc => doc.department === department);
+  const departmentDocuments = documents.filter(doc => 
+    doc.department === department &&
+    (doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     doc.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -110,7 +130,8 @@ const DepartmentDocuments = () => {
       <div className="flex items-center space-x-4 mb-6">
         <Link to="/knowledge-base">
           <Button variant="ghost" size="sm">
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Knowledge Base
           </Button>
         </Link>
         <div>
@@ -121,47 +142,75 @@ const DepartmentDocuments = () => {
         </div>
       </div>
 
-      {/* Documents Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Input
+          placeholder="Search documents..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+
+      {/* Documents List */}
+      <div className="space-y-4">
         {departmentDocuments.map((doc) => {
           const TypeIcon = getTypeIcon(doc.type);
           return (
-            <Link key={doc.id} to={`/knowledge-base/${department}/${doc.id}`}>
-              <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer h-full">
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="flex-shrink-0">
-                      <TypeIcon className="h-8 w-8 text-blue-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">
-                        {doc.title}
-                      </h3>
-                      <Badge className={`text-xs ${getStatusColor(doc.status)} mb-2`}>
+            <Card key={doc.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <TypeIcon className="h-5 w-5 text-gray-600" />
+                      <h3 className="text-lg font-semibold text-gray-900">{doc.title}</h3>
+                      <Badge className={`text-xs ${getStatusColor(doc.status)}`}>
                         {doc.status}
                       </Badge>
                     </div>
-                  </div>
-                  
-                  <p className="text-gray-700 text-sm mb-4 line-clamp-3">{doc.description}</p>
-                  
-                  <div className="space-y-2 text-xs text-gray-500">
-                    <div className="flex items-center">
-                      <User className="h-3 w-3 mr-1" />
-                      <span>{doc.author}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Clock className="h-3 w-3 mr-1" />
-                      <span>{formatDate(doc.lastUpdated)}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
+                    <p className="text-gray-700 mb-3">{doc.description}</p>
+                    
+                    <div className="flex items-center space-x-4 text-sm text-gray-600 mb-4">
+                      <div className="flex items-center">
+                        <User className="h-4 w-4 mr-1" />
+                        {doc.author}
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-1" />
+                        {formatDate(doc.lastUpdated)}
+                      </div>
                       <span>v{doc.version}</span>
                       <span>{doc.size}</span>
                     </div>
+                    <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <div className="flex items-center">
+                        <Eye className="h-4 w-4 mr-1" />
+                        {doc.views}
+                      </div>
+                      <div className="flex items-center">
+                        <ThumbsUp className="h-4 w-4 mr-1" />
+                        {doc.likes}
+                      </div>
+                      <div className="flex items-center">
+                        <MessageCircle className="h-4 w-4 mr-1" />
+                        {doc.comments}
+                      </div>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </Link>
+                  <div className="flex flex-col space-y-2 ml-4">
+                    <Button size="sm">
+                      <Eye className="h-4 w-4 mr-2" />
+                      View
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           );
         })}
       </div>
@@ -172,7 +221,10 @@ const DepartmentDocuments = () => {
             <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No documents found</h3>
             <p className="text-gray-600">
-              No documents available for the {departmentName} department yet.
+              {searchTerm 
+                ? 'Try adjusting your search terms.'
+                : `No documents available for the ${departmentName} department yet.`
+              }
             </p>
           </CardContent>
         </Card>
