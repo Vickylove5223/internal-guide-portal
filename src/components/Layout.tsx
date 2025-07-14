@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -19,7 +19,10 @@ import {
   GraduationCap,
   LogOut,
   Menu,
-  X
+  X,
+  ChevronDown,
+  User,
+  Settings
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -30,6 +33,7 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationItems = [
@@ -40,7 +44,7 @@ const Layout = ({ children }: LayoutProps) => {
 
   const adminItems = user?.role === 'admin' ? [
     { name: 'Members', href: '/members', current: location.pathname === '/members' },
-    { name: 'Post Management', href: '/post-management', current: location.pathname === '/post-management' },
+    { name: 'Management', href: '/post-management', current: location.pathname === '/post-management' },
   ] : [];
 
   const allItems = [...navigationItems, ...adminItems];
@@ -50,14 +54,28 @@ const Layout = ({ children }: LayoutProps) => {
   };
 
   const getUserName = () => {
-    if (user?.name) return user.name;
-    if (user?.firstName && user?.lastName) return `${user.firstName} ${user.lastName}`;
-    return 'User';
+    return 'Ifeoluwa Ajetomobi';
   };
 
   const getUserInitials = () => {
-    const name = getUserName();
-    return name.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
+    return 'IA';
+  };
+
+  const handleProfileMenuClick = (action: string) => {
+    switch (action) {
+      case 'profile':
+        // Navigate to profile page when implemented
+        break;
+      case 'management':
+        navigate('/post-management');
+        break;
+      case 'members':
+        navigate('/members');
+        break;
+      case 'logout':
+        logout();
+        break;
+    }
   };
 
   return (
@@ -99,13 +117,14 @@ const Layout = ({ children }: LayoutProps) => {
               {/* Profile dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Button variant="ghost" className="flex items-center space-x-2 px-2">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user?.avatar} alt={getUserName()} />
                       <AvatarFallback>
                         {getUserInitials()}
                       </AvatarFallback>
                     </Avatar>
+                    <ChevronDown className="h-4 w-4 text-gray-600" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -113,12 +132,25 @@ const Layout = ({ children }: LayoutProps) => {
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">{getUserName()}</p>
                       <p className="text-xs leading-none text-muted-foreground">
-                        {user?.email}
+                        {user?.email || 'user@company.com'}
                       </p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout}>
+                  <DropdownMenuItem onClick={() => handleProfileMenuClick('profile')}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleProfileMenuClick('management')}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Management</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleProfileMenuClick('members')}>
+                    <Users className="mr-2 h-4 w-4" />
+                    <span>Members</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => handleProfileMenuClick('logout')}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
