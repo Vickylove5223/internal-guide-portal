@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Card, 
@@ -174,8 +173,12 @@ const PostManagement = () => {
 
   const menuItems = [
     { id: 'all-posts', label: 'All Posts', count: allPosts.length },
-    { id: 'internal-docs', label: 'All Internal Docs', count: internalDocs.length }
+    { id: 'all-internal-docs', label: 'All Internal Docs', count: internalDocs.length }
   ];
+
+  const handleRowClick = (item: any) => {
+    navigate(`/post-management/edit/${item.id}`);
+  };
 
   const columns = [
     {
@@ -297,7 +300,7 @@ const PostManagement = () => {
 
       {/* Filters */}
       <Card>
-        <CardContent className="p-4">
+        <CardContent className="p-4 bg-gray-50">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
@@ -320,7 +323,7 @@ const PostManagement = () => {
                 <SelectItem value="politics-news">Politics News</SelectItem>
                 <SelectItem value="finance">Finance</SelectItem>
                 <SelectItem value="company-news">Company News</SelectItem>
-                {activeSection === 'internal-docs' && (
+                {activeSection === 'all-internal-docs' && (
                   <>
                     <SelectItem value="handbook">Handbook</SelectItem>
                     <SelectItem value="guidelines">Guidelines</SelectItem>
@@ -348,7 +351,7 @@ const PostManagement = () => {
       <DataTable
         columns={columns}
         data={filteredData}
-        onRowClick={(item) => console.log('Row clicked:', item)}
+        onRowClick={handleRowClick}
       />
 
       {filteredData.length === 0 && (

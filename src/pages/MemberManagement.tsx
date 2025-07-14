@@ -2,7 +2,10 @@
 import React, { useState } from 'react';
 import { 
   Card, 
-  CardContent 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,310 +17,283 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { 
+  Plus, 
+  Search, 
+  UserPlus,
+  MoreHorizontal,
+  Edit,
+  Trash2,
+  UserCheck,
+  UserX,
+  Mail,
+  Phone
+} from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { 
-  Search, 
-  UserPlus,
-  MoreHorizontal,
-  Edit,
-  Trash2
-} from 'lucide-react';
+import { DataTable } from '@/components/ui/data-table';
 
 const MemberManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedDepartment, setSelectedDepartment] = useState('all');
-  const [selectedRole, setSelectedRole] = useState('all');
-  const [showInviteModal, setShowInviteModal] = useState(false);
-  const [inviteEmail, setInviteEmail] = useState('');
-  const [inviteRole, setInviteRole] = useState('Reader');
-  const [inviteDepartment, setInviteDepartment] = useState('HR');
+  const [filterRole, setFilterRole] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
 
   const members = [
     {
       id: 1,
-      name: 'Sarah Johnson',
-      email: 'sarah.johnson@company.com',
+      name: 'John Smith',
+      email: 'john.smith@company.com',
       role: 'Admin',
-      department: 'HR',
-      status: 'active'
+      department: 'IT',
+      status: 'Active',
+      joinDate: '2023-01-15',
+      avatar: '/avatars/john-smith.jpg'
     },
     {
       id: 2,
-      name: 'Mike Chen',
-      email: 'mike.chen@company.com',
-      role: 'Contributor',
-      department: 'IT',
-      status: 'active'
+      name: 'Sarah Johnson',
+      email: 'sarah.johnson@company.com',
+      role: 'Editor',
+      department: 'HR',
+      status: 'Active',
+      joinDate: '2023-02-20',
+      avatar: '/avatars/sarah-johnson.jpg'
     },
     {
       id: 3,
-      name: 'Emma Wilson',
-      email: 'emma.wilson@company.com',
-      role: 'Contributor',
-      department: 'HR',
-      status: 'active'
+      name: 'Mike Chen',
+      email: 'mike.chen@company.com',
+      role: 'Viewer',
+      department: 'Finance',
+      status: 'Inactive',
+      joinDate: '2023-03-10',
+      avatar: '/avatars/mike-chen.jpg'
     },
     {
       id: 4,
-      name: 'David Kim',
-      email: 'david.kim@company.com',
-      role: 'Reader',
-      department: 'Finance',
-      status: 'active'
-    },
-    {
-      id: 5,
-      name: 'Alex Rodriguez',
-      email: 'alex.rodriguez@company.com',
-      role: 'Contributor',
-      department: 'Sales',
-      status: 'inactive'
-    },
-    {
-      id: 6,
-      name: 'Lisa Park',
-      email: 'lisa.park@company.com',
-      role: 'Admin',
-      department: 'IT',
-      status: 'active'
-    },
-    {
-      id: 7,
-      name: 'John Doe',
-      email: 'john.doe@company.com',
-      role: 'Reader',
+      name: 'Emma Wilson',
+      email: 'emma.wilson@company.com',
+      role: 'Editor',
       department: 'Marketing',
-      status: 'pending'
+      status: 'Active',
+      joinDate: '2023-04-05',
+      avatar: '/avatars/emma-wilson.jpg'
     }
   ];
 
-  const departments = ['HR', 'IT', 'Finance', 'Sales', 'Marketing', 'Legal', 'Operations'];
-  const roles = ['Admin', 'Contributor', 'Reader'];
+  const filteredMembers = members.filter(member => {
+    const matchesSearch = member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         member.department.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRole = filterRole === 'all' || member.role.toLowerCase() === filterRole.toLowerCase();
+    const matchesStatus = filterStatus === 'all' || member.status.toLowerCase() === filterStatus.toLowerCase();
+    
+    return matchesSearch && matchesRole && matchesStatus;
+  });
 
-  const handleInviteMember = () => {
-    if (inviteEmail) {
-      console.log('Inviting:', { email: inviteEmail, role: inviteRole, department: inviteDepartment });
-      setInviteEmail('');
-      setShowInviteModal(false);
-    }
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case 'active': return 'bg-green-100 text-green-800';
-      case 'inactive': return 'bg-red-100 text-red-800';
+      case 'inactive': return 'bg-gray-100 text-gray-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getRoleColor = (role: string) => {
-    switch (role) {
-      case 'Admin': return 'bg-purple-100 text-purple-800';
-      case 'Contributor': return 'bg-blue-100 text-blue-800';
-      case 'Reader': return 'bg-gray-100 text-gray-800';
+    switch (role.toLowerCase()) {
+      case 'admin': return 'bg-red-100 text-red-800';
+      case 'editor': return 'bg-blue-100 text-blue-800';
+      case 'viewer': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const filteredMembers = members.filter(member => {
-    const matchesSearch = member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         member.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDepartment = selectedDepartment === 'all' || member.department === selectedDepartment;
-    const matchesRole = selectedRole === 'all' || member.role === selectedRole;
-    
-    return matchesSearch && matchesDepartment && matchesRole;
-  });
+  const columns = [
+    {
+      key: 'name',
+      header: 'Member',
+      className: 'font-medium',
+      render: (value: string, item: any) => (
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+            <span className="text-sm font-medium text-primary">
+              {value.split(' ').map(n => n[0]).join('')}
+            </span>
+          </div>
+          <div>
+            <div className="font-medium">{value}</div>
+            <div className="text-sm text-gray-500">{item.email}</div>
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'role',
+      header: 'Role',
+      render: (value: string) => (
+        <Badge className={`text-xs ${getRoleColor(value)}`}>
+          {value}
+        </Badge>
+      )
+    },
+    {
+      key: 'department',
+      header: 'Department',
+      render: (value: string) => (
+        <span className="text-sm text-gray-900">{value}</span>
+      )
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      render: (value: string) => (
+        <Badge className={`text-xs ${getStatusColor(value)}`}>
+          {value}
+        </Badge>
+      )
+    },
+    {
+      key: 'joinDate',
+      header: 'Join Date',
+      render: (value: string) => (
+        <div className="text-sm text-gray-600">{formatDate(value)}</div>
+      )
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      render: (value: any, item: any) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Member
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Mail className="h-4 w-4 mr-2" />
+              Send Email
+            </DropdownMenuItem>
+            {item.status === 'Active' ? (
+              <DropdownMenuItem>
+                <UserX className="h-4 w-4 mr-2" />
+                Deactivate
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem>
+                <UserCheck className="h-4 w-4 mr-2" />
+                Activate
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem className="text-red-600">
+              <Trash2 className="h-4 w-4 mr-2" />
+              Remove Member
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    }
+  ];
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Members</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Member Management
+          </h1>
           <p className="text-gray-600">Manage team members and their access permissions</p>
         </div>
-        <Button onClick={() => setShowInviteModal(true)}>
-          <UserPlus className="h-4 w-4 mr-2" />
-          Invite Member
+        <Button>
+          <Plus className="h-4 w-4 mr-2" />
+          Add Member
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="flex-1">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search members by name or email..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </div>
-        <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
-          <SelectTrigger className="w-full md:w-[160px]">
-            <SelectValue placeholder="Department" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Departments</SelectItem>
-            {departments.map((dept) => (
-              <SelectItem key={dept} value={dept}>{dept}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={selectedRole} onValueChange={setSelectedRole}>
-          <SelectTrigger className="w-full md:w-[140px]">
-            <SelectValue placeholder="Role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Roles</SelectItem>
-            {roles.map((role) => (
-              <SelectItem key={role} value={role}>{role}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Members Table */}
       <Card>
-        <CardContent className="p-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Full Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Department</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredMembers.map((member) => (
-                <TableRow key={member.id}>
-                  <TableCell className="font-medium">{member.name}</TableCell>
-                  <TableCell>{member.email}</TableCell>
-                  <TableCell>
-                    <Badge className={getRoleColor(member.role)} variant="outline">
-                      {member.role}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={getStatusColor(member.status)} variant="outline">
-                      {member.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{member.department}</TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
-                          <Edit className="h-4 w-4 mr-2" />
-                          Edit Member
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete Member
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        <CardContent className="p-4 bg-gray-50">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search members..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <Select value={filterRole} onValueChange={setFilterRole}>
+              <SelectTrigger className="w-full md:w-[140px]">
+                <SelectValue placeholder="Role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Roles</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="editor">Editor</SelectItem>
+                <SelectItem value="viewer">Viewer</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="w-full md:w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 
-      {/* Invite Member Modal */}
-      <Dialog open={showInviteModal} onOpenChange={setShowInviteModal}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Invite New Member</DialogTitle>
-            <DialogDescription>Send an invitation to join the team</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address
-              </label>
-              <Input
-                type="email"
-                placeholder="Enter email address"
-                value={inviteEmail}
-                onChange={(e) => setInviteEmail(e.target.value)}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Role
-                </label>
-                <Select value={inviteRole} onValueChange={setInviteRole}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {roles.map((role) => (
-                      <SelectItem key={role} value={role}>{role}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Department
-                </label>
-                <Select value={inviteDepartment} onValueChange={setInviteDepartment}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {departments.map((dept) => (
-                      <SelectItem key={dept} value={dept}>{dept}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setShowInviteModal(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleInviteMember}>
-                Send Invitation
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Members Table */}
+      <DataTable
+        columns={columns}
+        data={filteredMembers}
+        onRowClick={(member) => console.log('Edit member:', member)}
+      />
+
+      {filteredMembers.length === 0 && (
+        <Card>
+          <CardContent className="p-12 text-center">
+            <UserPlus className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No members found</h3>
+            <p className="text-gray-600 mb-4">
+              {searchTerm || filterRole !== 'all' || filterStatus !== 'all' 
+                ? 'Try adjusting your search criteria or filters.'
+                : 'Get started by adding your first team member.'
+              }
+            </p>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Member
+            </Button>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

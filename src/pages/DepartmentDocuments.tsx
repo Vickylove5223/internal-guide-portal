@@ -1,9 +1,12 @@
 
 import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   Card, 
-  CardContent 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,95 +16,125 @@ import {
   Search,
   FileText,
   Video,
-  Image,
   User,
-  Clock
+  Clock,
+  CheckCircle,
+  Eye
 } from 'lucide-react';
 
 const DepartmentDocuments = () => {
   const { department } = useParams();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const documents = [
+  const departmentDocuments = [
     {
       id: 1,
-      title: 'Employee Handbook 2024',
-      description: 'Complete guide to company policies, procedures, and benefits',
+      title: 'Welcome & Company Overview',
+      description: 'Learn about our company culture, mission, and values',
       type: 'document',
-      author: 'Sarah Johnson',
-      lastUpdated: '2024-01-15T10:30:00Z',
-      version: '3.2',
-      status: 'approved',
-      department: 'hr'
+      duration: '15 min',
+      completed: true,
+      required: true,
+      department: 'HR',
+      documents: [
+        { name: 'Welcome Guide', type: 'pdf', size: '2.1 MB' },
+        { name: 'Company Culture Video', type: 'video', size: '45 MB' }
+      ]
     },
     {
       id: 2,
-      title: 'Security Best Practices',
-      description: 'Essential security guidelines and protocols for all employees',
-      type: 'document',
-      author: 'Mike Chen',
-      lastUpdated: '2024-01-14T16:45:00Z',
-      version: '2.1',
-      status: 'approved',
-      department: 'it'
+      title: 'IT Setup & Security',
+      description: 'Set up your devices and learn about security protocols',
+      type: 'checklist',
+      duration: '30 min',
+      completed: true,
+      required: true,
+      department: 'IT',
+      documents: [
+        { name: 'IT Setup Guide', type: 'pdf', size: '1.8 MB' },
+        { name: 'Security Protocols', type: 'pdf', size: '3.2 MB' }
+      ]
     },
     {
       id: 3,
-      title: 'Financial Reporting Guidelines',
-      description: 'Step-by-step guide for monthly and quarterly financial reporting',
+      title: 'HR Policies & Benefits',
+      description: 'Important HR policies and your benefits package',
       type: 'document',
-      author: 'David Kim',
-      lastUpdated: '2024-01-12T11:15:00Z',
-      version: '1.8',
-      status: 'approved',
-      department: 'finance'
+      duration: '20 min',
+      completed: false,
+      required: true,
+      department: 'HR',
+      documents: [
+        { name: 'Employee Handbook', type: 'pdf', size: '5.4 MB' },
+        { name: 'Benefits Overview', type: 'pdf', size: '2.7 MB' }
+      ]
     },
     {
       id: 4,
-      title: 'Sales Process Training Video',
-      description: 'Complete walkthrough of our sales process from lead to close',
+      title: 'Role-Specific Training',
+      description: 'Training materials specific to your role and department',
       type: 'video',
-      author: 'Alex Rodriguez',
-      lastUpdated: '2024-01-08T09:30:00Z',
-      version: '2.0',
-      status: 'approved',
-      department: 'sales'
+      duration: '45 min',
+      completed: false,
+      required: true,
+      department: 'Various',
+      documents: [
+        { name: 'Department Overview', type: 'video', size: '120 MB' },
+        { name: 'Role Guidelines', type: 'pdf', size: '1.9 MB' }
+      ]
+    },
+    {
+      id: 5,
+      title: 'Tools & Systems Training',
+      description: 'Learn to use our internal tools and systems',
+      type: 'interactive',
+      duration: '60 min',
+      completed: false,
+      required: false,
+      department: 'IT',
+      documents: [
+        { name: 'Tool Tutorials', type: 'interactive', size: '15 MB' },
+        { name: 'System Access Guide', type: 'pdf', size: '2.3 MB' }
+      ]
+    },
+    {
+      id: 6,
+      title: 'Meet Your Team',
+      description: 'Get to know your colleagues and team structure',
+      type: 'social',
+      duration: '30 min',
+      completed: false,
+      required: false,
+      department: 'HR',
+      documents: [
+        { name: 'Team Directory', type: 'pdf', size: '1.2 MB' },
+        { name: 'Org Chart', type: 'pdf', size: '800 KB' }
+      ]
     }
   ];
-
-  const departmentDocuments = documents.filter(doc => 
-    doc.department === department &&
-    (doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     doc.description.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
 
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'document': return FileText;
       case 'video': return Video;
-      case 'image': return Image;
+      case 'checklist': return CheckCircle;
+      case 'interactive': return FileText;
+      case 'social': return FileText;
       default: return FileText;
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'approved': return 'bg-green-100 text-green-800';
-      case 'draft': return 'bg-yellow-100 text-yellow-800';
-      case 'review': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+  const handleCardClick = (docId: number) => {
+    navigate(`/knowledge-base/${department}/document/${docId}`);
   };
 
   const departmentName = department?.charAt(0).toUpperCase() + department?.slice(1);
+
+  const filteredDocuments = departmentDocuments.filter(doc =>
+    doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    doc.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
@@ -114,7 +147,7 @@ const DepartmentDocuments = () => {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            {departmentName} Documents
+            {departmentName} Documentation
           </h1>
           <p className="text-gray-600">Browse documents and resources for the {departmentName} department</p>
         </div>
@@ -131,47 +164,78 @@ const DepartmentDocuments = () => {
         />
       </div>
 
-      {/* Documents Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {departmentDocuments.map((doc) => {
+      {/* Documents Grid - 2 columns like Onboarding */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {filteredDocuments.map((doc, index) => {
           const TypeIcon = getTypeIcon(doc.type);
           return (
-            <Link key={doc.id} to={`/knowledge-base/${department}/document/${doc.id}`}>
-              <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer h-full">
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-2">
-                      <TypeIcon className="h-5 w-5 text-gray-600" />
-                      <Badge className={`text-xs ${getStatusColor(doc.status)}`}>
-                        {doc.status}
-                      </Badge>
+            <Card
+              key={doc.id}
+              className={`transition-all cursor-pointer ${
+                doc.completed 
+                  ? 'bg-green-50 border-green-200' 
+                  : 'hover:bg-gray-50 border-gray-200'
+              }`}
+              onClick={() => handleCardClick(doc.id)}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-start space-x-4">
+                  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                    doc.completed 
+                      ? 'bg-green-500 text-white' 
+                      : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    {doc.completed ? (
+                      <CheckCircle className="h-5 w-5" />
+                    ) : (
+                      <span className="text-sm font-medium">{index + 1}</span>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <h3 className="font-semibold text-gray-900">{doc.title}</h3>
+                      {doc.required && (
+                        <Badge variant="destructive" className="text-xs">Required</Badge>
+                      )}
+                      <Badge variant="outline" className="text-xs">{doc.department}</Badge>
                     </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{doc.title}</h3>
-                      <p className="text-gray-700 text-sm line-clamp-3">{doc.description}</p>
-                    </div>
-                    
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <div className="flex items-center">
-                        <User className="h-4 w-4 mr-1" />
-                        {doc.author}
+                    <p className="text-gray-700 mb-3">{doc.description}</p>
+                    <div className="flex items-center space-x-4 mb-3">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <TypeIcon className="h-4 w-4 mr-1" />
+                        {doc.type}
                       </div>
-                      <div className="flex items-center">
+                      <div className="flex items-center text-sm text-gray-600">
                         <Clock className="h-4 w-4 mr-1" />
-                        {formatDate(doc.lastUpdated)}
+                        {doc.duration}
                       </div>
-                      <div>v{doc.version}</div>
+                    </div>
+                    <div className="space-y-2 mb-4">
+                      {doc.documents.map((docFile, docIndex) => {
+                        const FileIcon = getTypeIcon(docFile.type);
+                        return (
+                          <div key={docIndex} className="flex items-center justify-between bg-white rounded border p-2">
+                            <div className="flex items-center space-x-2">
+                              <FileIcon className="h-4 w-4 text-gray-500" />
+                              <span className="text-sm text-gray-900">{docFile.name}</span>
+                              <span className="text-xs text-gray-500">({docFile.size})</span>
+                            </div>
+                            <Button variant="ghost" size="sm">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </Link>
+                </div>
+              </CardContent>
+            </Card>
           );
         })}
       </div>
 
-      {departmentDocuments.length === 0 && (
+      {filteredDocuments.length === 0 && (
         <Card>
           <CardContent className="p-12 text-center">
             <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />

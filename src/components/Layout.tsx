@@ -58,14 +58,12 @@ const Layout = ({ children }: LayoutProps) => {
   };
 
   const getUserInitials = () => {
+    if (!user) return <User className="h-5 w-5 text-gray-600" />;
     return 'IA';
   };
 
-  const handleProfileMenuClick = (action: string) => {
+  const handleMenuClick = (action: string) => {
     switch (action) {
-      case 'profile':
-        // Navigate to profile page when implemented
-        break;
       case 'management':
         navigate('/post-management');
         break;
@@ -118,16 +116,12 @@ const Layout = ({ children }: LayoutProps) => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2 px-2">
-                    {user ? (
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={user?.avatar} alt={getUserName()} />
-                        <AvatarFallback>
-                          {getUserInitials()}
-                        </AvatarFallback>
-                      </Avatar>
-                    ) : (
-                      <User className="h-8 w-8 text-gray-600" />
-                    )}
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user?.avatar} alt={getUserName()} />
+                      <AvatarFallback>
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
                     <ChevronDown className="h-4 w-4 text-gray-600" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -141,20 +135,16 @@ const Layout = ({ children }: LayoutProps) => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => handleProfileMenuClick('profile')}>
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleProfileMenuClick('management')}>
+                  <DropdownMenuItem onClick={() => handleMenuClick('management')}>
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Management</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleProfileMenuClick('members')}>
+                  <DropdownMenuItem onClick={() => handleMenuClick('members')}>
                     <Users className="mr-2 h-4 w-4" />
                     <span>Members</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => handleProfileMenuClick('logout')}>
+                  <DropdownMenuItem onClick={() => handleMenuClick('logout')}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
