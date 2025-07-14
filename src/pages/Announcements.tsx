@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React from 'react';
 import { 
   Card, 
   CardContent, 
@@ -6,38 +7,14 @@ import {
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { 
-  Search, 
-  Megaphone,
   Calendar,
   User,
-  MoreHorizontal,
-  Edit,
-  Trash2,
   Eye
 } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
 const Announcements = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterDepartment, setFilterDepartment] = useState('all');
-  const [filterPriority, setFilterPriority] = useState('all');
-
   const announcements = [
     {
       id: 1,
@@ -106,17 +83,6 @@ const Announcements = () => {
     }
   ];
 
-  const departments = ['Company-wide', 'HR', 'IT', 'Security', 'Sales', 'Marketing'];
-
-  const filteredAnnouncements = announcements.filter(announcement => {
-    const matchesSearch = announcement.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         announcement.content.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDepartment = filterDepartment === 'all' || announcement.department === filterDepartment;
-    const matchesPriority = filterPriority === 'all' || announcement.priority === filterPriority;
-    
-    return matchesSearch && matchesDepartment && matchesPriority;
-  });
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -149,57 +115,15 @@ const Announcements = () => {
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-          <Megaphone className="h-6 w-6 mr-2" />
-          Announcements
+        <h1 className="text-2xl font-bold text-gray-900">
+          Company News
         </h1>
         <p className="text-gray-600">View company-wide announcements and communications</p>
       </div>
 
-      {/* Filters */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search announcements..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            <Select value={filterDepartment} onValueChange={setFilterDepartment}>
-              <SelectTrigger className="w-full md:w-[180px]">
-                <SelectValue placeholder="Department" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Departments</SelectItem>
-                {departments.map((dept) => (
-                  <SelectItem key={dept} value={dept}>{dept}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={filterPriority} onValueChange={setFilterPriority}>
-              <SelectTrigger className="w-full md:w-[140px]">
-                <SelectValue placeholder="Priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Priorities</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="low">Low</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Announcements List */}
       <div className="space-y-4">
-        {filteredAnnouncements.map((announcement) => (
+        {announcements.map((announcement) => (
           <Card key={announcement.id} className="hover:shadow-md transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
@@ -237,19 +161,6 @@ const Announcements = () => {
                     )}
                   </div>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
-                      <Eye className="h-4 w-4 mr-2" />
-                      View Details
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
               </div>
             </CardHeader>
             <CardContent>
@@ -266,32 +177,11 @@ const Announcements = () => {
                     <span>{announcement.attachments} attachment{announcement.attachments > 1 ? 's' : ''}</span>
                   )}
                 </div>
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="sm">
-                    <Eye className="h-4 w-4 mr-2" />
-                    View
-                  </Button>
-                </div>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
-
-      {filteredAnnouncements.length === 0 && (
-        <Card>
-          <CardContent className="p-12 text-center">
-            <Megaphone className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No announcements found</h3>
-            <p className="text-gray-600 mb-4">
-              {searchTerm || filterDepartment !== 'all' || filterPriority !== 'all' 
-                ? 'Try adjusting your search criteria or filters.'
-                : 'No announcements available at the moment.'
-              }
-            </p>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 };

@@ -12,13 +12,11 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Plus, 
   Search, 
   Calendar,
   Clock,
   MapPin,
   Users,
-  Newspaper,
   Trophy,
   Briefcase,
   Star,
@@ -127,7 +125,7 @@ const CompanyNews = () => {
       case 'product': return Star;
       case 'event': return Calendar;
       case 'business': return Briefcase;
-      default: return Newspaper;
+      default: return Calendar;
     }
   };
 
@@ -170,16 +168,11 @@ const CompanyNews = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-            <Newspaper className="h-6 w-6 mr-2" />
-            Company News & Events
+          <h1 className="text-2xl font-bold text-gray-900">
+            General Info
           </h1>
           <p className="text-gray-600">Stay updated with the latest company news and upcoming events</p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Post
-        </Button>
       </div>
 
       {/* Search */}

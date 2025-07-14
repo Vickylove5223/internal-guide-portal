@@ -2,20 +2,11 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  Bell, 
   Menu, 
   User, 
   LogOut, 
   Settings, 
-  X, 
-  Home,
-  Megaphone,
-  Newspaper,
-  BookOpen,
-  Database,
-  FolderOpen,
-  Plus,
-  FileEdit
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,7 +17,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -37,22 +27,13 @@ const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home },
-    { name: 'Announcements', href: '/announcements', icon: Megaphone },
-    { name: 'Company News', href: '/company-news', icon: Newspaper },
-    { name: 'Onboarding', href: '/onboarding', icon: BookOpen },
-    { name: 'Knowledge Base', href: '/knowledge-base', icon: Database },
-    { name: 'Media Library', href: '/media', icon: FolderOpen },
-    { name: 'Post Management', href: '/post-management', icon: FileEdit },
+    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Company News', href: '/announcements' },
+    { name: 'General Info', href: '/company-news' },
+    { name: 'Onboarding', href: '/onboarding' },
+    { name: 'Knowledge Base', href: '/knowledge-base' },
+    { name: 'Media Library', href: '/media' },
   ];
-
-  const notifications = [
-    { id: 1, title: 'New company announcement posted', time: '5 min ago', unread: true },
-    { id: 2, title: 'Document updated in HR folder', time: '1 hour ago', unread: true },
-    { id: 3, title: 'Upcoming event: Team Meeting', time: '2 hours ago', unread: false },
-  ];
-
-  const unreadCount = notifications.filter(n => n.unread).length;
 
   const isActivePath = (path: string) => {
     if (path === '/dashboard') {
@@ -75,14 +56,12 @@ const Layout = ({ children }: LayoutProps) => {
                   alt="Company Portal" 
                   className="h-8 w-auto"
                 />
-                <span className="ml-2 text-xl font-semibold text-gray-900">Internal Portal</span>
               </div>
             </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-1">
               {navigation.map((item) => {
-                const Icon = item.icon;
                 return (
                   <Link
                     key={item.name}
@@ -93,7 +72,6 @@ const Layout = ({ children }: LayoutProps) => {
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     }`}
                   >
-                    <Icon className="h-4 w-4 mr-2" />
                     {item.name}
                   </Link>
                 );
@@ -102,39 +80,6 @@ const Layout = ({ children }: LayoutProps) => {
 
             {/* Right side */}
             <div className="flex items-center space-x-4">
-              {/* Notifications */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="relative">
-                    <Bell className="h-5 w-5" />
-                    {unreadCount > 0 && (
-                      <Badge
-                        variant="destructive"
-                        className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                      >
-                        {unreadCount}
-                      </Badge>
-                    )}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80">
-                  <div className="p-3 border-b">
-                    <h3 className="font-semibold">Notifications</h3>
-                  </div>
-                  {notifications.map((notification) => (
-                    <DropdownMenuItem key={notification.id} className="p-3 cursor-pointer">
-                      <div className="flex items-start space-x-3 w-full">
-                        <div className={`w-2 h-2 rounded-full mt-2 ${notification.unread ? 'bg-primary' : 'bg-gray-300'}`} />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900">{notification.title}</p>
-                          <p className="text-xs text-gray-500">{notification.time}</p>
-                        </div>
-                      </div>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-
               {/* User Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -191,7 +136,6 @@ const Layout = ({ children }: LayoutProps) => {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
               {navigation.map((item) => {
-                const Icon = item.icon;
                 return (
                   <Link
                     key={item.name}
@@ -203,7 +147,6 @@ const Layout = ({ children }: LayoutProps) => {
                     }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <Icon className="h-4 w-4 mr-2" />
                     {item.name}
                   </Link>
                 );
