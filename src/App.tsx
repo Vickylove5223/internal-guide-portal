@@ -20,6 +20,7 @@ import MemberManagement from "./pages/MemberManagement";
 import PostManagement from "./pages/PostManagement";
 import CreatePost from "./pages/CreatePost";
 import DepartmentDocuments from "./pages/DepartmentDocuments";
+import DocumentView from "./pages/DocumentView";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,11 @@ const App = () => (
               <Route path="/knowledge-base/:department" element={
                 <Layout>
                   <DepartmentDocuments />
+                </Layout>
+              } />
+              <Route path="/knowledge-base/:department/document/:documentId" element={
+                <Layout>
+                  <DocumentView />
                 </Layout>
               } />
               <Route path="/post-management" element={
