@@ -58,7 +58,6 @@ const PostManagement = () => {
       department: 'Company-wide',
       status: 'published',
       publishedAt: '2024-01-15T10:00:00Z',
-      views: 234,
       icon: Calendar
     },
     {
@@ -70,7 +69,6 @@ const PostManagement = () => {
       department: 'Company-wide',
       status: 'published',
       publishedAt: '2024-01-13T09:00:00Z',
-      views: 456,
       icon: Newspaper
     },
     {
@@ -82,7 +80,6 @@ const PostManagement = () => {
       department: 'Finance',
       status: 'draft',
       publishedAt: null,
-      views: 0,
       icon: FileText
     },
     {
@@ -94,16 +91,50 @@ const PostManagement = () => {
       department: 'Legal',
       status: 'scheduled',
       publishedAt: null,
-      views: 0,
       icon: Megaphone
     }
   ];
 
-  const filteredPosts = allPosts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.content.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = filterType === 'all' || post.type === filterType;
-    const matchesStatus = filterStatus === 'all' || post.status === filterStatus;
+  const internalDocs = [
+    {
+      id: 1,
+      title: 'Employee Handbook 2024',
+      content: 'Updated policies and procedures for all employees...',
+      author: 'HR Team',
+      department: 'Human Resources',
+      status: 'published',
+      publishedAt: '2024-01-10T08:00:00Z',
+      type: 'handbook'
+    },
+    {
+      id: 2,
+      title: 'IT Security Guidelines',
+      content: 'Comprehensive security protocols and best practices...',
+      author: 'IT Security',
+      department: 'Information Technology',
+      status: 'published',
+      publishedAt: '2024-01-05T14:30:00Z',
+      type: 'guidelines'
+    },
+    {
+      id: 3,
+      title: 'Project Management Standards',
+      content: 'Standard operating procedures for project management...',
+      author: 'PMO',
+      department: 'Operations',
+      status: 'draft',
+      publishedAt: null,
+      type: 'standards'
+    }
+  ];
+
+  const currentData = activeSection === 'all-posts' ? allPosts : internalDocs;
+
+  const filteredData = currentData.filter(item => {
+    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         item.content.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = filterType === 'all' || item.type === filterType;
+    const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
     
     return matchesSearch && matchesType && matchesStatus;
   });
@@ -134,14 +165,16 @@ const PostManagement = () => {
       case 'company-news': return 'bg-green-100 text-green-800';
       case 'finance': return 'bg-orange-100 text-orange-800';
       case 'politics-news': return 'bg-pink-100 text-pink-800';
+      case 'handbook': return 'bg-purple-100 text-purple-800';
+      case 'guidelines': return 'bg-cyan-100 text-cyan-800';
+      case 'standards': return 'bg-indigo-100 text-indigo-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   const menuItems = [
     { id: 'all-posts', label: 'All Posts', count: allPosts.length },
-    { id: 'internal-docs', label: 'All Internal Docs', count: 12 },
-    { id: 'onboarding', label: 'Onboarding', count: 8 }
+    { id: 'internal-docs', label: 'All Internal Docs', count: internalDocs.length }
   ];
 
   const columns = [
@@ -192,13 +225,6 @@ const PostManagement = () => {
       )
     },
     {
-      key: 'views',
-      header: 'Views',
-      render: (value: number) => (
-        <div className="text-sm text-gray-600">{value > 0 ? value : '-'}</div>
-      )
-    },
-    {
       key: 'actions',
       header: 'Actions',
       render: (value: any, item: any) => (
@@ -237,7 +263,7 @@ const PostManagement = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Post Management
+            Management
           </h1>
           <p className="text-gray-600">Create, edit, and manage all posts across the platform</p>
         </div>
@@ -294,6 +320,13 @@ const PostManagement = () => {
                 <SelectItem value="politics-news">Politics News</SelectItem>
                 <SelectItem value="finance">Finance</SelectItem>
                 <SelectItem value="company-news">Company News</SelectItem>
+                {activeSection === 'internal-docs' && (
+                  <>
+                    <SelectItem value="handbook">Handbook</SelectItem>
+                    <SelectItem value="guidelines">Guidelines</SelectItem>
+                    <SelectItem value="standards">Standards</SelectItem>
+                  </>
+                )}
               </SelectContent>
             </Select>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
@@ -311,18 +344,18 @@ const PostManagement = () => {
         </CardContent>
       </Card>
 
-      {/* Posts Table */}
+      {/* Data Table */}
       <DataTable
         columns={columns}
-        data={filteredPosts}
+        data={filteredData}
         onRowClick={(item) => console.log('Row clicked:', item)}
       />
 
-      {filteredPosts.length === 0 && (
+      {filteredData.length === 0 && (
         <Card>
           <CardContent className="p-12 text-center">
             <FileEdit className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No posts found</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No items found</h3>
             <p className="text-gray-600 mb-4">
               {searchTerm || filterType !== 'all' || filterStatus !== 'all' 
                 ? 'Try adjusting your search criteria or filters.'
