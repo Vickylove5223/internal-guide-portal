@@ -27,17 +27,15 @@ const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard' },
     { name: 'Company News', href: '/announcements' },
     { name: 'General Info', href: '/company-news' },
     { name: 'Onboarding', href: '/onboarding' },
     { name: 'Knowledge Base', href: '/knowledge-base' },
-    { name: 'Media Library', href: '/media' },
   ];
 
   const isActivePath = (path: string) => {
-    if (path === '/dashboard') {
-      return location.pathname === '/' || location.pathname === '/dashboard';
+    if (path === '/announcements') {
+      return location.pathname === '/' || location.pathname === '/announcements';
     }
     return location.pathname.startsWith(path);
   };
@@ -103,12 +101,6 @@ const Layout = ({ children }: LayoutProps) => {
                   <DropdownMenuItem>
                     <User className="mr-2 h-4 w-4" />
                     Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/settings">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Settings
-                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>

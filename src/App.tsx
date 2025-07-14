@@ -13,15 +13,12 @@ import ResetPassword from "./pages/ResetPassword";
 import OTPVerification from "./pages/OTPVerification";
 import SetNewPassword from "./pages/SetNewPassword";
 import NotFound from "./pages/NotFound";
-import Dashboard from "./pages/Dashboard";
 import Announcements from "./pages/Announcements";
 import CompanyNews from "./pages/CompanyNews";
 import OnboardingDocs from "./pages/OnboardingDocs";
 import KnowledgeBase from "./pages/KnowledgeBase";
 import MemberManagement from "./pages/MemberManagement";
-import MediaLibrary from "./pages/MediaLibrary";
 import PostManagement from "./pages/PostManagement";
-import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -40,12 +37,7 @@ const App = () => (
               <Route path="/set-new-password" element={<SetNewPassword />} />
               <Route path="/" element={
                 <Layout>
-                  <Dashboard />
-                </Layout>
-              } />
-              <Route path="/dashboard" element={
-                <Layout>
-                  <Dashboard />
+                  <Announcements />
                 </Layout>
               } />
               <Route path="/announcements" element={
@@ -66,16 +58,6 @@ const App = () => (
               <Route path="/knowledge-base" element={
                 <Layout>
                   <KnowledgeBase />
-                </Layout>
-              } />
-              <Route path="/media" element={
-                <Layout>
-                  <MediaLibrary />
-                </Layout>
-              } />
-              <Route path="/settings" element={
-                <Layout>
-                  <Settings />
                 </Layout>
               } />
               <Route path="/post-management" element={

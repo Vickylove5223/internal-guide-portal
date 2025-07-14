@@ -34,7 +34,7 @@ const CompanyNews = () => {
       id: 1,
       title: 'Company Reaches 1 Million Customers Milestone',
       content: 'We are thrilled to announce that our company has reached a significant milestone of serving over 1 million customers worldwide. This achievement represents years of hard work, innovation, and dedication from our entire team.',
-      category: 'achievement',
+      category: 'company-news',
       author: 'Marketing Team',
       publishedAt: '2024-01-15T14:30:00Z',
       image: '/lovable-uploads/b2ecc921-4815-458d-9cca-04946e0dcd22.png',
@@ -46,7 +46,7 @@ const CompanyNews = () => {
       id: 2,
       title: 'New Product Launch: AI-Powered Dashboard',
       content: 'Today we announced the launch of our revolutionary AI-powered dashboard that will transform how businesses analyze their data. The new platform combines machine learning with intuitive design.',
-      category: 'product',
+      category: 'company-news',
       author: 'Product Team',
       publishedAt: '2024-01-14T10:00:00Z',
       image: '/lovable-uploads/e6293d53-5a45-4a9c-babb-c7ce15f22a7e.png',
@@ -58,7 +58,7 @@ const CompanyNews = () => {
       id: 3,
       title: 'Team Building Retreat 2024',
       content: 'Our annual team building retreat was a huge success! Teams participated in various activities, workshops, and collaborative sessions that strengthened our company culture.',
-      category: 'event',
+      category: 'events',
       author: 'HR Team',
       publishedAt: '2024-01-12T16:45:00Z',
       image: '/lovable-uploads/7124d00e-de42-4a9f-9389-2253760ab3cf.png',
@@ -70,12 +70,24 @@ const CompanyNews = () => {
       id: 4,
       title: 'Q4 Financial Results Exceed Expectations',
       content: 'We are pleased to report that our Q4 financial results have exceeded expectations, with a 25% increase in revenue compared to the previous quarter.',
-      category: 'business',
+      category: 'finance',
       author: 'Finance Team',
       publishedAt: '2024-01-10T09:15:00Z',
       image: null,
       views: 734,
       comments: 8,
+      featured: false
+    },
+    {
+      id: 5,
+      title: 'Government Policy Changes Affecting Business',
+      content: 'Recent policy changes in government regulations will impact how we operate in the coming quarters. Our legal team has prepared a comprehensive analysis.',
+      category: 'politics-news',
+      author: 'Legal Team',
+      publishedAt: '2024-01-08T11:20:00Z',
+      image: null,
+      views: 456,
+      comments: 12,
       featured: false
     }
   ];
@@ -121,20 +133,20 @@ const CompanyNews = () => {
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'achievement': return Trophy;
-      case 'product': return Star;
-      case 'event': return Calendar;
-      case 'business': return Briefcase;
+      case 'events': return Calendar;
+      case 'politics-news': return Briefcase;
+      case 'finance': return Trophy;
+      case 'company-news': return Star;
       default: return Calendar;
     }
   };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'achievement': return 'bg-yellow-100 text-yellow-800';
-      case 'product': return 'bg-blue-100 text-blue-800';
-      case 'event': return 'bg-green-100 text-green-800';
-      case 'business': return 'bg-purple-100 text-purple-800';
+      case 'events': return 'bg-green-100 text-green-800';
+      case 'politics-news': return 'bg-red-100 text-red-800';
+      case 'finance': return 'bg-purple-100 text-purple-800';
+      case 'company-news': return 'bg-blue-100 text-blue-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -202,10 +214,10 @@ const CompanyNews = () => {
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-5">
                   <TabsTrigger value="all">All</TabsTrigger>
-                  <TabsTrigger value="achievement">Achievements</TabsTrigger>
-                  <TabsTrigger value="product">Product</TabsTrigger>
-                  <TabsTrigger value="event">Events</TabsTrigger>
-                  <TabsTrigger value="business">Business</TabsTrigger>
+                  <TabsTrigger value="events">Events</TabsTrigger>
+                  <TabsTrigger value="politics-news">Politics News</TabsTrigger>
+                  <TabsTrigger value="finance">Finance</TabsTrigger>
+                  <TabsTrigger value="company-news">Company News</TabsTrigger>
                 </TabsList>
                 <TabsContent value={activeTab} className="mt-4">
                   <div className="space-y-6">
@@ -231,7 +243,7 @@ const CompanyNews = () => {
                                 <div className="flex items-center space-x-2 mb-2">
                                   <CategoryIcon className="h-4 w-4 text-gray-600" />
                                   <Badge className={`text-xs ${getCategoryColor(item.category)}`}>
-                                    {item.category}
+                                    {item.category.replace('-', ' ')}
                                   </Badge>
                                   <span className="text-sm text-gray-500">•</span>
                                   <span className="text-sm text-gray-500">{formatDate(item.publishedAt)}</span>

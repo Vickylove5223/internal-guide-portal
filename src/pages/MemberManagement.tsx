@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Card, 
@@ -27,7 +26,6 @@ import {
 import { 
   Users, 
   Search, 
-  Plus,
   UserPlus,
   Mail,
   MoreHorizontal,
@@ -36,9 +34,7 @@ import {
   Eye,
   Calendar,
   Activity,
-  Shield,
-  Filter,
-  Download
+  Shield
 } from 'lucide-react';
 
 const MemberManagement = () => {
@@ -46,6 +42,10 @@ const MemberManagement = () => {
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [selectedRole, setSelectedRole] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const [showInviteForm, setShowInviteForm] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState('Reader');
+  const [inviteDepartment, setInviteDepartment] = useState('HR');
 
   const members = [
     {
@@ -145,6 +145,16 @@ const MemberManagement = () => {
   const roles = ['Admin', 'Contributor', 'Reader'];
   const statuses = ['active', 'inactive', 'pending'];
 
+  const handleInviteMember = () => {
+    if (inviteEmail) {
+      // Here you would typically send the invitation
+      console.log('Inviting:', { email: inviteEmail, role: inviteRole, department: inviteDepartment });
+      setInviteEmail('');
+      setShowInviteForm(false);
+      // You could add a toast notification here
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'bg-green-100 text-green-800';
@@ -200,13 +210,6 @@ const MemberManagement = () => {
     return matchesSearch && matchesDepartment && matchesRole && matchesStatus;
   });
 
-  const stats = {
-    total: members.length,
-    active: members.filter(m => m.status === 'active').length,
-    pending: members.filter(m => m.status === 'pending').length,
-    inactive: members.filter(m => m.status === 'inactive').length
-  };
-
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
@@ -218,45 +221,74 @@ const MemberManagement = () => {
           </h1>
           <p className="text-gray-600">Manage team members and their access permissions</p>
         </div>
-        <div className="flex space-x-3">
-          <Button variant="outline">
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
-          <Button>
-            <UserPlus className="h-4 w-4 mr-2" />
-            Invite Member
-          </Button>
-        </div>
+        <Button onClick={() => setShowInviteForm(!showInviteForm)}>
+          <UserPlus className="h-4 w-4 mr-2" />
+          Invite Member
+        </Button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Invite Member Form */}
+      {showInviteForm && (
         <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
-            <div className="text-sm text-gray-600">Total Members</div>
+          <CardHeader>
+            <CardTitle>Invite New Member</CardTitle>
+            <CardDescription>Send an invitation to join the team</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email Address
+                </label>
+                <Input
+                  type="email"
+                  placeholder="Enter email address"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Role
+                </label>
+                <Select value={inviteRole} onValueChange={setInviteRole}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {roles.map((role) => (
+                      <SelectItem key={role} value={role}>{role}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Department
+                </label>
+                <Select value={inviteDepartment} onValueChange={setInviteDepartment}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {departments.map((dept) => (
+                      <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex justify-end space-x-2 mt-4">
+              <Button variant="outline" onClick={() => setShowInviteForm(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleInviteMember}>
+                Send Invitation
+              </Button>
+            </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{stats.active}</div>
-            <div className="text-sm text-gray-600">Active</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
-            <div className="text-sm text-gray-600">Pending</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-red-600">{stats.inactive}</div>
-            <div className="text-sm text-gray-600">Inactive</div>
-          </CardContent>
-        </Card>
-      </div>
+      )}
 
       {/* Filters */}
       <Card>

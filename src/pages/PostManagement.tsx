@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Card, 
@@ -43,11 +42,12 @@ const PostManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [activeSection, setActiveSection] = useState('all-posts');
 
   const allPosts = [
     {
       id: 1,
-      type: 'announcement',
+      type: 'events',
       title: 'Q4 Company All-Hands Meeting',
       content: 'Join us for our quarterly review and planning session...',
       author: 'Sarah Johnson',
@@ -55,11 +55,11 @@ const PostManagement = () => {
       status: 'published',
       publishedAt: '2024-01-15T10:00:00Z',
       views: 234,
-      icon: Megaphone
+      icon: Calendar
     },
     {
       id: 2,
-      type: 'news',
+      type: 'company-news',
       title: 'Company Wins Industry Award',
       content: 'We are proud to announce that our company has been recognized...',
       author: 'Emma Wilson',
@@ -71,11 +71,11 @@ const PostManagement = () => {
     },
     {
       id: 3,
-      type: 'document',
-      title: 'Employee Handbook 2024',
-      content: 'Updated employee handbook with new policies and procedures...',
+      type: 'finance',
+      title: 'Q4 Financial Results',
+      content: 'Updated financial report with quarterly results...',
       author: 'David Kim',
-      department: 'HR',
+      department: 'Finance',
       status: 'draft',
       publishedAt: null,
       views: 0,
@@ -83,23 +83,11 @@ const PostManagement = () => {
     },
     {
       id: 4,
-      type: 'onboarding',
-      title: 'New Employee Orientation Guide',
-      content: 'Complete guide for new employees starting their journey...',
+      type: 'politics-news',
+      title: 'Government Policy Update',
+      content: 'New regulations affecting our industry...',
       author: 'Lisa Chang',
-      department: 'HR',
-      status: 'scheduled',
-      publishedAt: null,
-      views: 0,
-      icon: BookOpen
-    },
-    {
-      id: 5,
-      type: 'announcement',
-      title: 'IT System Maintenance Window',
-      content: 'Scheduled maintenance on our internal systems will occur...',
-      author: 'Alex Rodriguez',
-      department: 'IT',
+      department: 'Legal',
       status: 'scheduled',
       publishedAt: null,
       views: 0,
@@ -138,21 +126,26 @@ const PostManagement = () => {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'announcement': return 'bg-blue-100 text-blue-800';
-      case 'news': return 'bg-green-100 text-green-800';
-      case 'document': return 'bg-orange-100 text-orange-800';
-      case 'onboarding': return 'bg-pink-100 text-pink-800';
+      case 'events': return 'bg-blue-100 text-blue-800';
+      case 'company-news': return 'bg-green-100 text-green-800';
+      case 'finance': return 'bg-orange-100 text-orange-800';
+      case 'politics-news': return 'bg-pink-100 text-pink-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+
+  const menuItems = [
+    { id: 'all-posts', label: 'All Posts', count: allPosts.length },
+    { id: 'internal-docs', label: 'All Internal Docs', count: 12 },
+    { id: 'onboarding', label: 'Onboarding', count: 8 }
+  ];
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-            <FileEdit className="h-6 w-6 mr-2" />
+          <h1 className="text-2xl font-bold text-gray-900">
             Post Management
           </h1>
           <p className="text-gray-600">Create, edit, and manage all posts across the platform</p>
@@ -161,6 +154,28 @@ const PostManagement = () => {
           <Plus className="h-4 w-4 mr-2" />
           New Post
         </Button>
+      </div>
+
+      {/* Sub Navigation */}
+      <div className="border-b">
+        <nav className="flex space-x-8">
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveSection(item.id)}
+              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                activeSection === item.id
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              {item.label}
+              <Badge variant="secondary" className="ml-2">
+                {item.count}
+              </Badge>
+            </button>
+          ))}
+        </nav>
       </div>
 
       {/* Filters */}
@@ -180,14 +195,14 @@ const PostManagement = () => {
             </div>
             <Select value={filterType} onValueChange={setFilterType}>
               <SelectTrigger className="w-full md:w-[180px]">
-                <SelectValue placeholder="Post Type" />
+                <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="announcement">Announcements</SelectItem>
-                <SelectItem value="news">News</SelectItem>
-                <SelectItem value="document">Documents</SelectItem>
-                <SelectItem value="onboarding">Onboarding</SelectItem>
+                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="events">Events</SelectItem>
+                <SelectItem value="politics-news">Politics News</SelectItem>
+                <SelectItem value="finance">Finance</SelectItem>
+                <SelectItem value="company-news">Company News</SelectItem>
               </SelectContent>
             </Select>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
@@ -218,7 +233,7 @@ const PostManagement = () => {
                       <Icon className="h-5 w-5 text-primary" />
                       <CardTitle className="text-lg">{post.title}</CardTitle>
                       <Badge className={`text-xs ${getTypeColor(post.type)}`}>
-                        {post.type}
+                        {post.type.replace('-', ' ')}
                       </Badge>
                       <Badge className={`text-xs ${getStatusColor(post.status)}`}>
                         {post.status}
