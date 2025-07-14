@@ -1,175 +1,227 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { 
   Card, 
   CardContent, 
+  CardDescription, 
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { 
-  Search,
-  Filter,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui/tabs';
+import { 
+  Search, 
+  Clock,
+  User,
   Calendar,
-  User
+  Tag
 } from 'lucide-react';
 
 const CompanyNews = () => {
-  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const posts = [
+  const newsCategories = ['all', 'events', 'politics', 'finance', 'company'];
+
+  const newsItems = [
     {
       id: 1,
-      title: 'Q4 Company Performance Review',
-      content: 'We are excited to share our outstanding Q4 results. Revenue increased by 23% compared to last quarter, and we successfully onboarded 50 new team members across all departments.',
-      author: 'Sarah Johnson',
-      date: '2024-01-15',
-      category: 'Company Updates',
-      image: '/lovable-uploads/b2ecc921-4815-458d-9cca-04946e0dcd22.png'
+      title: 'Q4 Financial Results Exceed Expectations',
+      excerpt: 'Our company has achieved record-breaking results in the fourth quarter, surpassing all projected targets and setting a new benchmark for future growth.',
+      category: 'finance',
+      author: 'Finance Team',
+      publishedAt: '2024-01-15T10:30:00Z',
+      readTime: '3 min read',
+      image: '/lovable-uploads/e6293d53-5a45-4a9c-babb-c7ce15f22a7e.png',
+      tags: ['Finance', 'Results', 'Growth']
     },
     {
       id: 2,
-      title: 'New Employee Benefits Package',
-      content: 'Starting February 1st, we are introducing enhanced benefits including improved health insurance, flexible working arrangements, and professional development stipends.',
-      author: 'Mike Chen',
-      date: '2024-01-12',
-      category: 'HR Updates',
-      image: '/lovable-uploads/7124d00e-de42-4a9f-9389-2253760ab3cf.png'
+      title: 'Annual Company Retreat 2024',
+      excerpt: 'Join us for our annual company retreat where we will discuss strategic initiatives, team building activities, and celebrate our achievements.',
+      category: 'events',
+      author: 'HR Department',
+      publishedAt: '2024-01-14T16:45:00Z',
+      readTime: '2 min read',
+      image: '/lovable-uploads/7124d00e-de42-4a9f-9389-2253760ab3cf.png',
+      tags: ['Events', 'Team Building', 'Retreat']
     },
     {
       id: 3,
-      title: 'Technology Infrastructure Upgrade',
-      content: 'Our IT team has completed a major infrastructure upgrade that will improve system performance by 40% and enhance security protocols across all platforms.',
-      author: 'David Rodriguez',
-      date: '2024-01-10',
-      category: 'Tech Updates',
-      image: '/lovable-uploads/9fc527b2-adcd-4fa9-b4bc-1c6bb1fe93bb.png'
+      title: 'New Government Regulations Impact',
+      excerpt: 'Recent changes in government policies will affect our operations. Here\'s what you need to know about compliance and implementation.',
+      category: 'politics',
+      author: 'Legal Team',
+      publishedAt: '2024-01-13T14:20:00Z',
+      readTime: '5 min read',
+      image: '/lovable-uploads/b2ecc921-4815-458d-9cca-04946e0dcd22.png',
+      tags: ['Politics', 'Regulations', 'Compliance']
     },
     {
       id: 4,
-      title: 'Quarterly Team Building Event',
-      content: 'Join us for our quarterly team building event on January 25th. Activities include workshops, networking sessions, and celebration of team achievements.',
-      author: 'Lisa Wang',
-      date: '2024-01-08',
-      category: 'Events',
-      image: '/lovable-uploads/ffe33128-72d3-4275-8536-d3aa5f60ceb6.png'
+      title: 'Welcome New Team Members',
+      excerpt: 'We are excited to introduce our new team members who have joined us this month. Get to know their backgrounds and expertise.',
+      category: 'company',
+      author: 'HR Department',
+      publishedAt: '2024-01-12T11:15:00Z',
+      readTime: '4 min read',
+      image: '/lovable-uploads/9fc527b2-adcd-4fa9-b4bc-1c6bb1fe93bb.png',
+      tags: ['Company', 'Team', 'Welcome']
     },
     {
       id: 5,
-      title: 'Sustainability Initiative Launch',
-      content: 'We are proud to announce our new sustainability initiative aimed at reducing our carbon footprint by 30% over the next two years through various green practices.',
-      author: 'Emma Thompson',
-      date: '2024-01-05',
-      category: 'Company Updates',
-      image: '/lovable-uploads/e6293d53-5a45-4a9c-babb-c7ce15f22a7e.png'
+      title: 'Industry Conference Highlights',
+      excerpt: 'Key takeaways from the recent industry conference, including new trends, networking opportunities, and strategic insights.',
+      category: 'events',
+      author: 'Marketing Team',
+      publishedAt: '2024-01-10T09:30:00Z',
+      readTime: '6 min read',
+      image: '/lovable-uploads/57896a25-fe3a-4385-9a9d-a634bdd46940.png',
+      tags: ['Events', 'Conference', 'Industry']
     }
   ];
 
-  const categories = ['all', 'Company Updates', 'HR Updates', 'Tech Updates', 'Events'];
-
-  const filteredPosts = posts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.content.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = activeTab === 'all' || post.category === activeTab;
+  const filteredNews = newsItems.filter(item => {
+    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         item.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
+    
     return matchesSearch && matchesCategory;
   });
 
-  const handleCardClick = (postId: number) => {
-    navigate(`/post/${postId}`);
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
 
   return (
-    <div className="min-h-screen">
-      <div className="flex">
-        {/* Main Content */}
-        <div className="flex-1 p-6">
-          {/* Header with Image */}
-          <div className="flex items-start justify-between mb-8">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">All Updates</h1>
-              <p className="text-gray-600 mb-6">Stay informed with the latest company news and announcements</p>
-              
-              {/* Search Bar */}
-              <div className="relative mb-6">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search updates..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 max-w-md"
-                />
-              </div>
-
-              {/* Category Tabs */}
-              <div className="flex space-x-1 mb-8">
-                {categories.map((category) => (
-                  <Button
-                    key={category}
-                    variant={activeTab === category ? 'default' : 'ghost'}
-                    onClick={() => setActiveTab(category)}
-                    className="capitalize"
-                  >
-                    {category}
-                  </Button>
-                ))}
-              </div>
-            </div>
-            
-            {/* Image */}
-            <div className="ml-8">
-              <img
-                src="/lovable-uploads/57896a25-fe3a-4385-9a9d-a634bdd46940.png"
-                alt="Company Updates"
-                className="w-64 h-48 object-cover rounded-lg"
-              />
-            </div>
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
+      {/* Header with Image on Right */}
+      <div className="flex items-start gap-8">
+        <div className="flex-1">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            All Updates
+          </h1>
+          <p className="text-gray-600 mb-6">Stay updated with the latest company news and announcements</p>
+          
+          {/* Search Bar */}
+          <div className="relative mb-6">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              placeholder="Search news and updates..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 bg-transparent border-gray-300"
+            />
           </div>
 
-          {/* Posts Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPosts.map((post) => (
-              <Card 
-                key={post.id} 
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => handleCardClick(post.id)}
-              >
-                {post.image && (
-                  <div className="aspect-video overflow-hidden rounded-t-lg">
-                    <img 
-                      src={post.image} 
-                      alt={post.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-                    {post.content}
-                  </p>
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <div className="flex items-center">
-                      <User className="h-4 w-4 mr-1" />
-                      <span>{post.author}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      <span>{new Date(post.date).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          {/* News Tabs */}
+          <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="events">Events</TabsTrigger>
+              <TabsTrigger value="politics">Politics News</TabsTrigger>
+              <TabsTrigger value="finance">Finance</TabsTrigger>
+              <TabsTrigger value="company">Company News</TabsTrigger>
+            </TabsList>
+
+            {/* News Content */}
+            {newsCategories.map((category) => (
+              <TabsContent key={category} value={category} className="mt-6">
+                <div className="grid gap-6">
+                  {filteredNews.map((item) => (
+                    <Card key={item.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+                      <div className="flex">
+                        <div className="w-48 h-32 flex-shrink-0">
+                          <img 
+                            src={item.image} 
+                            alt={item.title}
+                            className="w-full h-full object-cover rounded-l-lg"
+                          />
+                        </div>
+                        <div className="flex-1 p-6">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex-1">
+                              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                                {item.title}
+                              </h3>
+                              <p className="text-gray-700 mb-3 line-clamp-2">
+                                {item.excerpt}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {item.tags.map((tag) => (
+                              <Badge key={tag} variant="outline" className="text-xs">
+                                <Tag className="h-3 w-3 mr-1" />
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                          
+                          <div className="flex items-center justify-between text-sm text-gray-600">
+                            <div className="flex items-center space-x-4">
+                              <div className="flex items-center">
+                                <User className="h-4 w-4 mr-1" />
+                                {item.author}
+                              </div>
+                              <div className="flex items-center">
+                                <Calendar className="h-4 w-4 mr-1" />
+                                {formatDate(item.publishedAt)}
+                              </div>
+                              <div className="flex items-center">
+                                <Clock className="h-4 w-4 mr-1" />
+                                {item.readTime}
+                              </div>
+                            </div>
+                            <Button variant="outline" size="sm">
+                              Read More
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
             ))}
-          </div>
+          </Tabs>
+        </div>
+        
+        {/* Image on the right side */}
+        <div className="flex-shrink-0">
+          <img 
+            src="/lovable-uploads/ffe33128-72d3-4275-8536-d3aa5f60ceb6.png" 
+            alt="Company Products" 
+            className="w-80 h-auto rounded-lg shadow-lg"
+          />
         </div>
       </div>
+
+      {filteredNews.length === 0 && (
+        <Card>
+          <CardContent className="p-12 text-center">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No news found</h3>
+            <p className="text-gray-600">
+              {searchTerm 
+                ? 'Try adjusting your search terms.'
+                : 'No news available for this category.'
+              }
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

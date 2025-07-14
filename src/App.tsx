@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,7 +14,6 @@ import OTPVerification from "./pages/OTPVerification";
 import SetNewPassword from "./pages/SetNewPassword";
 import NotFound from "./pages/NotFound";
 import CompanyNews from "./pages/CompanyNews";
-import PostDetail from "./pages/PostDetail";
 import OnboardingDocs from "./pages/OnboardingDocs";
 import KnowledgeBase from "./pages/KnowledgeBase";
 import MemberManagement from "./pages/MemberManagement";
@@ -40,11 +40,6 @@ const App = () => (
               <Route path="/" element={
                 <Layout>
                   <CompanyNews />
-                </Layout>
-              } />
-              <Route path="/post/:id" element={
-                <Layout>
-                  <PostDetail />
                 </Layout>
               } />
               <Route path="/onboarding" element={

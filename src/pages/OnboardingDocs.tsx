@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { 
   Card, 
   CardContent, 
@@ -13,14 +12,13 @@ import { Badge } from '@/components/ui/badge';
 import { 
   CheckCircle, 
   Clock, 
+  Play,
   FileText,
   Video,
-  Eye
+  Download
 } from 'lucide-react';
 
 const OnboardingDocs = () => {
-  const navigate = useNavigate();
-
   const onboardingSteps = [
     {
       id: 1,
@@ -113,18 +111,19 @@ const OnboardingDocs = () => {
       case 'document': return FileText;
       case 'video': return Video;
       case 'checklist': return CheckCircle;
-      case 'interactive': return FileText;
+      case 'interactive': return Play;
       case 'social': return FileText;
       default: return FileText;
     }
   };
 
-  const handleCardClick = (department: string) => {
-    navigate(`/knowledge-base/${department.toLowerCase()}`);
-  };
-
-  const handleViewAll = (department: string) => {
-    navigate(`/knowledge-base/${department.toLowerCase()}`);
+  const getFileTypeIcon = (type: string) => {
+    switch (type) {
+      case 'pdf': return FileText;
+      case 'video': return Video;
+      case 'interactive': return Play;
+      default: return FileText;
+    }
   };
 
   return (
@@ -144,12 +143,11 @@ const OnboardingDocs = () => {
           return (
             <Card
               key={step.id}
-              className={`transition-all cursor-pointer ${
+              className={`transition-all ${
                 step.completed 
                   ? 'bg-green-50 border-green-200' 
                   : 'hover:bg-gray-50 border-gray-200'
               }`}
-              onClick={() => handleCardClick(step.department)}
             >
               <CardContent className="p-6">
                 <div className="flex items-start space-x-4">
@@ -185,7 +183,7 @@ const OnboardingDocs = () => {
                     </div>
                     <div className="space-y-2 mb-4">
                       {step.documents.map((doc, docIndex) => {
-                        const FileIcon = getTypeIcon(doc.type);
+                        const FileIcon = getFileTypeIcon(doc.type);
                         return (
                           <div key={docIndex} className="flex items-center justify-between bg-white rounded border p-2">
                             <div className="flex items-center space-x-2">
@@ -194,21 +192,26 @@ const OnboardingDocs = () => {
                               <span className="text-xs text-gray-500">({doc.size})</span>
                             </div>
                             <Button variant="ghost" size="sm">
-                              <Eye className="h-4 w-4" />
+                              <Download className="h-4 w-4" />
                             </Button>
                           </div>
                         );
                       })}
                     </div>
                     <div className="flex space-x-2">
-                      <Button 
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleViewAll(step.department);
-                        }}
-                      >
-                        View All
+                      {step.completed ? (
+                        <Button variant="outline" size="sm" disabled>
+                          <CheckCircle className="h-4 w-4 mr-2" />
+                          Completed
+                        </Button>
+                      ) : (
+                        <Button size="sm">
+                          <Play className="h-4 w-4 mr-2" />
+                          Start
+                        </Button>
+                      )}
+                      <Button variant="ghost" size="sm">
+                        View Details
                       </Button>
                     </div>
                   </div>
