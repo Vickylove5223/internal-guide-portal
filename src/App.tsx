@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +18,7 @@ import OnboardingDocs from "./pages/OnboardingDocs";
 import KnowledgeBase from "./pages/KnowledgeBase";
 import MemberManagement from "./pages/MemberManagement";
 import PostManagement from "./pages/PostManagement";
+import DepartmentDocuments from "./pages/DepartmentDocuments";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +58,11 @@ const App = () => (
               <Route path="/knowledge-base" element={
                 <Layout>
                   <KnowledgeBase />
+                </Layout>
+              } />
+              <Route path="/knowledge-base/:department" element={
+                <Layout>
+                  <DepartmentDocuments />
                 </Layout>
               } />
               <Route path="/post-management" element={
