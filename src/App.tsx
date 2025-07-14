@@ -20,6 +20,7 @@ import OnboardingDocs from "./pages/OnboardingDocs";
 import KnowledgeBase from "./pages/KnowledgeBase";
 import MemberManagement from "./pages/MemberManagement";
 import MediaLibrary from "./pages/MediaLibrary";
+import PostManagement from "./pages/PostManagement";
 import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
@@ -38,44 +39,49 @@ const App = () => (
               <Route path="/otp-verification" element={<OTPVerification />} />
               <Route path="/set-new-password" element={<SetNewPassword />} />
               <Route path="/" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Dashboard />
-                  </Layout>
-                </ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
               } />
               <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Dashboard />
-                  </Layout>
-                </ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
               } />
               <Route path="/announcements" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Announcements />
-                  </Layout>
-                </ProtectedRoute>
+                <Layout>
+                  <Announcements />
+                </Layout>
               } />
               <Route path="/company-news" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <CompanyNews />
-                  </Layout>
-                </ProtectedRoute>
+                <Layout>
+                  <CompanyNews />
+                </Layout>
               } />
               <Route path="/onboarding" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <OnboardingDocs />
-                  </Layout>
-                </ProtectedRoute>
+                <Layout>
+                  <OnboardingDocs />
+                </Layout>
               } />
               <Route path="/knowledge-base" element={
+                <Layout>
+                  <KnowledgeBase />
+                </Layout>
+              } />
+              <Route path="/media" element={
+                <Layout>
+                  <MediaLibrary />
+                </Layout>
+              } />
+              <Route path="/settings" element={
+                <Layout>
+                  <Settings />
+                </Layout>
+              } />
+              <Route path="/post-management" element={
                 <ProtectedRoute>
                   <Layout>
-                    <KnowledgeBase />
+                    <PostManagement />
                   </Layout>
                 </ProtectedRoute>
               } />
@@ -83,20 +89,6 @@ const App = () => (
                 <ProtectedRoute>
                   <Layout>
                     <MemberManagement />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/media" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <MediaLibrary />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/settings" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Settings />
                   </Layout>
                 </ProtectedRoute>
               } />

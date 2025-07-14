@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Card, 
@@ -18,9 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { 
-  Plus, 
   Search, 
-  Filter, 
   Megaphone,
   Calendar,
   User,
@@ -151,18 +148,12 @@ const Announcements = () => {
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-            <Megaphone className="h-6 w-6 mr-2" />
-            Announcements
-          </h1>
-          <p className="text-gray-600">Manage company-wide announcements and communications</p>
-        </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          New Announcement
-        </Button>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+          <Megaphone className="h-6 w-6 mr-2" />
+          Announcements
+        </h1>
+        <p className="text-gray-600">View company-wide announcements and communications</p>
       </div>
 
       {/* Filters */}
@@ -257,14 +248,6 @@ const Announcements = () => {
                       <Eye className="h-4 w-4 mr-2" />
                       View Details
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-red-600">
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
-                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -288,10 +271,6 @@ const Announcements = () => {
                     <Eye className="h-4 w-4 mr-2" />
                     View
                   </Button>
-                  <Button variant="ghost" size="sm">
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit
-                  </Button>
                 </div>
               </div>
             </CardContent>
@@ -307,13 +286,9 @@ const Announcements = () => {
             <p className="text-gray-600 mb-4">
               {searchTerm || filterDepartment !== 'all' || filterPriority !== 'all' 
                 ? 'Try adjusting your search criteria or filters.'
-                : 'Get started by creating your first announcement.'
+                : 'No announcements available at the moment.'
               }
             </p>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Announcement
-            </Button>
           </CardContent>
         </Card>
       )}

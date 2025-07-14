@@ -13,9 +13,9 @@ import {
   Newspaper,
   BookOpen,
   Database,
-  Users,
   FolderOpen,
-  Plus
+  Plus,
+  FileEdit
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -42,8 +42,8 @@ const Layout = ({ children }: LayoutProps) => {
     { name: 'Company News', href: '/company-news', icon: Newspaper },
     { name: 'Onboarding', href: '/onboarding', icon: BookOpen },
     { name: 'Knowledge Base', href: '/knowledge-base', icon: Database },
-    { name: 'Members', href: '/members', icon: Users },
     { name: 'Media Library', href: '/media', icon: FolderOpen },
+    { name: 'Post Management', href: '/post-management', icon: FileEdit },
   ];
 
   const notifications = [
@@ -64,7 +64,7 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-transparent border-b">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between items-center">
             {/* Logo */}
@@ -102,12 +102,6 @@ const Layout = ({ children }: LayoutProps) => {
 
             {/* Right side */}
             <div className="flex items-center space-x-4">
-              {/* Quick Add Button */}
-              <Button size="sm" className="hidden md:flex">
-                <Plus className="h-4 w-4 mr-2" />
-                Quick Add
-              </Button>
-
               {/* Notifications */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

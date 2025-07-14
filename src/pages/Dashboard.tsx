@@ -8,284 +8,207 @@ import {
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Megaphone, 
   Newspaper, 
   BookOpen, 
-  Users, 
   Calendar,
-  TrendingUp,
   FileText,
-  Clock,
-  ArrowRight,
-  Star
+  Eye,
+  User
 } from 'lucide-react';
 
 const Dashboard = () => {
-  const stats = [
-    { name: 'Total Documents', value: '1,247', icon: FileText, change: '+12%' },
-    { name: 'Active Members', value: '156', icon: Users, change: '+3%' },
-    { name: 'Announcements', value: '23', icon: Megaphone, change: '+8%' },
-    { name: 'Upcoming Events', value: '5', icon: Calendar, change: '+2%' },
-  ];
-
-  const recentAnnouncements = [
+  // Combined all updates from different sources
+  const allUpdates = [
     {
       id: 1,
+      type: 'announcement',
       title: 'Q4 Company All-Hands Meeting',
       excerpt: 'Join us for our quarterly review and planning session...',
-      time: '2 hours ago',
+      author: 'Sarah Johnson',
+      department: 'Company-wide',
       priority: 'high',
-      department: 'Company-wide'
+      publishedAt: '2024-01-15T10:00:00Z',
+      views: 234,
+      icon: Megaphone
     },
     {
       id: 2,
+      type: 'announcement',
       title: 'New Health Benefits Package',
       excerpt: 'We are excited to announce enhanced health benefits...',
-      time: '1 day ago',
-      priority: 'medium',
-      department: 'HR'
-    },
-    {
-      id: 3,
-      title: 'IT System Maintenance',
-      excerpt: 'Scheduled maintenance on Saturday night...',
-      time: '2 days ago',
-      priority: 'low',
-      department: 'IT'
-    }
-  ];
-
-  const recentDocs = [
-    {
-      id: 1,
-      title: 'Employee Handbook 2024',
+      author: 'Mike Chen',
       department: 'HR',
-      lastUpdated: '3 hours ago',
-      status: 'Updated'
-    },
-    {
-      id: 2,
-      title: 'Security Guidelines',
-      department: 'IT',
-      lastUpdated: '1 day ago',
-      status: 'New'
+      priority: 'medium',
+      publishedAt: '2024-01-14T15:30:00Z',
+      views: 189,
+      icon: Megaphone
     },
     {
       id: 3,
-      title: 'Sales Process Documentation',
-      department: 'Sales',
-      lastUpdated: '2 days ago',
-      status: 'Updated'
+      type: 'news',
+      title: 'Company Wins Industry Award',
+      excerpt: 'We are proud to announce that our company has been recognized...',
+      author: 'Emma Wilson',
+      department: 'Company-wide',
+      priority: 'high',
+      publishedAt: '2024-01-13T09:00:00Z',
+      views: 456,
+      icon: Newspaper
+    },
+    {
+      id: 4,
+      type: 'event',
+      title: 'Team Building Event',
+      excerpt: 'Join us for a fun-filled day of team building activities...',
+      author: 'Alex Rodriguez',
+      department: 'HR',
+      priority: 'medium',
+      publishedAt: '2024-01-12T14:00:00Z',
+      views: 167,
+      icon: Calendar
+    },
+    {
+      id: 5,
+      type: 'document',
+      title: 'Employee Handbook 2024',
+      excerpt: 'Updated employee handbook with new policies and procedures...',
+      author: 'David Kim',
+      department: 'HR',
+      priority: 'medium',
+      publishedAt: '2024-01-11T11:00:00Z',
+      views: 298,
+      icon: FileText
+    },
+    {
+      id: 6,
+      type: 'onboarding',
+      title: 'New Employee Orientation Guide',
+      excerpt: 'Complete guide for new employees starting their journey...',
+      author: 'Lisa Chang',
+      department: 'HR',
+      priority: 'low',
+      publishedAt: '2024-01-10T16:00:00Z',
+      views: 134,
+      icon: BookOpen
+    },
+    {
+      id: 7,
+      type: 'news',
+      title: 'Holiday Party Celebration',
+      excerpt: 'Annual holiday celebration with food, drinks, and entertainment...',
+      author: 'Emma Wilson',
+      department: 'Company-wide',
+      priority: 'medium',
+      publishedAt: '2024-01-09T12:00:00Z',
+      views: 412,
+      icon: Newspaper
+    },
+    {
+      id: 8,
+      type: 'document',
+      title: 'Security Guidelines Update',
+      excerpt: 'Important updates to our security policies and procedures...',
+      author: 'John Smith',
+      department: 'IT',
+      priority: 'high',
+      publishedAt: '2024-01-08T08:00:00Z',
+      views: 223,
+      icon: FileText
     }
   ];
 
-  const upcomingEvents = [
-    {
-      id: 1,
-      title: 'Team Building Event',
-      date: 'Tomorrow, 2:00 PM',
-      location: 'Conference Room A'
-    },
-    {
-      id: 2,
-      title: 'Product Launch Meeting',
-      date: 'Dec 20, 10:00 AM',
-      location: 'Virtual'
-    },
-    {
-      id: 3,
-      title: 'Holiday Party',
-      date: 'Dec 22, 6:00 PM',
-      location: 'Office Lounge'
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high': return 'destructive';
+      case 'medium': return 'default';
+      case 'low': return 'secondary';
+      default: return 'secondary';
     }
-  ];
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'announcement': return 'bg-blue-100 text-blue-800';
+      case 'news': return 'bg-green-100 text-green-800';
+      case 'event': return 'bg-purple-100 text-purple-800';
+      case 'document': return 'bg-orange-100 text-orange-800';
+      case 'onboarding': return 'bg-pink-100 text-pink-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Welcome back! Here's what's happening at your company.</p>
-        </div>
-        <div className="flex space-x-3">
-          <Button size="sm" variant="outline">
-            <Clock className="h-4 w-4 mr-2" />
-            Recent Activity
-          </Button>
-          <Button size="sm">
-            <TrendingUp className="h-4 w-4 mr-2" />
-            View Reports
-          </Button>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">All Updates</h1>
+        <p className="text-gray-600">Stay up to date with the latest company announcements, news, and documents</p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => {
-          const Icon = stat.icon;
+      {/* Updates Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {allUpdates.map((update) => {
+          const Icon = update.icon;
           return (
-            <Card key={stat.name}>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">{stat.name}</p>
-                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+            <Card key={update.id} className="hover:shadow-lg transition-shadow duration-200 cursor-pointer">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center space-x-2">
+                    <Icon className="h-5 w-5 text-primary" />
+                    <Badge className={`text-xs ${getTypeColor(update.type)}`}>
+                      {update.type}
+                    </Badge>
                   </div>
-                  <div className="flex flex-col items-end">
-                    <Icon className="h-8 w-8 text-primary" />
-                    <span className="text-sm text-green-600 font-medium">{stat.change}</span>
+                  <Badge variant={getPriorityColor(update.priority)} className="text-xs">
+                    {update.priority}
+                  </Badge>
+                </div>
+                <CardTitle className="text-lg leading-tight">{update.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-700 text-sm mb-4 line-clamp-3">{update.excerpt}</p>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-4 text-xs text-gray-500">
+                    <div className="flex items-center">
+                      <User className="h-3 w-3 mr-1" />
+                      {update.author}
+                    </div>
+                    <div className="flex items-center">
+                      <Badge variant="outline" className="text-xs">
+                        {update.department}
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <div className="flex items-center">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {formatDate(update.publishedAt)}
+                    </div>
+                    <div className="flex items-center">
+                      <Eye className="h-3 w-3 mr-1" />
+                      {update.views} views
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
           );
         })}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Announcements */}
-        <Card className="lg:col-span-2">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center">
-                <Megaphone className="h-5 w-5 mr-2" />
-                Recent Announcements
-              </CardTitle>
-              <CardDescription>Latest company announcements</CardDescription>
-            </div>
-            <Button variant="outline" size="sm" asChild>
-              <Link to="/announcements">
-                View All
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Link>
-            </Button>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {recentAnnouncements.map((announcement) => (
-              <div key={announcement.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <h3 className="font-semibold text-gray-900">{announcement.title}</h3>
-                      <Badge 
-                        variant={announcement.priority === 'high' ? 'destructive' : 
-                               announcement.priority === 'medium' ? 'default' : 'secondary'}
-                        className="text-xs"
-                      >
-                        {announcement.priority}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">{announcement.excerpt}</p>
-                    <div className="flex items-center space-x-4 text-xs text-gray-500">
-                      <span>{announcement.time}</span>
-                      <span>•</span>
-                      <span>{announcement.department}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Upcoming Events */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Calendar className="h-5 w-5 mr-2" />
-              Upcoming Events
-            </CardTitle>
-            <CardDescription>Don't miss these events</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {upcomingEvents.map((event) => (
-              <div key={event.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
-                <h3 className="font-medium text-gray-900 text-sm">{event.title}</h3>
-                <p className="text-xs text-gray-600 mt-1">{event.date}</p>
-                <p className="text-xs text-gray-500">{event.location}</p>
-              </div>
-            ))}
-            <Button variant="outline" size="sm" className="w-full" asChild>
-              <Link to="/company-news">View All Events</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recently Updated Documents */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <FileText className="h-5 w-5 mr-2" />
-              Recently Updated Documents
-            </CardTitle>
-            <CardDescription>Latest document updates</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {recentDocs.map((doc) => (
-              <div key={doc.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 transition-colors">
-                <div className="flex-1">
-                  <h3 className="font-medium text-gray-900 text-sm">{doc.title}</h3>
-                  <div className="flex items-center space-x-2 mt-1">
-                    <Badge variant="outline" className="text-xs">{doc.department}</Badge>
-                    <span className="text-xs text-gray-500">{doc.lastUpdated}</span>
-                  </div>
-                </div>
-                <Badge 
-                  variant={doc.status === 'New' ? 'default' : 'secondary'}
-                  className="text-xs"
-                >
-                  {doc.status}
-                </Badge>
-              </div>
-            ))}
-            <Button variant="outline" size="sm" className="w-full" asChild>
-              <Link to="/knowledge-base">Browse Knowledge Base</Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Star className="h-5 w-5 mr-2" />
-              Quick Actions
-            </CardTitle>
-            <CardDescription>Common tasks and shortcuts</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button className="w-full justify-start" variant="ghost" asChild>
-              <Link to="/onboarding">
-                <BookOpen className="h-4 w-4 mr-2" />
-                View Onboarding Guide
-              </Link>
-            </Button>
-            <Button className="w-full justify-start" variant="ghost" asChild>
-              <Link to="/knowledge-base">
-                <FileText className="h-4 w-4 mr-2" />
-                Search Documents
-              </Link>
-            </Button>
-            <Button className="w-full justify-start" variant="ghost" asChild>
-              <Link to="/members">
-                <Users className="h-4 w-4 mr-2" />
-                View Team Directory
-              </Link>
-            </Button>
-            <Button className="w-full justify-start" variant="ghost" asChild>
-              <Link to="/company-news">
-                <Newspaper className="h-4 w-4 mr-2" />
-                Read Company News
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
