@@ -1,8 +1,8 @@
 
 {
-  "name": "FUNDiT Stakeholder Portal - Master Access to All Products",
+  "name": "FUNDiT Portal - Secure Stakeholder Access & Business Management Platform",
   "short_name": "FUNDiT Portal",
-  "description": "Secure stakeholder portal providing master access to all FUNDiT financial products and services",
+  "description": "Access FUNDiT's comprehensive stakeholder portal for secure business management, team collaboration, document sharing, and real-time updates",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -10,18 +10,18 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/lovable-uploads/0440891b-68c1-4039-8ea8-39b9a35ce2ea.png",
+      "src": "/lovable-uploads/97f86f98-1c7d-47e7-88b5-94abda06fe44.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/lovable-uploads/0440891b-68c1-4039-8ea8-39b9a35ce2ea.png",
+      "src": "/lovable-uploads/97f86f98-1c7d-47e7-88b5-94abda06fe44.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
     }
   ],
-  "categories": ["finance", "business"],
+  "categories": ["finance", "business", "productivity"],
   "lang": "en-US"
 }
