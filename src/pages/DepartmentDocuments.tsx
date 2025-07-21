@@ -183,108 +183,33 @@ const DepartmentDocuments = () => {
     );
   };
 
-  const renderDocumentCards = (documents: typeof allDocuments, category: string) => {
-    const visibleDocs = documents.slice(0, visibleCounts[category]);
-    const hasMore = documents.length > visibleCounts[category];
-
-    return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {visibleDocs.map((doc, index) => {
-            const TypeIcon = getTypeIcon(doc.type);
-            const isExpanded = expandedCards.has(doc.id);
-            const visibleDocuments = isExpanded ? doc.documents : doc.documents.slice(0, 5);
-            const hasMoreDocs = doc.documents.length > 5;
-
-            return (
-              <Card 
-                key={doc.id} 
-                className={`transition-all ${doc.completed ? 'bg-green-50 border-green-200' : 'hover:bg-gray-50 border-gray-200'}`}
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                      doc.completed ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'
-                    }`}>
-                      {doc.completed ? (
-                        <CheckCircle className="h-5 w-5" />
-                      ) : (
-                        <span className="text-sm font-medium">{index + 1}</span>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <h3 className="font-semibold text-gray-900">{doc.title}</h3>
-                        {doc.required && (
-                          <Badge variant="destructive" className="text-xs">Required</Badge>
-                        )}
-                        <Badge variant="outline" className="text-xs">{doc.department}</Badge>
-                      </div>
-                      <p className="text-gray-700 mb-3">{doc.description}</p>
-                      
-                      <div className="space-y-2 mb-4">
-                        {visibleDocuments.map((docFile, docIndex) => {
-                          const FileIcon = getTypeIcon(docFile.type);
-                          return (
-                            <div 
-                              key={docIndex} 
-                              className="flex items-center justify-between bg-white rounded border p-2 cursor-pointer hover:bg-gray-50"
-                              onClick={() => handleDocumentClick(doc.id, docFile.name)}
-                            >
-                              <div className="flex items-center space-x-2">
-                                <FileIcon className="h-4 w-4 text-gray-500" />
-                                <span className="text-sm text-gray-900">{docFile.name}</span>
-                                <span className="text-xs text-gray-500">({docFile.size})</span>
-                              </div>
-                              <ChevronRight className="h-4 w-4 text-gray-400" />
-                            </div>
-                          );
-                        })}
-                        
-                        {hasMoreDocs && !isExpanded && (
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            onClick={() => toggleCardExpansion(doc.id)}
-                            className="w-full text-blue-600 hover:text-blue-700"
-                          >
-                            View more ({doc.documents.length - 5} more documents)
-                          </Button>
-                        )}
-                        
-                        {isExpanded && hasMoreDocs && (
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            onClick={() => toggleCardExpansion(doc.id)}
-                            className="w-full text-blue-600 hover:text-blue-700"
-                          >
-                            View less
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-        
-        {hasMore && (
-          <div className="flex justify-center mt-6">
-            <Button 
-              variant="outline" 
-              onClick={() => handleLoadMore(category)} 
-              className="px-8"
-            >
-              Load More
-            </Button>
+  const renderSimpleDocumentCards = (documents: typeof allDocuments) => (
+    <div className="space-y-4">
+      {documents.map((doc, index) => (
+        <Card key={doc.id} className="flex items-center p-4 justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold">
+              {index + 1}
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900">{doc.title}</h3>
+              <p className="text-gray-600 text-sm">{doc.description}</p>
+              <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                <span>By {doc.department} Team</span>
+                <span>•</span>
+                <span>{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-    );
-  };
+          <div>
+            <Badge variant={doc.completed ? 'success' : 'outline'} className={doc.completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+              {doc.completed ? 'Published' : 'Draft'}
+            </Badge>
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
 
   const renderEmptyState = (category: string) => (
     <Card>
@@ -339,21 +264,21 @@ const DepartmentDocuments = () => {
 
         <TabsContent value="general" className="space-y-6">
           {filterDocuments('general').length > 0 
-            ? renderDocumentCards(filterDocuments('general'), 'general') 
+            ? renderSimpleDocumentCards(filterDocuments('general')) 
             : renderEmptyState('general')
           }
         </TabsContent>
 
         <TabsContent value="departments" className="space-y-6">
           {filterDocuments('departments').length > 0 
-            ? renderDocumentCards(filterDocuments('departments'), 'departments') 
+            ? renderSimpleDocumentCards(filterDocuments('departments'))
             : renderEmptyState('department')
           }
         </TabsContent>
 
         <TabsContent value="products" className="space-y-6">
           {filterDocuments('products').length > 0 
-            ? renderDocumentCards(filterDocuments('products'), 'products') 
+            ? renderSimpleDocumentCards(filterDocuments('products')) 
             : renderEmptyState('product')
           }
         </TabsContent>

@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 const SignIn = () => {
+  console.log('SignIn page rendered');
   const navigate = useNavigate();
   const { login } = useAuth();
   const { toast } = useToast();

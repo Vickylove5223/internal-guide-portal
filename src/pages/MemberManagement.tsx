@@ -36,11 +36,23 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { DataTable } from '@/components/ui/data-table';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 
 const MemberManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingMember, setEditingMember] = useState<any | null>(null);
+  const [confirmRemove, setConfirmRemove] = useState<any | null>(null);
 
   const members = [
     {
@@ -121,6 +133,57 @@ const MemberManagement = () => {
     }
   };
 
+  const handleEdit = (member: any) => {
+    setEditingMember(member);
+    setModalOpen(true);
+  };
+
+  const handleAdd = () => {
+    setEditingMember(null);
+    setModalOpen(true);
+  };
+
+  const handleSave = (member: any) => {
+    if (editingMember) {
+      // Edit existing
+      const idx = members.findIndex((m) => m.id === editingMember.id);
+      if (idx !== -1) {
+        members[idx] = { ...editingMember, ...member };
+      }
+    } else {
+      // Add new
+      members.push({ ...member, id: Date.now(), status: 'Active', joinDate: new Date().toISOString() });
+    }
+    setModalOpen(false);
+    setEditingMember(null);
+  };
+
+  const handleRemove = (member: any) => {
+    setConfirmRemove(member);
+  };
+
+  const confirmRemoveMember = () => {
+    if (confirmRemove) {
+      const idx = members.findIndex((m) => m.id === confirmRemove.id);
+      if (idx !== -1) {
+        members.splice(idx, 1);
+      }
+    }
+    setConfirmRemove(null);
+  };
+
+  const handleActivate = (member: any) => {
+    member.status = 'Active';
+  };
+
+  const handleDeactivate = (member: any) => {
+    member.status = 'Inactive';
+  };
+
+  const handleSendEmail = (member: any) => {
+    window.location.href = `mailto:${member.email}`;
+  };
+
   const columns = [
     {
       key: 'name',
@@ -183,26 +246,26 @@ const MemberManagement = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleEdit(item)}>
               <Edit className="h-4 w-4 mr-2" />
               Edit Member
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleSendEmail(item)}>
               <Mail className="h-4 w-4 mr-2" />
               Send Email
             </DropdownMenuItem>
             {item.status === 'Active' ? (
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleDeactivate(item)}>
                 <UserX className="h-4 w-4 mr-2" />
                 Deactivate
               </DropdownMenuItem>
             ) : (
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleActivate(item)}>
                 <UserCheck className="h-4 w-4 mr-2" />
                 Activate
               </DropdownMenuItem>
             )}
-            <DropdownMenuItem className="text-red-600">
+            <DropdownMenuItem className="text-red-600" onClick={() => handleRemove(item)}>
               <Trash2 className="h-4 w-4 mr-2" />
               Remove Member
             </DropdownMenuItem>
@@ -222,7 +285,7 @@ const MemberManagement = () => {
           </h1>
           <p className="text-gray-600">Manage team members and their access permissions</p>
         </div>
-        <Button>
+        <Button onClick={handleAdd}>
           <Plus className="h-4 w-4 mr-2" />
           Add Member
         </Button>
@@ -273,7 +336,7 @@ const MemberManagement = () => {
       <DataTable
         columns={columns}
         data={filteredMembers}
-        onRowClick={(member) => console.log('Edit member:', member)}
+        onRowClick={handleEdit}
       />
 
       {filteredMembers.length === 0 && (
@@ -287,13 +350,83 @@ const MemberManagement = () => {
                 : 'Get started by adding your first team member.'
               }
             </p>
-            <Button>
+            <Button onClick={handleAdd}>
               <Plus className="h-4 w-4 mr-2" />
               Add Member
             </Button>
           </CardContent>
         </Card>
       )}
+
+      {/* Add/Edit Member Modal */}
+      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingMember ? 'Edit Member' : 'Add Member'}</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              const form = e.target as HTMLFormElement;
+              const formData = new FormData(form);
+              handleSave({
+                name: formData.get('name'),
+                email: formData.get('email'),
+                role: formData.get('role'),
+                department: formData.get('department'),
+              });
+            }}
+            className="space-y-4"
+          >
+            <div>
+              <Label htmlFor="name">Name</Label>
+              <Input id="name" name="name" defaultValue={editingMember?.name || ''} required />
+            </div>
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" name="email" type="email" defaultValue={editingMember?.email || ''} required />
+            </div>
+            <div>
+              <Label htmlFor="role">Role</Label>
+              <Select name="role" defaultValue={editingMember?.role || 'Viewer'}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Admin">Admin</SelectItem>
+                  <SelectItem value="Editor">Editor</SelectItem>
+                  <SelectItem value="Viewer">Viewer</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="department">Department</Label>
+              <Input id="department" name="department" defaultValue={editingMember?.department || ''} required />
+            </div>
+            <DialogFooter>
+              <Button type="submit">Save</Button>
+              <DialogClose asChild>
+                <Button type="button" variant="outline">Cancel</Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+      {/* Remove Member Confirmation */}
+      <Dialog open={!!confirmRemove} onOpenChange={() => setConfirmRemove(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Remove Member</DialogTitle>
+          </DialogHeader>
+          <p>Are you sure you want to remove {confirmRemove?.name}?</p>
+          <DialogFooter>
+            <Button onClick={confirmRemoveMember} variant="destructive">Remove</Button>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

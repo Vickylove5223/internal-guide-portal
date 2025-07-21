@@ -37,6 +37,7 @@ export function getDefaultCategories(type = 'categories') {
       'Business News',
       'Political News',
       'Compliances',
+      'Company Events',
     ];
     return cats.map((name, i) => ({
       id: i + 1,
