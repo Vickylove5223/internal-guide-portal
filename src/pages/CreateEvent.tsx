@@ -11,34 +11,37 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Save, Eye } from 'lucide-react';
+import { ArrowLeft, Save, Eye, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useToast } from '@/hooks/use-toast';
 
-const CreatePost = () => {
+const CreateEvent = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
   const [status, setStatus] = useState('draft');
+  const [eventDate, setEventDate] = useState('');
+  const [eventTime, setEventTime] = useState('');
+  const [location, setLocation] = useState('');
 
   const handleSave = async () => {
     if (!title.trim()) {
       toast({
         title: "Validation Error",
-        description: "Please enter a title for your post.",
+        description: "Please enter a title for your event.",
         variant: "destructive"
       });
       return;
     }
 
-    if (!content.trim()) {
+    if (!description.trim()) {
       toast({
         title: "Validation Error", 
-        description: "Please add content to your post.",
+        description: "Please add a description to your event.",
         variant: "destructive"
       });
       return;
@@ -47,44 +50,42 @@ const CreatePost = () => {
     if (!category) {
       toast({
         title: "Validation Error",
-        description: "Please select a category for your post.",
+        description: "Please select a category for your event.",
         variant: "destructive"
       });
       return;
     }
 
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      console.log('Saving post:', { title, content, category, status });
+      console.log('Saving event:', { title, description, category, status, eventDate, eventTime, location });
       
       toast({
         title: "Success",
-        description: `Post ${status === 'published' ? 'published' : 'saved'} successfully!`,
+        description: `Event ${status === 'published' ? 'published' : 'saved'} successfully!`,
       });
       
       navigate('/post-management');
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to save post. Please try again.",
+        description: "Failed to save event. Please try again.",
         variant: "destructive"
       });
     }
   };
 
   const handlePreview = () => {
-    if (!title.trim() || !content.trim()) {
+    if (!title.trim() || !description.trim()) {
       toast({
         title: "Preview Error",
-        description: "Please add a title and content before previewing.",
+        description: "Please add a title and description before previewing.",
         variant: "destructive"
       });
       return;
     }
 
-    // Create a preview window
     const previewWindow = window.open('', '_blank', 'width=800,height=600');
     if (previewWindow) {
       previewWindow.document.write(`
@@ -96,12 +97,18 @@ const CreatePost = () => {
               h1 { color: #333; }
               .content { line-height: 1.6; }
               .category { background: #f0f0f0; padding: 5px 10px; border-radius: 15px; display: inline-block; margin-bottom: 20px; }
+              .event-details { background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0; }
             </style>
           </head>
           <body>
             <div class="category">${category.replace('-', ' ')}</div>
             <h1>${title}</h1>
-            <div class="content">${content}</div>
+            <div class="event-details">
+              <strong>Date:</strong> ${eventDate || 'TBD'}<br>
+              <strong>Time:</strong> ${eventTime || 'TBD'}<br>
+              <strong>Location:</strong> ${location || 'TBD'}
+            </div>
+            <div class="content">${description}</div>
           </body>
         </html>
       `);
@@ -133,8 +140,8 @@ const CreatePost = () => {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Create New Post</h1>
-            <p className="text-gray-600">Write and publish your content</p>
+            <h1 className="text-2xl font-bold text-gray-900">Create New Event</h1>
+            <p className="text-gray-600">Plan and publish your event</p>
           </div>
         </div>
         <div className="flex space-x-2">
@@ -144,7 +151,7 @@ const CreatePost = () => {
           </Button>
           <Button onClick={handleSave}>
             <Save className="h-4 w-4 mr-2" />
-            Save Post
+            Save Event
           </Button>
         </div>
       </div>
@@ -154,14 +161,14 @@ const CreatePost = () => {
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Post Content</CardTitle>
+              <CardTitle>Event Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="title">Title</Label>
+                <Label htmlFor="title">Event Title</Label>
                 <Input
                   id="title"
-                  placeholder="Enter post title..."
+                  placeholder="Enter event title..."
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className="text-lg"
@@ -175,24 +182,55 @@ const CreatePost = () => {
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="events">Events</SelectItem>
-                    <SelectItem value="politics-news">Politics News</SelectItem>
-                    <SelectItem value="finance">Finance</SelectItem>
-                    <SelectItem value="company-news">Company News</SelectItem>
+                    <SelectItem value="company-events">Company Events</SelectItem>
+                    <SelectItem value="hr-events">HR Events</SelectItem>
+                    <SelectItem value="training">Training</SelectItem>
+                    <SelectItem value="social">Social Events</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="eventDate">Event Date</Label>
+                  <Input
+                    id="eventDate"
+                    type="date"
+                    value={eventDate}
+                    onChange={(e) => setEventDate(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="eventTime">Event Time</Label>
+                  <Input
+                    id="eventTime"
+                    type="time"
+                    value={eventTime}
+                    onChange={(e) => setEventTime(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="location">Location</Label>
+                <Input
+                  id="location"
+                  placeholder="Enter event location..."
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                />
+              </div>
               
               <div>
-                <Label htmlFor="content">Content</Label>
+                <Label htmlFor="description">Description</Label>
                 <div className="border rounded-md">
                   <ReactQuill
                     theme="snow"
-                    value={content}
-                    onChange={setContent}
+                    value={description}
+                    onChange={setDescription}
                     modules={quillModules}
                     formats={quillFormats}
-                    placeholder="Write your post content here..."
+                    placeholder="Write your event description here..."
                     style={{ minHeight: '300px' }}
                   />
                 </div>
@@ -229,4 +267,4 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+export default CreateEvent;
