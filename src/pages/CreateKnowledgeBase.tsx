@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Save, Eye, Upload, FileText, X } from 'lucide-react';
+import { ArrowLeft, Save, Eye, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -26,7 +26,6 @@ const CreateKnowledgeBase = () => {
   const [departments, setDepartments] = useState<string[]>([]);
   const [status, setStatus] = useState('draft');
   const [documentType, setDocumentType] = useState('');
-  const [featuredImage, setFeaturedImage] = useState<File | null>(null);
 
   const departmentOptions = [
     'Human Resources',
@@ -88,8 +87,7 @@ const CreateKnowledgeBase = () => {
         content, 
         departments, 
         status, 
-        documentType,
-        featuredImage: featuredImage?.name
+        documentType
       });
       
       toast({
@@ -148,17 +146,6 @@ const CreateKnowledgeBase = () => {
     }
   };
 
-  const handleFeaturedImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setFeaturedImage(file);
-    }
-  };
-
-  const removeFeaturedImage = () => {
-    setFeaturedImage(null);
-  };
-
   const addDepartment = (department: string) => {
     if (!departments.includes(department)) {
       setDepartments([...departments, department]);
@@ -202,7 +189,7 @@ const CreateKnowledgeBase = () => {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Create Knowledge Base Document</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Create Knowledge Base</h1>
             <p className="text-gray-600">Create documentation and guides</p>
           </div>
         </div>
@@ -298,50 +285,6 @@ const CreateKnowledgeBase = () => {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Featured Image</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <input
-                  id="featured-image-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFeaturedImageUpload}
-                  className="hidden"
-                />
-                <Button
-                  variant="outline"
-                  onClick={() => document.getElementById('featured-image-upload')?.click()}
-                  className="w-full"
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload Featured Image
-                </Button>
-              </div>
-
-              {featuredImage && (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                    <div className="flex items-center space-x-2">
-                      <FileText className="h-4 w-4" />
-                      <span className="text-sm truncate">{featuredImage.name}</span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={removeFeaturedImage}
-                      className="h-6 w-6 p-0"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
           <Card>
             <CardHeader>
               <CardTitle>Publish Settings</CardTitle>

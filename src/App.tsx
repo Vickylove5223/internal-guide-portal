@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,7 +30,6 @@ import CreateKnowledgeBase from "./pages/CreateKnowledgeBase";
 import DepartmentDocuments from "./pages/DepartmentDocuments";
 import DocumentView from "./pages/DocumentView";
 import SuggestionBox from "./pages/SuggestionBox";
-import Suggestions from "./pages/Suggestions";
 import ManageDepartments from "./pages/ManageDepartments";
 
 const queryClient = new QueryClient();
@@ -146,13 +146,6 @@ const App = () => (
                 <ProtectedRoute>
                   <Layout>
                     <MemberManagement />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/suggestions" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Suggestions />
                   </Layout>
                 </ProtectedRoute>
               } />
