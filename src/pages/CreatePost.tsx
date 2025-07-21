@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Save, Eye } from 'lucide-react';
+import { ArrowLeft, Save, Eye, Upload, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -24,6 +24,51 @@ const CreatePost = () => {
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
   const [status, setStatus] = useState('draft');
+  const [featuredImage, setFeaturedImage] = useState<File | null>(null);
+  const [featuredImagePreview, setFeaturedImagePreview] = useState<string>('');
+
+  // Categories from ManageCategoriesModal default data
+  const categories = [
+    'Company News',
+    'HR Updates', 
+    'Company Events',
+    'Business News',
+    'Political News',
+    'Announcements',
+    'General Improvement',
+    'Workplace Environment',
+    'Technology & Systems',
+    'Process Improvement',
+    'Employee Benefits',
+    'Training & Development',
+    'Communication',
+    'Work-Life Balance',
+    'Safety & Security',
+    'Facilities & Infrastructure',
+    'Cost Reduction',
+    'Customer Experience',
+    'Innovation & Creativity',
+    'Team Collaboration',
+    'Management & Leadership',
+    'Other'
+  ];
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setFeaturedImage(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFeaturedImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setFeaturedImage(null);
+    setFeaturedImagePreview('');
+  };
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -54,10 +99,9 @@ const CreatePost = () => {
     }
 
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      console.log('Saving post:', { title, content, category, status });
+      console.log('Saving post:', { title, content, category, status, featuredImage });
       
       toast({
         title: "Success",
@@ -84,7 +128,6 @@ const CreatePost = () => {
       return;
     }
 
-    // Create a preview window
     const previewWindow = window.open('', '_blank', 'width=800,height=600');
     if (previewWindow) {
       previewWindow.document.write(`
@@ -96,16 +139,26 @@ const CreatePost = () => {
               h1 { color: #333; }
               .content { line-height: 1.6; }
               .category { background: #f0f0f0; padding: 5px 10px; border-radius: 15px; display: inline-block; margin-bottom: 20px; }
+              .featured-image { width: 100%; max-width: 600px; height: auto; margin: 20px 0; border-radius: 8px; }
             </style>
           </head>
           <body>
             <div class="category">${category.replace('-', ' ')}</div>
             <h1>${title}</h1>
+            ${featuredImagePreview ? `<img src="${featuredImagePreview}" alt="Featured Image" class="featured-image" />` : ''}
             <div class="content">${content}</div>
           </body>
         </html>
       `);
       previewWindow.document.close();
+    }
+  };
+
+  const getButtonText = () => {
+    switch (status) {
+      case 'published': return 'Publish Post';
+      case 'scheduled': return 'Schedule Post';
+      default: return 'Save Draft';
     }
   };
 
@@ -137,16 +190,6 @@ const CreatePost = () => {
             <p className="text-gray-600">Write and publish your content</p>
           </div>
         </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" onClick={handlePreview}>
-            <Eye className="h-4 w-4 mr-2" />
-            Preview
-          </Button>
-          <Button onClick={handleSave}>
-            <Save className="h-4 w-4 mr-2" />
-            Save Post
-          </Button>
-        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -175,12 +218,55 @@ const CreatePost = () => {
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="events">Events</SelectItem>
-                    <SelectItem value="politics-news">Politics News</SelectItem>
-                    <SelectItem value="finance">Finance</SelectItem>
-                    <SelectItem value="company-news">Company News</SelectItem>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat} value={cat.toLowerCase().replace(/\s+/g, '-')}>
+                        {cat}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div>
+                <Label>Featured Image</Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                  {featuredImagePreview ? (
+                    <div className="relative">
+                      <img 
+                        src={featuredImagePreview} 
+                        alt="Featured" 
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onClick={removeImage}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                      <div className="mt-4">
+                        <label htmlFor="featured-image" className="cursor-pointer">
+                          <span className="mt-2 block text-sm font-medium text-gray-900">
+                            Upload featured image
+                          </span>
+                          <input
+                            id="featured-image"
+                            name="featured-image"
+                            type="file"
+                            className="sr-only"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
               
               <div>
@@ -220,6 +306,17 @@ const CreatePost = () => {
                     <SelectItem value="scheduled">Scheduled</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="flex flex-col space-y-2">
+                <Button variant="outline" onClick={handlePreview} className="w-full">
+                  <Eye className="h-4 w-4 mr-2" />
+                  Preview
+                </Button>
+                <Button onClick={handleSave} className="w-full">
+                  <Save className="h-4 w-4 mr-2" />
+                  {getButtonText()}
+                </Button>
               </div>
             </CardContent>
           </Card>

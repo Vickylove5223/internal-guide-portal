@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Save, Eye, Calendar } from 'lucide-react';
+import { ArrowLeft, Save, Eye, Upload, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -22,11 +22,29 @@ const CreateEvent = () => {
   const { toast } = useToast();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
   const [status, setStatus] = useState('draft');
   const [eventDate, setEventDate] = useState('');
   const [eventTime, setEventTime] = useState('');
   const [location, setLocation] = useState('');
+  const [featuredImage, setFeaturedImage] = useState<File | null>(null);
+  const [featuredImagePreview, setFeaturedImagePreview] = useState<string>('');
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setFeaturedImage(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFeaturedImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setFeaturedImage(null);
+    setFeaturedImagePreview('');
+  };
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -47,19 +65,10 @@ const CreateEvent = () => {
       return;
     }
 
-    if (!category) {
-      toast({
-        title: "Validation Error",
-        description: "Please select a category for your event.",
-        variant: "destructive"
-      });
-      return;
-    }
-
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      console.log('Saving event:', { title, description, category, status, eventDate, eventTime, location });
+      console.log('Saving event:', { title, description, status, eventDate, eventTime, location, featuredImage });
       
       toast({
         title: "Success",
@@ -96,13 +105,13 @@ const CreateEvent = () => {
               body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
               h1 { color: #333; }
               .content { line-height: 1.6; }
-              .category { background: #f0f0f0; padding: 5px 10px; border-radius: 15px; display: inline-block; margin-bottom: 20px; }
               .event-details { background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0; }
+              .featured-image { width: 100%; max-width: 600px; height: auto; margin: 20px 0; border-radius: 8px; }
             </style>
           </head>
           <body>
-            <div class="category">${category.replace('-', ' ')}</div>
             <h1>${title}</h1>
+            ${featuredImagePreview ? `<img src="${featuredImagePreview}" alt="Featured Image" class="featured-image" />` : ''}
             <div class="event-details">
               <strong>Date:</strong> ${eventDate || 'TBD'}<br>
               <strong>Time:</strong> ${eventTime || 'TBD'}<br>
@@ -113,6 +122,14 @@ const CreateEvent = () => {
         </html>
       `);
       previewWindow.document.close();
+    }
+  };
+
+  const getButtonText = () => {
+    switch (status) {
+      case 'published': return 'Publish Event';
+      case 'scheduled': return 'Schedule Event';
+      default: return 'Save Draft';
     }
   };
 
@@ -144,16 +161,6 @@ const CreateEvent = () => {
             <p className="text-gray-600">Plan and publish your event</p>
           </div>
         </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" onClick={handlePreview}>
-            <Eye className="h-4 w-4 mr-2" />
-            Preview
-          </Button>
-          <Button onClick={handleSave}>
-            <Save className="h-4 w-4 mr-2" />
-            Save Event
-          </Button>
-        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -176,18 +183,45 @@ const CreateEvent = () => {
               </div>
 
               <div>
-                <Label htmlFor="category">Category</Label>
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="company-events">Company Events</SelectItem>
-                    <SelectItem value="hr-events">HR Events</SelectItem>
-                    <SelectItem value="training">Training</SelectItem>
-                    <SelectItem value="social">Social Events</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>Featured Image</Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                  {featuredImagePreview ? (
+                    <div className="relative">
+                      <img 
+                        src={featuredImagePreview} 
+                        alt="Featured" 
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onClick={removeImage}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                      <div className="mt-4">
+                        <label htmlFor="featured-image" className="cursor-pointer">
+                          <span className="mt-2 block text-sm font-medium text-gray-900">
+                            Upload featured image
+                          </span>
+                          <input
+                            id="featured-image"
+                            name="featured-image"
+                            type="file"
+                            className="sr-only"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -258,6 +292,17 @@ const CreateEvent = () => {
                     <SelectItem value="scheduled">Scheduled</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="flex flex-col space-y-2">
+                <Button variant="outline" onClick={handlePreview} className="w-full">
+                  <Eye className="h-4 w-4 mr-2" />
+                  Preview
+                </Button>
+                <Button onClick={handleSave} className="w-full">
+                  <Save className="h-4 w-4 mr-2" />
+                  {getButtonText()}
+                </Button>
               </div>
             </CardContent>
           </Card>

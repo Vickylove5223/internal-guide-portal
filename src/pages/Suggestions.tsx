@@ -9,15 +9,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { MessageSquare, Search, Eye, MessageCircle, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { DataTable } from '@/components/ui/data-table';
+import { useToast } from '@/hooks/use-toast';
 
 const Suggestions = () => {
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   const [selectedSuggestion, setSelectedSuggestion] = useState<any>(null);
   const [response, setResponse] = useState('');
 
-  const suggestions = [
+  const [suggestions, setSuggestions] = useState([
     {
       id: 1,
       title: 'Improve Office Lighting',
@@ -60,7 +62,7 @@ const Suggestions = () => {
       priority: 'high',
       response: 'We have evaluated this suggestion but currently lack budget for software upgrades this quarter.'
     }
-  ];
+  ]);
 
   const filteredSuggestions = suggestions.filter(suggestion => {
     const matchesSearch = suggestion.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -107,15 +109,39 @@ const Suggestions = () => {
   };
 
   const handleStatusUpdate = (suggestionId: number, newStatus: string) => {
-    console.log('Updating status:', suggestionId, newStatus);
-    // Implement status update logic
+    setSuggestions(prev => prev.map(suggestion => 
+      suggestion.id === suggestionId 
+        ? { ...suggestion, status: newStatus }
+        : suggestion
+    ));
+    
+    toast({
+      title: "Status Updated",
+      description: `Suggestion status changed to ${newStatus}`,
+    });
   };
 
   const handleResponseSubmit = (suggestionId: number) => {
-    console.log('Submitting response:', suggestionId, response);
-    // Implement response submission logic
+    setSuggestions(prev => prev.map(suggestion => 
+      suggestion.id === suggestionId 
+        ? { ...suggestion, response: response, status: 'reviewed' }
+        : suggestion
+    ));
+    
+    toast({
+      title: "Response Sent",
+      description: "Your response has been saved successfully",
+    });
+    
     setResponse('');
     setSelectedSuggestion(null);
+  };
+
+  const handleSuggestionClick = (suggestion: any) => {
+    setSelectedSuggestion(suggestion);
+    if (suggestion.status === 'pending') {
+      handleStatusUpdate(suggestion.id, 'reviewed');
+    }
   };
 
   const columns = [
@@ -123,7 +149,10 @@ const Suggestions = () => {
       key: 'title',
       header: 'Suggestion',
       render: (value: string, item: any) => (
-        <div>
+        <div 
+          className="cursor-pointer hover:text-blue-600"
+          onClick={() => handleSuggestionClick(item)}
+        >
           <div className="font-medium">{value}</div>
           <div className="text-sm text-gray-500">{item.description.substring(0, 60)}...</div>
         </div>
@@ -177,81 +206,13 @@ const Suggestions = () => {
       key: 'actions',
       header: 'Actions',
       render: (value: any, item: any) => (
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="ghost" size="sm" onClick={() => setSelectedSuggestion(item)}>
-              <Eye className="h-4 w-4" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>{item.title}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium">Category</label>
-                  <p className="text-sm text-gray-600">{item.category}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Priority</label>
-                  <Badge className={`text-xs ${getPriorityColor(item.priority)} ml-2`}>
-                    {item.priority}
-                  </Badge>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium">Description</label>
-                <p className="text-sm text-gray-600 mt-1">{item.description}</p>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium">Submitted By</label>
-                  <p className="text-sm text-gray-600">{item.submittedBy}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Submitted On</label>
-                  <p className="text-sm text-gray-600">{formatDate(item.submittedAt)}</p>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium">Status</label>
-                <Select defaultValue={item.status} onValueChange={(value) => handleStatusUpdate(item.id, value)}>
-                  <SelectTrigger className="w-full mt-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="reviewed">Reviewed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              {item.response && (
-                <div>
-                  <label className="text-sm font-medium">Previous Response</label>
-                  <p className="text-sm text-gray-600 mt-1 p-3 bg-gray-50 rounded">{item.response}</p>
-                </div>
-              )}
-              <div>
-                <label className="text-sm font-medium">Response</label>
-                <Textarea
-                  placeholder="Add your response to this suggestion..."
-                  value={response}
-                  onChange={(e) => setResponse(e.target.value)}
-                  className="mt-1"
-                />
-                <Button 
-                  onClick={() => handleResponseSubmit(item.id)} 
-                  className="mt-2"
-                  disabled={!response.trim()}
-                >
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Send Response
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => handleSuggestionClick(item)}
+        >
+          <Eye className="h-4 w-4" />
+        </Button>
       )
     }
   ];
@@ -310,6 +271,83 @@ const Suggestions = () => {
         columns={columns}
         data={filteredSuggestions}
       />
+
+      {/* Suggestion Detail Modal */}
+      <Dialog open={!!selectedSuggestion} onOpenChange={() => setSelectedSuggestion(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{selectedSuggestion?.title}</DialogTitle>
+          </DialogHeader>
+          {selectedSuggestion && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium">Category</label>
+                  <p className="text-sm text-gray-600">{selectedSuggestion.category}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Priority</label>
+                  <Badge className={`text-xs ${getPriorityColor(selectedSuggestion.priority)} ml-2`}>
+                    {selectedSuggestion.priority}
+                  </Badge>
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Description</label>
+                <p className="text-sm text-gray-600 mt-1">{selectedSuggestion.description}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium">Submitted By</label>
+                  <p className="text-sm text-gray-600">{selectedSuggestion.submittedBy}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Submitted On</label>
+                  <p className="text-sm text-gray-600">{formatDate(selectedSuggestion.submittedAt)}</p>
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Status</label>
+                <Select 
+                  defaultValue={selectedSuggestion.status} 
+                  onValueChange={(value) => handleStatusUpdate(selectedSuggestion.id, value)}
+                >
+                  <SelectTrigger className="w-full mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="reviewed">Reviewed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {selectedSuggestion.response && (
+                <div>
+                  <label className="text-sm font-medium">Previous Response</label>
+                  <p className="text-sm text-gray-600 mt-1 p-3 bg-gray-50 rounded">{selectedSuggestion.response}</p>
+                </div>
+              )}
+              <div>
+                <label className="text-sm font-medium">Response</label>
+                <Textarea
+                  placeholder="Add your response to this suggestion..."
+                  value={response}
+                  onChange={(e) => setResponse(e.target.value)}
+                  className="mt-1"
+                />
+                <Button 
+                  onClick={() => handleResponseSubmit(selectedSuggestion.id)} 
+                  className="mt-2"
+                  disabled={!response.trim()}
+                >
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Send Response
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
