@@ -28,12 +28,37 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
   type,
 }) => {
   const { toast } = useToast();
-  const [categories, setCategories] = useState<Category[]>([
-    { id: 1, name: type === 'departments' ? 'HR' : 'Company News', contentCount: 5 },
-    { id: 2, name: type === 'departments' ? 'IT' : 'HR Updates', contentCount: 3 },
-    { id: 3, name: type === 'departments' ? 'Finance' : 'Company Events', contentCount: 8 },
-  ]);
   
+  // Default categories based on type
+  const getDefaultCategories = () => {
+    if (type === 'departments') {
+      return [
+        { id: 1, name: 'HR', contentCount: 5 },
+        { id: 2, name: 'IT', contentCount: 3 },
+        { id: 3, name: 'Finance', contentCount: 8 },
+        { id: 4, name: 'Marketing', contentCount: 2 },
+        { id: 5, name: 'Operations', contentCount: 4 },
+        { id: 6, name: 'Legal', contentCount: 1 },
+      ];
+    } else {
+      // Categories for posts and suggestions
+      return [
+        { id: 1, name: 'Company News', contentCount: 5 },
+        { id: 2, name: 'HR Updates', contentCount: 3 },
+        { id: 3, name: 'Company Events', contentCount: 8 },
+        { id: 4, name: 'General Improvement', contentCount: 2 },
+        { id: 5, name: 'Workplace Environment', contentCount: 4 },
+        { id: 6, name: 'Technology & Systems', contentCount: 1 },
+        { id: 7, name: 'Process Improvement', contentCount: 6 },
+        { id: 8, name: 'Employee Benefits', contentCount: 3 },
+        { id: 9, name: 'Training & Development', contentCount: 2 },
+        { id: 10, name: 'Communication', contentCount: 1 },
+        { id: 11, name: 'Other', contentCount: 0 },
+      ];
+    }
+  };
+
+  const [categories, setCategories] = useState<Category[]>(getDefaultCategories());
   const [newCategoryName, setNewCategoryName] = useState('');
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editName, setEditName] = useState('');
