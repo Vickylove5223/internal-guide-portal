@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
@@ -27,6 +26,11 @@ const DepartmentDocuments = () => {
   const { department } = useParams();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [visibleCounts, setVisibleCounts] = useState({
+    general: 10,
+    departments: 10,
+    products: 10
+  });
 
   const allDocuments = [
     {
@@ -138,6 +142,13 @@ const DepartmentDocuments = () => {
 
   const departmentName = department?.charAt(0).toUpperCase() + department?.slice(1);
 
+  const handleLoadMore = (category: string) => {
+    setVisibleCounts(prev => ({
+      ...prev,
+      [category]: prev[category] + 10
+    }));
+  };
+
   const filterDocuments = (category: string) => {
     return allDocuments
       .filter(doc => doc.category === category)
@@ -147,77 +158,96 @@ const DepartmentDocuments = () => {
       );
   };
 
-  const renderDocumentCards = (documents: typeof allDocuments) => (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {documents.map((doc, index) => {
-        const TypeIcon = getTypeIcon(doc.type);
-        return (
-          <Card
-            key={doc.id}
-            className={`transition-all cursor-pointer ${
-              doc.completed 
-                ? 'bg-green-50 border-green-200' 
-                : 'hover:bg-gray-50 border-gray-200'
-            }`}
-            onClick={() => handleCardClick(doc.id)}
-          >
-            <CardContent className="p-6">
-              <div className="flex items-start space-x-4">
-                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+  const renderDocumentCards = (documents: typeof allDocuments, category: string) => {
+    const visibleDocs = documents.slice(0, visibleCounts[category]);
+    const hasMore = documents.length > visibleCounts[category];
+
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {visibleDocs.map((doc, index) => {
+            const TypeIcon = getTypeIcon(doc.type);
+            return (
+              <Card
+                key={doc.id}
+                className={`transition-all cursor-pointer ${
                   doc.completed 
-                    ? 'bg-green-500 text-white' 
-                    : 'bg-gray-200 text-gray-600'
-                }`}>
-                  {doc.completed ? (
-                    <CheckCircle className="h-5 w-5" />
-                  ) : (
-                    <span className="text-sm font-medium">{index + 1}</span>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <h3 className="font-semibold text-gray-900">{doc.title}</h3>
-                    {doc.required && (
-                      <Badge variant="destructive" className="text-xs">Required</Badge>
-                    )}
-                    <Badge variant="outline" className="text-xs">{doc.department}</Badge>
-                  </div>
-                  <p className="text-gray-700 mb-3">{doc.description}</p>
-                  <div className="flex items-center space-x-4 mb-3">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <TypeIcon className="h-4 w-4 mr-1" />
-                      {doc.type}
+                    ? 'bg-green-50 border-green-200' 
+                    : 'hover:bg-gray-50 border-gray-200'
+                }`}
+                onClick={() => handleCardClick(doc.id)}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                      doc.completed 
+                        ? 'bg-green-500 text-white' 
+                        : 'bg-gray-200 text-gray-600'
+                    }`}>
+                      {doc.completed ? (
+                        <CheckCircle className="h-5 w-5" />
+                      ) : (
+                        <span className="text-sm font-medium">{index + 1}</span>
+                      )}
                     </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Clock className="h-4 w-4 mr-1" />
-                      {doc.duration}
-                    </div>
-                  </div>
-                  <div className="space-y-2 mb-4">
-                    {doc.documents.map((docFile, docIndex) => {
-                      const FileIcon = getTypeIcon(docFile.type);
-                      return (
-                        <div key={docIndex} className="flex items-center justify-between bg-white rounded border p-2">
-                          <div className="flex items-center space-x-2">
-                            <FileIcon className="h-4 w-4 text-gray-500" />
-                            <span className="text-sm text-gray-900">{docFile.name}</span>
-                            <span className="text-xs text-gray-500">({docFile.size})</span>
-                          </div>
-                          <Button variant="ghost" size="sm">
-                            <ChevronRight className="h-4 w-4" />
-                          </Button>
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <h3 className="font-semibold text-gray-900">{doc.title}</h3>
+                        {doc.required && (
+                          <Badge variant="destructive" className="text-xs">Required</Badge>
+                        )}
+                        <Badge variant="outline" className="text-xs">{doc.department}</Badge>
+                      </div>
+                      <p className="text-gray-700 mb-3">{doc.description}</p>
+                      <div className="flex items-center space-x-4 mb-3">
+                        <div className="flex items-center text-sm text-gray-600">
+                          <TypeIcon className="h-4 w-4 mr-1" />
+                          {doc.type}
                         </div>
-                      );
-                    })}
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Clock className="h-4 w-4 mr-1" />
+                          {doc.duration}
+                        </div>
+                      </div>
+                      <div className="space-y-2 mb-4">
+                        {doc.documents.map((docFile, docIndex) => {
+                          const FileIcon = getTypeIcon(docFile.type);
+                          return (
+                            <div key={docIndex} className="flex items-center justify-between bg-white rounded border p-2">
+                              <div className="flex items-center space-x-2">
+                                <FileIcon className="h-4 w-4 text-gray-500" />
+                                <span className="text-sm text-gray-900">{docFile.name}</span>
+                                <span className="text-xs text-gray-500">({docFile.size})</span>
+                              </div>
+                              <Button variant="ghost" size="sm">
+                                <ChevronRight className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        );
-      })}
-    </div>
-  );
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+        
+        {hasMore && (
+          <div className="flex justify-center mt-6">
+            <Button 
+              variant="outline" 
+              onClick={() => handleLoadMore(category)}
+              className="px-8"
+            >
+              Load More
+            </Button>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const renderEmptyState = (category: string) => (
     <Card>
@@ -272,21 +302,21 @@ const DepartmentDocuments = () => {
 
         <TabsContent value="general" className="space-y-6">
           {filterDocuments('general').length > 0 
-            ? renderDocumentCards(filterDocuments('general'))
+            ? renderDocumentCards(filterDocuments('general'), 'general')
             : renderEmptyState('general')
           }
         </TabsContent>
 
         <TabsContent value="departments" className="space-y-6">
           {filterDocuments('departments').length > 0 
-            ? renderDocumentCards(filterDocuments('departments'))
+            ? renderDocumentCards(filterDocuments('departments'), 'departments')
             : renderEmptyState('department')
           }
         </TabsContent>
 
         <TabsContent value="products" className="space-y-6">
           {filterDocuments('products').length > 0 
-            ? renderDocumentCards(filterDocuments('products'))
+            ? renderDocumentCards(filterDocuments('products'), 'products')
             : renderEmptyState('product')
           }
         </TabsContent>

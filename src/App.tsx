@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,7 +21,6 @@ import PoliticalNews from "./pages/PoliticalNews";
 import CompanyEvents from "./pages/CompanyEvents";
 import Compliances from "./pages/Compliances";
 import PostDetail from "./pages/PostDetail";
-import OnboardingDocs from "./pages/OnboardingDocs";
 import KnowledgeBase from "./pages/KnowledgeBase";
 import MemberManagement from "./pages/MemberManagement";
 import PostManagement from "./pages/PostManagement";
@@ -83,11 +83,6 @@ const App = () => (
               <Route path="/post/:id" element={
                 <Layout>
                   <PostDetail />
-                </Layout>
-              } />
-              <Route path="/onboarding" element={
-                <Layout>
-                  <OnboardingDocs />
                 </Layout>
               } />
               <Route path="/knowledge-base" element={
