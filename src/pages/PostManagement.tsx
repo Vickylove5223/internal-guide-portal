@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -512,6 +511,17 @@ const PostManagement = () => {
     }
   };
 
+  const departments = [
+    { name: 'HR', slug: 'hr', count: 45 },
+    { name: 'IT', slug: 'it', count: 67 },
+    { name: 'Finance', slug: 'finance', count: 23 },
+    { name: 'Sales', slug: 'sales', count: 34 },
+    { name: 'Marketing', slug: 'marketing', count: 28 },
+    { name: 'Legal', slug: 'legal', count: 12 },
+    { name: 'Operations', slug: 'operations', count: 19 },
+    { name: 'Product', slug: 'product', count: 41 }
+  ];
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
@@ -613,6 +623,42 @@ const PostManagement = () => {
             >
               Manage Departments
             </Button>
+          </div>
+
+          {/* Departments Grid */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-4">Departments</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {departments.map((dept) => (
+                <Card 
+                  key={dept.slug}
+                  className="hover:shadow-lg transition-all duration-200 cursor-pointer"
+                  onClick={() => navigate(`/manage-departments/${dept.slug}`)}
+                >
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <CardTitle className="text-lg">{dept.name}</CardTitle>
+                      <Badge variant="outline" className="text-xs">
+                        {dept.count} docs
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/manage-departments/${dept.slug}`);
+                      }}
+                    >
+                      Manage Documents
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
 
           {/* Knowledge Base Filters */}
