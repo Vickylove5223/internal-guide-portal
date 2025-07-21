@@ -6,10 +6,9 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, Search, FileText, Video, User, Clock, CheckCircle, ChevronRight } from 'lucide-react';
+
 const DepartmentDocuments = () => {
-  const {
-    department
-  } = useParams();
+  const { department } = useParams();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [visibleCounts, setVisibleCounts] = useState({
@@ -17,6 +16,8 @@ const DepartmentDocuments = () => {
     departments: 10,
     products: 10
   });
+  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
+
   const allDocuments = [{
     id: 1,
     title: 'Welcome & Company Overview',
@@ -132,6 +133,7 @@ const DepartmentDocuments = () => {
       size: '2.1 MB'
     }]
   }];
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'document':
@@ -148,79 +150,159 @@ const DepartmentDocuments = () => {
         return FileText;
     }
   };
-  const handleCardClick = (docId: number) => {
+
+  const handleDocumentClick = (docId: number, documentName: string) => {
     navigate(`/knowledge-base/${department}/document/${docId}`);
   };
+
+  const toggleCardExpansion = (cardId: number) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(cardId)) {
+        newSet.delete(cardId);
+      } else {
+        newSet.add(cardId);
+      }
+      return newSet;
+    });
+  };
+
   const departmentName = department?.charAt(0).toUpperCase() + department?.slice(1);
+
   const handleLoadMore = (category: string) => {
     setVisibleCounts(prev => ({
       ...prev,
       [category]: prev[category] + 10
     }));
   };
+
   const filterDocuments = (category: string) => {
-    return allDocuments.filter(doc => doc.category === category).filter(doc => doc.title.toLowerCase().includes(searchTerm.toLowerCase()) || doc.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    return allDocuments.filter(doc => doc.category === category).filter(doc => 
+      doc.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      doc.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   };
+
   const renderDocumentCards = (documents: typeof allDocuments, category: string) => {
     const visibleDocs = documents.slice(0, visibleCounts[category]);
     const hasMore = documents.length > visibleCounts[category];
-    return <div className="space-y-6">
+
+    return (
+      <div className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {visibleDocs.map((doc, index) => {
-          const TypeIcon = getTypeIcon(doc.type);
-          return <Card key={doc.id} className={`transition-all cursor-pointer ${doc.completed ? 'bg-green-50 border-green-200' : 'hover:bg-gray-50 border-gray-200'}`} onClick={() => handleCardClick(doc.id)}>
+            const TypeIcon = getTypeIcon(doc.type);
+            const isExpanded = expandedCards.has(doc.id);
+            const visibleDocuments = isExpanded ? doc.documents : doc.documents.slice(0, 5);
+            const hasMoreDocs = doc.documents.length > 5;
+
+            return (
+              <Card 
+                key={doc.id} 
+                className={`transition-all ${doc.completed ? 'bg-green-50 border-green-200' : 'hover:bg-gray-50 border-gray-200'}`}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">
-                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${doc.completed ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'}`}>
-                      {doc.completed ? <CheckCircle className="h-5 w-5" /> : <span className="text-sm font-medium">{index + 1}</span>}
+                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                      doc.completed ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'
+                    }`}>
+                      {doc.completed ? (
+                        <CheckCircle className="h-5 w-5" />
+                      ) : (
+                        <span className="text-sm font-medium">{index + 1}</span>
+                      )}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
                         <h3 className="font-semibold text-gray-900">{doc.title}</h3>
-                        {doc.required && <Badge variant="destructive" className="text-xs">Required</Badge>}
+                        {doc.required && (
+                          <Badge variant="destructive" className="text-xs">Required</Badge>
+                        )}
                         <Badge variant="outline" className="text-xs">{doc.department}</Badge>
                       </div>
                       <p className="text-gray-700 mb-3">{doc.description}</p>
                       
                       <div className="space-y-2 mb-4">
-                        {doc.documents.map((docFile, docIndex) => {
-                      const FileIcon = getTypeIcon(docFile.type);
-                      return <div key={docIndex} className="flex items-center justify-between bg-white rounded border p-2">
+                        {visibleDocuments.map((docFile, docIndex) => {
+                          const FileIcon = getTypeIcon(docFile.type);
+                          return (
+                            <div 
+                              key={docIndex} 
+                              className="flex items-center justify-between bg-white rounded border p-2 cursor-pointer hover:bg-gray-50"
+                              onClick={() => handleDocumentClick(doc.id, docFile.name)}
+                            >
                               <div className="flex items-center space-x-2">
                                 <FileIcon className="h-4 w-4 text-gray-500" />
                                 <span className="text-sm text-gray-900">{docFile.name}</span>
                                 <span className="text-xs text-gray-500">({docFile.size})</span>
                               </div>
-                              <Button variant="ghost" size="sm">
-                                <ChevronRight className="h-4 w-4" />
-                              </Button>
-                            </div>;
-                    })}
+                              <ChevronRight className="h-4 w-4 text-gray-400" />
+                            </div>
+                          );
+                        })}
+                        
+                        {hasMoreDocs && !isExpanded && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => toggleCardExpansion(doc.id)}
+                            className="w-full text-blue-600 hover:text-blue-700"
+                          >
+                            View more ({doc.documents.length - 5} more documents)
+                          </Button>
+                        )}
+                        
+                        {isExpanded && hasMoreDocs && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => toggleCardExpansion(doc.id)}
+                            className="w-full text-blue-600 hover:text-blue-700"
+                          >
+                            View less
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
                 </CardContent>
-              </Card>;
-        })}
+              </Card>
+            );
+          })}
         </div>
         
-        {hasMore && <div className="flex justify-center mt-6">
-            <Button variant="outline" onClick={() => handleLoadMore(category)} className="px-8">
+        {hasMore && (
+          <div className="flex justify-center mt-6">
+            <Button 
+              variant="outline" 
+              onClick={() => handleLoadMore(category)} 
+              className="px-8"
+            >
               Load More
             </Button>
-          </div>}
-      </div>;
+          </div>
+        )}
+      </div>
+    );
   };
-  const renderEmptyState = (category: string) => <Card>
+
+  const renderEmptyState = (category: string) => (
+    <Card>
       <CardContent className="p-12 text-center">
         <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
         <h3 className="text-lg font-medium text-gray-900 mb-2">No documents found</h3>
         <p className="text-gray-600">
-          {searchTerm ? 'Try adjusting your search terms.' : `No ${category} documents available for the ${departmentName} department yet.`}
+          {searchTerm 
+            ? 'Try adjusting your search terms.' 
+            : `No ${category} documents available for the ${departmentName} department yet.`
+          }
         </p>
       </CardContent>
-    </Card>;
-  return <div className="p-6 max-w-7xl mx-auto space-y-6">
+    </Card>
+  );
+
+  return (
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center space-x-4 mb-6">
         <Link to="/knowledge-base">
@@ -239,7 +321,12 @@ const DepartmentDocuments = () => {
       {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-        <Input placeholder="Search documents..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
+        <Input 
+          placeholder="Search documents..." 
+          value={searchTerm} 
+          onChange={(e) => setSearchTerm(e.target.value)} 
+          className="pl-10" 
+        />
       </div>
 
       {/* Tabs */}
@@ -251,17 +338,28 @@ const DepartmentDocuments = () => {
         </TabsList>
 
         <TabsContent value="general" className="space-y-6">
-          {filterDocuments('general').length > 0 ? renderDocumentCards(filterDocuments('general'), 'general') : renderEmptyState('general')}
+          {filterDocuments('general').length > 0 
+            ? renderDocumentCards(filterDocuments('general'), 'general') 
+            : renderEmptyState('general')
+          }
         </TabsContent>
 
         <TabsContent value="departments" className="space-y-6">
-          {filterDocuments('departments').length > 0 ? renderDocumentCards(filterDocuments('departments'), 'departments') : renderEmptyState('department')}
+          {filterDocuments('departments').length > 0 
+            ? renderDocumentCards(filterDocuments('departments'), 'departments') 
+            : renderEmptyState('department')
+          }
         </TabsContent>
 
         <TabsContent value="products" className="space-y-6">
-          {filterDocuments('products').length > 0 ? renderDocumentCards(filterDocuments('products'), 'products') : renderEmptyState('product')}
+          {filterDocuments('products').length > 0 
+            ? renderDocumentCards(filterDocuments('products'), 'products') 
+            : renderEmptyState('product')
+          }
         </TabsContent>
       </Tabs>
-    </div>;
+    </div>
+  );
 };
+
 export default DepartmentDocuments;
