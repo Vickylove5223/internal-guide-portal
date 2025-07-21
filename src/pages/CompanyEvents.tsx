@@ -70,8 +70,9 @@ const CompanyEvents = () => {
                       <p className="text-gray-600 mb-4 leading-relaxed">
                         {latestPost.content}
                       </p>
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <div className="flex items-center space-x-2 text-sm text-gray-500">
                         <span>{latestPost.author}</span>
+                        <span>•</span>
                         <span>{formatDate(latestPost.date)}</span>
                       </div>
                     </CardContent>
@@ -111,9 +112,10 @@ const CompanyEvents = () => {
                               <p className="text-gray-600 text-sm line-clamp-2 mb-4">
                                 {post.content}
                               </p>
-                              <div className="flex items-center space-x-4 text-sm text-gray-500">
+                              <div className="flex items-center space-x-2 text-sm text-gray-500">
                                 <span>{post.author}</span>
-                                <span>{formatDate(post.date)}</span>
+                                <span>•</span>
+                                <span>{post.date}</span>
                               </div>
                             </CardContent>
                           </div>
@@ -128,7 +130,7 @@ const CompanyEvents = () => {
                       <img
                         src="/lovable-uploads/3d5b1ac3-5c8f-49a4-b3bb-872eeb6148fe.png"
                         alt="Our Products"
-                        className="w-full h-auto rounded-lg shadow-lg"
+                        className="w-full h-auto rounded-lg"
                       />
                     </div>
                   </div>
@@ -153,7 +155,7 @@ const CompanyEvents = () => {
                     <img
                       src="/lovable-uploads/3d5b1ac3-5c8f-49a4-b3bb-872eeb6148fe.png"
                       alt="Our Products"
-                      className="w-full h-auto rounded-lg shadow-lg"
+                      className="w-full h-auto rounded-lg"
                     />
                   </div>
                 </div>

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import { 
   ArrowLeft,
   ThumbsUp,
@@ -12,6 +13,7 @@ import {
 
 const PostDetail = () => {
   const { id } = useParams();
+  const { toast } = useToast();
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(24);
 
@@ -54,40 +56,57 @@ const PostDetail = () => {
   const handleLike = () => {
     setLiked(!liked);
     setLikes(liked ? likes - 1 : likes + 1);
+    toast({
+      title: liked ? "Removed like" : "Liked!",
+      description: liked ? "You unliked this post" : "Thanks for liking this post",
+    });
   };
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: post.title,
-        text: post.content.substring(0, 100) + '...',
-        url: window.location.href,
+  const handleShare = async () => {
+    const shareData = {
+      title: post.title,
+      text: post.content.substring(0, 100) + '...',
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share && navigator.canShare(shareData)) {
+        await navigator.share(shareData);
+        toast({
+          title: "Shared!",
+          description: "Post shared successfully",
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "Link copied!",
+          description: "Post link copied to clipboard",
+        });
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      toast({
+        title: "Share failed",
+        description: "Unable to share this post",
+        variant: "destructive"
       });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      // You could show a toast here
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-6 py-4">
+      {/* Content */}
+      <div className="max-w-4xl mx-auto px-[100px] py-8">
+        {/* Back Button and Post Header */}
+        <div className="mb-8">
           <Link to="/">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="h-4 w-4" />
+            <Button variant="ghost" size="sm" className="mb-4">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
             </Button>
           </Link>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        {/* Post Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{post.title}</h1>
-          <div className="flex items-center space-x-6 text-gray-600 mb-6">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">{post.title}</h1>
+          <div className="flex items-center space-x-4 text-gray-600 mb-6">
             <div className="flex items-center">
               <User className="h-5 w-5 mr-2" />
               <span>By {post.author}</span>
@@ -137,11 +156,31 @@ const PostDetail = () => {
         )}
 
         {/* Post Content */}
-        <div className="bg-white rounded-lg p-8 shadow-sm">
+        <div className="bg-white rounded-lg p-8 mb-8">
           <div 
             className="prose prose-gray max-w-none"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
+        </div>
+
+        {/* Bottom Action Buttons */}
+        <div className="flex items-center justify-center space-x-4">
+          <Button
+            variant={liked ? "default" : "outline"}
+            onClick={handleLike}
+            className="flex items-center space-x-2"
+          >
+            <ThumbsUp className={`h-4 w-4 ${liked ? 'fill-current' : ''}`} />
+            <span>{liked ? 'Liked' : 'Like'} ({likes})</span>
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleShare}
+            className="flex items-center space-x-2"
+          >
+            <Share2 className="h-4 w-4" />
+            <span>Share</span>
+          </Button>
         </div>
       </div>
     </div>
