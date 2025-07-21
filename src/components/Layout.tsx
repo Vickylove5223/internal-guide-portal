@@ -36,7 +36,9 @@ import {
   ChevronDown,
   User,
   Settings,
-  Search
+  Search,
+  MessageSquare,
+  LogIn
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -90,6 +92,18 @@ const Layout = ({ children }: LayoutProps) => {
       case 'members':
         navigate('/members');
         break;
+      case 'suggestions':
+        navigate('/suggestions');
+        break;
+      case 'knowledge-base':
+        navigate('/knowledge-base');
+        break;
+      case 'suggestion-box':
+        navigate('/suggestion-box');
+        break;
+      case 'login':
+        navigate('/sign-in');
+        break;
       case 'logout':
         logout();
         break;
@@ -111,7 +125,7 @@ const Layout = ({ children }: LayoutProps) => {
       {/* Header */}
       <header className="bg-transparent border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Top section with search, logo, and profile */}
+          {/* Top section with search, logo, and mobile menu */}
           <div className="flex justify-between items-center h-16">
             {/* Left side - Search */}
             <div className="flex items-center">
@@ -155,64 +169,65 @@ const Layout = ({ children }: LayoutProps) => {
               </Link>
             </div>
 
-            {/* Right side - Profile and Mobile menu button */}
-            <div className="flex items-center space-x-4">
-              {/* Profile dropdown - Desktop */}
-              <div className="hidden md:block">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="flex items-center space-x-2 px-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={user?.avatar} alt={getUserName()} />
-                        <AvatarFallback>
-                          {getUserInitials()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <ChevronDown className="h-4 w-4 text-gray-600" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <DropdownMenuLabel className="font-normal">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{getUserName()}</p>
-                        <p className="text-xs leading-none text-muted-foreground">
-                          {user?.email || 'user@company.com'}
-                        </p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => handleMenuClick('management')}>
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Management</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleMenuClick('members')}>
-                      <Users className="mr-2 h-4 w-4" />
-                      <span>Members</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => handleMenuClick('logout')}>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Log out</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-
-              {/* Mobile menu button */}
-              <div className="md:hidden">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={toggleMobileMenu}
-                  className="text-gray-600"
-                >
-                  {isMobileMenuOpen ? (
-                    <X className="h-6 w-6" />
+            {/* Right side - Mobile Menu */}
+            <div className="flex items-center">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="text-gray-600">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 bg-white" align="end" forceMount>
+                  <DropdownMenuItem onClick={() => handleMenuClick('knowledge-base')}>
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    <span>Knowledge Base</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleMenuClick('suggestion-box')}>
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    <span>Suggestion Box</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  {user ? (
+                    <>
+                      <DropdownMenuLabel className="font-normal">
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm font-medium leading-none">{getUserName()}</p>
+                          <p className="text-xs leading-none text-muted-foreground">
+                            {user?.email || 'user@company.com'}
+                          </p>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {user?.role === 'admin' && (
+                        <>
+                          <DropdownMenuItem onClick={() => handleMenuClick('management')}>
+                            <Settings className="mr-2 h-4 w-4" />
+                            <span>Management</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleMenuClick('members')}>
+                            <Users className="mr-2 h-4 w-4" />
+                            <span>Members</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleMenuClick('suggestions')}>
+                            <MessageSquare className="mr-2 h-4 w-4" />
+                            <span>Suggestions</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                        </>
+                      )}
+                      <DropdownMenuItem onClick={() => handleMenuClick('logout')}>
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                      </DropdownMenuItem>
+                    </>
                   ) : (
-                    <Menu className="h-6 w-6" />
+                    <DropdownMenuItem onClick={() => handleMenuClick('login')}>
+                      <LogIn className="mr-2 h-4 w-4" />
+                      <span>Login</span>
+                    </DropdownMenuItem>
                   )}
-                </Button>
-              </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
@@ -263,94 +278,6 @@ const Layout = ({ children }: LayoutProps) => {
             </Carousel>
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-              {/* Mobile Search */}
-              <div className="px-3 py-2">
-                <form onSubmit={handleSearch} className="flex items-center space-x-2">
-                  <div className="flex-1">
-                    <Input
-                      type="text"
-                      placeholder="Search..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full"
-                    />
-                  </div>
-                  <Button type="submit" size="sm">
-                    <Search className="h-4 w-4" />
-                  </Button>
-                </form>
-              </div>
-
-              {allItems.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                    item.current
-                      ? 'text-primary bg-primary/10'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              
-              {/* Mobile Profile Section */}
-              <div className="border-t border-gray-200 pt-4 mt-4">
-                <div className="flex items-center px-3 py-2">
-                  <Avatar className="h-8 w-8 mr-3">
-                    <AvatarImage src={user?.avatar} alt={getUserName()} />
-                    <AvatarFallback>
-                      {getUserInitials()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">{getUserName()}</p>
-                    <p className="text-xs text-gray-500">{user?.email || 'user@company.com'}</p>
-                  </div>
-                </div>
-                <div className="mt-2 space-y-1">
-                  <button
-                    onClick={() => {
-                      handleMenuClick('management');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="flex items-center w-full px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md"
-                  >
-                    <Settings className="mr-2 h-4 w-4" />
-                    Management
-                  </button>
-                  <button
-                    onClick={() => {
-                      handleMenuClick('members');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="flex items-center w-full px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md"
-                  >
-                    <Users className="mr-2 h-4 w-4" />
-                    Members
-                  </button>
-                  <button
-                    onClick={() => {
-                      handleMenuClick('logout');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="flex items-center w-full px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md"
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Log out
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </header>
 
       {/* Main Content */}
