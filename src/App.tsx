@@ -12,7 +12,6 @@ import SignIn from "./pages/SignIn";
 import ResetPassword from "./pages/ResetPassword";
 import SetNewPassword from "./pages/SetNewPassword";
 import OTPVerification from "./pages/OTPVerification";
-import CompanyNews from "./pages/CompanyNews";
 import CompanyEvents from "./pages/CompanyEvents";
 import PostDetail from "./pages/PostDetail";
 import CreatePost from "./pages/CreatePost";
@@ -21,8 +20,6 @@ import MemberManagement from "./pages/MemberManagement";
 import KnowledgeBase from "./pages/KnowledgeBase";
 import CreateKnowledgeBase from "./pages/CreateKnowledgeBase";
 import CreateEvent from "./pages/CreateEvent";
-import Settings from "./pages/Settings";
-import OnboardingDocs from "./pages/OnboardingDocs";
 import DepartmentDocuments from "./pages/DepartmentDocuments";
 import DocumentView from "./pages/DocumentView";
 import SuggestionBox from "./pages/SuggestionBox";
@@ -47,21 +44,11 @@ const App = () => (
               <Route path="/set-new-password" element={<SetNewPassword />} />
               <Route path="/otp-verification" element={<OTPVerification />} />
               
-              
-              
-              <Route path="/company-news" element={
-                <Layout>
-                  <CompanyNews />
-                </Layout>
-              } />
-              
-              
               <Route path="/company-events" element={
                 <Layout>
                   <CompanyEvents />
                 </Layout>
               } />
-              
               
               <Route path="/post/:id" element={
                 <Layout>
@@ -84,7 +71,6 @@ const App = () => (
                   </Layout>
                 </ProtectedRoute>
               } />
-              
               
               <Route path="/member-management" element={
                 <ProtectedRoute>
@@ -132,22 +118,6 @@ const App = () => (
                 <ProtectedRoute>
                   <Layout>
                     <CreateEvent />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              
-              <Route path="/settings" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Settings />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              
-              <Route path="/onboarding-docs" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <OnboardingDocs />
                   </Layout>
                 </ProtectedRoute>
               } />
