@@ -165,6 +165,28 @@ const App = () => (
                   </Layout>
                 </ProtectedRoute>
               } />
+              
+              <Route path="/post-management/edit/:id" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <CreatePost />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/knowledge-base/edit/:id" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <CreateKnowledgeBase />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/events/edit/:id" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <CreateEvent />
+                  </Layout>
+                </ProtectedRoute>
+              } />
             </Routes>
           </CategoryProvider>
         </AuthProvider>

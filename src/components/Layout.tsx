@@ -205,10 +205,6 @@ const Layout = ({ children, onCategorySelect, selectedCategory }: LayoutProps) =
                             <Users className="mr-2 h-4 w-4" />
                             <span>Members</span>
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleMenuClick('suggestions')}>
-                            <MessageSquare className="mr-2 h-4 w-4" />
-                            <span>Suggestions</span>
-                          </DropdownMenuItem>
                           <DropdownMenuSeparator />
                         </>
                       )}

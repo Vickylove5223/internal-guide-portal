@@ -44,7 +44,7 @@ export const CreateContentModal: React.FC<CreateContentModalProps> = ({
           <DialogTitle>Create New Content</DialogTitle>
         </DialogHeader>
         
-        <div className="grid gap-4 py-4">
+        <div className="flex gap-4 py-4 flex-row justify-center">
           <Button
             variant="outline"
             className="h-20 flex flex-col items-center justify-center space-y-2"
@@ -53,7 +53,6 @@ export const CreateContentModal: React.FC<CreateContentModalProps> = ({
             <FileText className="h-8 w-8" />
             <span>Create Post</span>
           </Button>
-          
           <Button
             variant="outline"
             className="h-20 flex flex-col items-center justify-center space-y-2"
@@ -62,7 +61,6 @@ export const CreateContentModal: React.FC<CreateContentModalProps> = ({
             <BookOpen className="h-8 w-8" />
             <span>Create Knowledge Base</span>
           </Button>
-          
           <Button
             variant="outline"
             className="h-20 flex flex-col items-center justify-center space-y-2"

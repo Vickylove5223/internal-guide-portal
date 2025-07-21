@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Save, Eye, Upload, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useToast } from '@/hooks/use-toast';
@@ -21,6 +21,7 @@ import { useCategories } from '@/contexts/CategoryContext';
 const CreatePost = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { id } = useParams();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
@@ -29,6 +30,27 @@ const CreatePost = () => {
   const [featuredImagePreview, setFeaturedImagePreview] = useState<string>('');
 
   const { categories } = useCategories();
+
+  // If editing, load post data (mocked for now)
+  React.useEffect(() => {
+    if (id) {
+      // Replace with real fetch logic as needed
+      const post = {
+        title: 'Sample Post',
+        content: 'Sample content',
+        category: 'All Updates',
+        status: 'draft',
+        featuredImage: null,
+        featuredImagePreview: ''
+      };
+      setTitle(post.title);
+      setContent(post.content);
+      setCategory(post.category);
+      setStatus(post.status);
+      setFeaturedImage(post.featuredImage);
+      setFeaturedImagePreview(post.featuredImagePreview);
+    }
+  }, [id]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

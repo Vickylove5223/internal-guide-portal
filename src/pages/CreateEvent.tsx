@@ -12,13 +12,14 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Save, Eye, Upload, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useToast } from '@/hooks/use-toast';
 
 const CreateEvent = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const { toast } = useToast();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -28,6 +29,31 @@ const CreateEvent = () => {
   const [location, setLocation] = useState('');
   const [featuredImage, setFeaturedImage] = useState<File | null>(null);
   const [featuredImagePreview, setFeaturedImagePreview] = useState<string>('');
+
+  // If editing, load event data (mocked for now)
+  React.useEffect(() => {
+    if (id) {
+      // Replace with real fetch logic as needed
+      const event = {
+        title: 'Sample Event',
+        description: 'Sample event description',
+        status: 'draft',
+        eventDate: '',
+        eventTime: '',
+        location: '',
+        featuredImage: null,
+        featuredImagePreview: ''
+      };
+      setTitle(event.title);
+      setDescription(event.description);
+      setStatus(event.status);
+      setEventDate(event.eventDate);
+      setEventTime(event.eventTime);
+      setLocation(event.location);
+      setFeaturedImage(event.featuredImage);
+      setFeaturedImagePreview(event.featuredImagePreview);
+    }
+  }, [id]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

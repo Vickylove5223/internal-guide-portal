@@ -12,13 +12,14 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Save, Eye, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 
 const CreateKnowledgeBase = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [title, setTitle] = useState('');
@@ -41,6 +42,25 @@ const CreateKnowledgeBase = () => {
     'Procurement',
     'Administration'
   ];
+
+  // If editing, load document data (mocked for now)
+  React.useEffect(() => {
+    if (id) {
+      // Replace with real fetch logic as needed
+      const doc = {
+        title: 'Sample Document',
+        content: 'Sample content',
+        departments: ['HR'],
+        status: 'draft',
+        documentType: 'policy'
+      };
+      setTitle(doc.title);
+      setContent(doc.content);
+      setDepartments(doc.departments);
+      setStatus(doc.status);
+      setDocumentType(doc.documentType);
+    }
+  }, [id]);
 
   const handleSaveDocument = async () => {
     if (!title.trim()) {
