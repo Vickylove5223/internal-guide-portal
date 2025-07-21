@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Search, Eye, Edit, Trash2, MoreHorizontal, FileText, BookOpen, MessageSquare, Calendar } from 'lucide-react';
+import { Plus, Search, Eye, Edit, Trash2, MoreHorizontal, FileText, BookOpen, MessageSquare, Calendar, Settings } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { DataTable } from '@/components/ui/data-table';
 import {
@@ -65,6 +65,7 @@ const PostManagement = () => {
     {
       id: 1,
       title: 'Employee Handbook 2024',
+      description: 'Complete guide for all employees including policies, procedures, and benefits',
       category: 'HR',
       status: 'Published',
       author: 'HR Team',
@@ -73,10 +74,38 @@ const PostManagement = () => {
     {
       id: 2,
       title: 'IT Security Guidelines',
+      description: 'Security protocols and best practices for system access',
       category: 'IT',
       status: 'Published',
       author: 'IT Team',
       createdAt: '2024-01-10T16:20:00Z'
+    },
+    {
+      id: 3,
+      title: 'Performance Review Guidelines',
+      description: 'Annual performance review process and evaluation criteria',
+      category: 'HR',
+      status: 'Published',
+      author: 'HR Team',
+      createdAt: '2024-01-08T09:15:00Z'
+    },
+    {
+      id: 4,
+      title: 'Expense Policy 2024',
+      description: 'Updated expense and reimbursement policies',
+      category: 'Finance',
+      status: 'Published',
+      author: 'Finance Team',
+      createdAt: '2024-01-12T13:45:00Z'
+    },
+    {
+      id: 5,
+      title: 'Software Installation Guide',
+      description: 'Step-by-step software installation procedures',
+      category: 'IT',
+      status: 'Draft',
+      author: 'IT Team',
+      createdAt: '2024-01-05T11:20:00Z'
     }
   ]);
 
@@ -135,7 +164,8 @@ const PostManagement = () => {
   });
 
   const filteredDocuments = documents.filter(doc => {
-    const matchesSearch = doc.title.toLowerCase().includes(knowledgeSearchTerm.toLowerCase());
+    const matchesSearch = doc.title.toLowerCase().includes(knowledgeSearchTerm.toLowerCase()) ||
+                          doc.description.toLowerCase().includes(knowledgeSearchTerm.toLowerCase());
     const matchesDepartment = filterDepartment === 'all' || doc.category === filterDepartment;
     const matchesStatus = knowledgeFilterStatus === 'all' || doc.status.toLowerCase() === knowledgeFilterStatus.toLowerCase();
     
@@ -302,75 +332,6 @@ const PostManagement = () => {
     }
   ];
 
-  const documentColumns = [
-    {
-      key: 'title',
-      header: 'Title',
-      className: 'font-medium',
-      render: (value: string) => <span className="font-medium">{value}</span>
-    },
-    {
-      key: 'category',
-      header: 'Category',
-      render: (value: string) => (
-        <Badge variant="outline" className="text-xs">
-          {value}
-        </Badge>
-      )
-    },
-    {
-      key: 'status',
-      header: 'Status',
-      render: (value: string) => (
-        <Badge className={`text-xs ${getStatusColor(value)}`}>
-          {value}
-        </Badge>
-      )
-    },
-    {
-      key: 'author',
-      header: 'Author',
-      render: (value: string) => <span className="text-sm text-gray-600">{value}</span>
-    },
-    {
-      key: 'createdAt',
-      header: 'Created',
-      render: (value: string) => (
-        <div className="text-sm text-gray-600">{formatDate(value)}</div>
-      )
-    },
-    {
-      key: 'actions',
-      header: 'Actions',
-      render: (value: any, item: any) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleDocumentAction('view', item)}>
-              <Eye className="h-4 w-4 mr-2" />
-              View
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleDocumentAction('edit', item)}>
-              <Edit className="h-4 w-4 mr-2" />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              className="text-red-600"
-              onClick={() => handleDocumentAction('delete', item)}
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    }
-  ];
-
   const eventColumns = [
     {
       key: 'title',
@@ -511,17 +472,6 @@ const PostManagement = () => {
     }
   };
 
-  const departments = [
-    { name: 'HR', slug: 'hr', count: 45 },
-    { name: 'IT', slug: 'it', count: 67 },
-    { name: 'Finance', slug: 'finance', count: 23 },
-    { name: 'Sales', slug: 'sales', count: 34 },
-    { name: 'Marketing', slug: 'marketing', count: 28 },
-    { name: 'Legal', slug: 'legal', count: 12 },
-    { name: 'Operations', slug: 'operations', count: 19 },
-    { name: 'Product', slug: 'product', count: 41 }
-  ];
-
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
@@ -617,48 +567,13 @@ const PostManagement = () => {
           <div className="flex justify-between items-center">
             <div></div>
             <Button 
-              variant="link" 
-              className="text-sm text-blue-600 hover:underline p-0"
-              onClick={() => handleShowCategoriesModal('departments')}
+              variant="outline"
+              className="flex items-center gap-2"
+              onClick={() => navigate('/departments-management')}
             >
+              <Settings className="h-4 w-4" />
               Manage Departments
             </Button>
-          </div>
-
-          {/* Departments Grid */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-4">Departments</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {departments.map((dept) => (
-                <Card 
-                  key={dept.slug}
-                  className="hover:shadow-lg transition-all duration-200 cursor-pointer"
-                  onClick={() => navigate(`/manage-departments/${dept.slug}`)}
-                >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <CardTitle className="text-lg">{dept.name}</CardTitle>
-                      <Badge variant="outline" className="text-xs">
-                        {dept.count} docs
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/manage-departments/${dept.slug}`);
-                      }}
-                    >
-                      Manage Documents
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
           </div>
 
           {/* Knowledge Base Filters */}
@@ -698,11 +613,73 @@ const PostManagement = () => {
             </Select>
           </div>
 
-          {/* Knowledge Base Documents Table */}
-          <DataTable
-            columns={documentColumns}
-            data={filteredDocuments}
-          />
+          {/* Knowledge Base Documents Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredDocuments.length === 0 ? (
+              <div className="col-span-full">
+                <Card>
+                  <CardContent className="p-12 text-center">
+                    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No documents found</h3>
+                    <p className="text-gray-600">
+                      {knowledgeSearchTerm ? 'Try adjusting your search terms.' : 'No documents available yet.'}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            ) : (
+              filteredDocuments.map((doc) => (
+                <Card key={doc.id} className="hover:shadow-lg transition-all duration-200">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between mb-2">
+                      <CardTitle className="text-lg line-clamp-2">{doc.title}</CardTitle>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleDocumentAction('view', doc)}>
+                            <Eye className="h-4 w-4 mr-2" />
+                            View
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDocumentAction('edit', doc)}>
+                            <Edit className="h-4 w-4 mr-2" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            className="text-red-600"
+                            onClick={() => handleDocumentAction('delete', doc)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant="outline" className="text-xs">
+                        {doc.category}
+                      </Badge>
+                      <Badge className={`text-xs ${getStatusColor(doc.status)}`}>
+                        {doc.status}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <CardDescription className="text-sm text-gray-600 mb-4 line-clamp-3">
+                      {doc.description}
+                    </CardDescription>
+                    <div className="flex items-center justify-between text-sm text-gray-500">
+                      <span>By {doc.author}</span>
+                      <span>{formatDate(doc.createdAt)}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
         </TabsContent>
 
         <TabsContent value="events" className="space-y-6">
