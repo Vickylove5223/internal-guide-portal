@@ -94,6 +94,14 @@ const App = () => (
                 </ProtectedRoute>
               } />
               
+              <Route path="/members" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <MemberManagement />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
               <Route path="/knowledge-base" element={
                 <Layout>
                   <KnowledgeBase />

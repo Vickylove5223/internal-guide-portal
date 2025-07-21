@@ -18,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import {
   Carousel,
@@ -42,7 +43,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCategories } from '@/contexts/CategoryContext';
-import { ManageCategoriesModal, getDefaultCategories } from '@/components/ManageCategoriesModal';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -87,10 +87,10 @@ const Layout = ({ children, onCategorySelect, selectedCategory }: LayoutProps) =
         navigate('/post-management');
         break;
       case 'members':
-        navigate('/members');
+        navigate('/member-management');
         break;
       case 'suggestions':
-        navigate('/suggestions');
+        navigate('/suggestion-box');
         break;
       case 'knowledge-base':
         navigate('/knowledge-base');
@@ -99,7 +99,7 @@ const Layout = ({ children, onCategorySelect, selectedCategory }: LayoutProps) =
         navigate('/suggestion-box');
         break;
       case 'login':
-        navigate('/sign-in');
+        navigate('/signin');
         break;
       case 'logout':
         logout();
@@ -135,6 +135,9 @@ const Layout = ({ children, onCategorySelect, selectedCategory }: LayoutProps) =
                 <DialogContent className="sm:max-w-md">
                   <DialogHeader>
                     <DialogTitle>Search</DialogTitle>
+                    <DialogDescription>
+                      Search for posts, documents, or members
+                    </DialogDescription>
                   </DialogHeader>
                   <form onSubmit={handleSearch} className="flex items-center space-x-2">
                     <div className="flex-1">
