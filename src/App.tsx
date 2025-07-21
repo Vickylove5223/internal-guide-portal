@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +14,12 @@ import OTPVerification from "./pages/OTPVerification";
 import SetNewPassword from "./pages/SetNewPassword";
 import NotFound from "./pages/NotFound";
 import CompanyNews from "./pages/CompanyNews";
+import Announcements from "./pages/Announcements";
+import HRUpdates from "./pages/HRUpdates";
+import BusinessNews from "./pages/BusinessNews";
+import PoliticalNews from "./pages/PoliticalNews";
+import CompanyEvents from "./pages/CompanyEvents";
+import Compliances from "./pages/Compliances";
 import PostDetail from "./pages/PostDetail";
 import OnboardingDocs from "./pages/OnboardingDocs";
 import KnowledgeBase from "./pages/KnowledgeBase";
@@ -40,6 +47,36 @@ const App = () => (
               <Route path="/" element={
                 <Layout>
                   <CompanyNews />
+                </Layout>
+              } />
+              <Route path="/announcements" element={
+                <Layout>
+                  <Announcements />
+                </Layout>
+              } />
+              <Route path="/hr-updates" element={
+                <Layout>
+                  <HRUpdates />
+                </Layout>
+              } />
+              <Route path="/business-news" element={
+                <Layout>
+                  <BusinessNews />
+                </Layout>
+              } />
+              <Route path="/political-news" element={
+                <Layout>
+                  <PoliticalNews />
+                </Layout>
+              } />
+              <Route path="/company-events" element={
+                <Layout>
+                  <CompanyEvents />
+                </Layout>
+              } />
+              <Route path="/compliances" element={
+                <Layout>
+                  <Compliances />
                 </Layout>
               } />
               <Route path="/post/:id" element={

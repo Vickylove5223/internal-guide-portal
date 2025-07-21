@@ -49,10 +49,12 @@ const Layout = ({ children }: LayoutProps) => {
 
   const navigationItems = [
     { name: 'All Updates', href: '/', current: location.pathname === '/' && !location.search },
-    { name: 'Company Updates', href: '/?category=Company Updates', current: location.search === '?category=Company%20Updates' },
-    { name: 'HR Updates', href: '/?category=HR Updates', current: location.search === '?category=HR%20Updates' },
-    { name: 'Tech Updates', href: '/?category=Tech Updates', current: location.search === '?category=Tech%20Updates' },
-    { name: 'Events', href: '/?category=Events', current: location.search === '?category=Events' },
+    { name: 'Announcements', href: '/announcements', current: location.pathname === '/announcements' },
+    { name: 'HR Updates', href: '/hr-updates', current: location.pathname === '/hr-updates' },
+    { name: 'Business News', href: '/business-news', current: location.pathname === '/business-news' },
+    { name: 'Political News', href: '/political-news', current: location.pathname === '/political-news' },
+    { name: 'Company Events', href: '/company-events', current: location.pathname === '/company-events' },
+    { name: 'Compliances', href: '/compliances', current: location.pathname === '/compliances' },
   ];
 
   const adminItems = user?.role === 'admin' ? [
@@ -100,7 +102,7 @@ const Layout = ({ children }: LayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="bg-transparent border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -210,7 +212,7 @@ const Layout = ({ children }: LayoutProps) => {
           </div>
 
           {/* Navigation Menu - Desktop */}
-          <div className="hidden md:block border-t border-gray-200 pt-4 pb-4">
+          <div className="hidden md:block border-t-2 border-gray-300 pt-4 pb-4">
             <nav className="flex justify-center space-x-8">
               {allItems.map((item) => (
                 <Link
@@ -322,6 +324,15 @@ const Layout = ({ children }: LayoutProps) => {
       <main className="flex-1">
         {children}
       </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-200 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-sm text-gray-500">
+            © 2024 FUNDiT. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
