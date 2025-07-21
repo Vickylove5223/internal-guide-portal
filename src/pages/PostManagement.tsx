@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,12 +14,23 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { CreateContentModal } from '@/components/CreateContentModal';
+import { ManageCategoriesModal } from '@/components/ManageCategoriesModal';
 
 const PostManagement = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [filterDepartment, setFilterDepartment] = useState('all');
+  const [knowledgeSearchTerm, setKnowledgeSearchTerm] = useState('');
+  const [knowledgeFilterStatus, setKnowledgeFilterStatus] = useState('all');
+  const [eventSearchTerm, setEventSearchTerm] = useState('');
+  const [eventFilterStatus, setEventFilterStatus] = useState('all');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showCategoriesModal, setShowCategoriesModal] = useState(false);
+  const [showDepartmentsModal, setShowDepartmentsModal] = useState(false);
+  const [managementType, setManagementType] = useState<'categories' | 'departments'>('categories');
 
   const posts = [
     {
@@ -128,6 +138,21 @@ const PostManagement = () => {
     const matchesStatus = filterStatus === 'all' || post.status.toLowerCase() === filterStatus.toLowerCase();
     
     return matchesSearch && matchesCategory && matchesStatus;
+  });
+
+  const filteredDocuments = documents.filter(doc => {
+    const matchesSearch = doc.title.toLowerCase().includes(knowledgeSearchTerm.toLowerCase());
+    const matchesDepartment = filterDepartment === 'all' || doc.category === filterDepartment;
+    const matchesStatus = knowledgeFilterStatus === 'all' || doc.status.toLowerCase() === knowledgeFilterStatus.toLowerCase();
+    
+    return matchesSearch && matchesDepartment && matchesStatus;
+  });
+
+  const filteredEvents = events.filter(event => {
+    const matchesSearch = event.title.toLowerCase().includes(eventSearchTerm.toLowerCase());
+    const matchesStatus = eventFilterStatus === 'all' || event.status.toLowerCase() === eventFilterStatus.toLowerCase();
+    
+    return matchesSearch && matchesStatus;
   });
 
   const formatDate = (dateString: string) => {
@@ -446,6 +471,15 @@ const PostManagement = () => {
     navigate(`/suggestions/edit/${suggestion.id}`);
   };
 
+  const handleShowCategoriesModal = (type: 'categories' | 'departments') => {
+    setManagementType(type);
+    if (type === 'categories') {
+      setShowCategoriesModal(true);
+    } else {
+      setShowDepartmentsModal(true);
+    }
+  };
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
@@ -454,12 +488,10 @@ const PostManagement = () => {
           <h1 className="text-2xl font-bold text-gray-900">Management</h1>
           <p className="text-gray-600">Manage posts, documents, events, and suggestions</p>
         </div>
-        <Link to="/post-management/new">
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            Create Post
-          </Button>
-        </Link>
+        <Button onClick={() => setShowCreateModal(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Create
+        </Button>
       </div>
 
       {/* Tabs */}
@@ -486,51 +518,51 @@ const PostManagement = () => {
         <TabsContent value="posts" className="space-y-6">
           <div className="flex justify-between items-center">
             <div></div>
-            <Button variant="link" className="text-sm text-blue-600 hover:underline p-0">
+            <Button 
+              variant="link" 
+              className="text-sm text-blue-600 hover:underline p-0"
+              onClick={() => handleShowCategoriesModal('categories')}
+            >
               Manage Categories
             </Button>
           </div>
 
           {/* Filters */}
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input
-                      placeholder="Search posts..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                <Select value={filterCategory} onValueChange={setFilterCategory}>
-                  <SelectTrigger className="w-full md:w-[180px]">
-                    <SelectValue placeholder="Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    <SelectItem value="Company News">Company News</SelectItem>
-                    <SelectItem value="HR Updates">HR Updates</SelectItem>
-                    <SelectItem value="Company Events">Company Events</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={filterStatus} onValueChange={setFilterStatus}>
-                  <SelectTrigger className="w-full md:w-[140px]">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="published">Published</SelectItem>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="archived">Archived</SelectItem>
-                  </SelectContent>
-                </Select>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search posts..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
               </div>
-            </CardContent>
-          </Card>
+            </div>
+            <Select value={filterCategory} onValueChange={setFilterCategory}>
+              <SelectTrigger className="w-full md:w-[180px]">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="Company News">Company News</SelectItem>
+                <SelectItem value="HR Updates">HR Updates</SelectItem>
+                <SelectItem value="Company Events">Company Events</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="w-full md:w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="published">Published</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="archived">Archived</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           {/* Posts Table */}
           <DataTable
@@ -543,15 +575,56 @@ const PostManagement = () => {
         <TabsContent value="knowledge-base" className="space-y-6">
           <div className="flex justify-between items-center">
             <div></div>
-            <Button variant="link" className="text-sm text-blue-600 hover:underline p-0">
-              Manage Categories
+            <Button 
+              variant="link" 
+              className="text-sm text-blue-600 hover:underline p-0"
+              onClick={() => handleShowCategoriesModal('departments')}
+            >
+              Manage Departments
             </Button>
+          </div>
+
+          {/* Knowledge Base Filters */}
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search knowledge base..."
+                  value={knowledgeSearchTerm}
+                  onChange={(e) => setKnowledgeSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <Select value={filterDepartment} onValueChange={setFilterDepartment}>
+              <SelectTrigger className="w-full md:w-[180px]">
+                <SelectValue placeholder="Department" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Departments</SelectItem>
+                <SelectItem value="HR">HR</SelectItem>
+                <SelectItem value="IT">IT</SelectItem>
+                <SelectItem value="Finance">Finance</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={knowledgeFilterStatus} onValueChange={setKnowledgeFilterStatus}>
+              <SelectTrigger className="w-full md:w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="published">Published</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="archived">Archived</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Knowledge Base Documents Table */}
           <DataTable
             columns={documentColumns}
-            data={documents}
+            data={filteredDocuments}
             onRowClick={handleDocumentEdit}
           />
         </TabsContent>
@@ -559,15 +632,38 @@ const PostManagement = () => {
         <TabsContent value="events" className="space-y-6">
           <div className="flex justify-between items-center">
             <div></div>
-            <Button variant="link" className="text-sm text-blue-600 hover:underline p-0">
-              Manage Categories
-            </Button>
+          </div>
+
+          {/* Events Filters */}
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search events..."
+                  value={eventSearchTerm}
+                  onChange={(e) => setEventSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <Select value={eventFilterStatus} onValueChange={setEventFilterStatus}>
+              <SelectTrigger className="w-full md:w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="published">Published</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="archived">Archived</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Events Table */}
           <DataTable
             columns={eventColumns}
-            data={events}
+            data={filteredEvents}
             onRowClick={handleEventEdit}
           />
         </TabsContent>
@@ -575,7 +671,11 @@ const PostManagement = () => {
         <TabsContent value="suggestions" className="space-y-6">
           <div className="flex justify-between items-center">
             <div></div>
-            <Button variant="link" className="text-sm text-blue-600 hover:underline p-0">
+            <Button 
+              variant="link" 
+              className="text-sm text-blue-600 hover:underline p-0"
+              onClick={() => handleShowCategoriesModal('categories')}
+            >
               Manage Categories
             </Button>
           </div>
@@ -588,6 +688,24 @@ const PostManagement = () => {
           />
         </TabsContent>
       </Tabs>
+
+      {/* Modals */}
+      <CreateContentModal 
+        open={showCreateModal} 
+        onOpenChange={setShowCreateModal} 
+      />
+      
+      <ManageCategoriesModal 
+        open={showCategoriesModal} 
+        onOpenChange={setShowCategoriesModal} 
+        type="categories" 
+      />
+      
+      <ManageCategoriesModal 
+        open={showDepartmentsModal} 
+        onOpenChange={setShowDepartmentsModal} 
+        type="departments" 
+      />
     </div>
   );
 };
