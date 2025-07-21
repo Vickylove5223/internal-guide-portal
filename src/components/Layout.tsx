@@ -48,7 +48,11 @@ const Layout = ({ children }: LayoutProps) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const navigationItems = [
-    { name: 'All Updates', href: '/', current: location.pathname === '/' },
+    { name: 'All Updates', href: '/', current: location.pathname === '/' && !location.search },
+    { name: 'Company Updates', href: '/?category=Company Updates', current: location.search === '?category=Company%20Updates' },
+    { name: 'HR Updates', href: '/?category=HR Updates', current: location.search === '?category=HR%20Updates' },
+    { name: 'Tech Updates', href: '/?category=Tech Updates', current: location.search === '?category=Tech%20Updates' },
+    { name: 'Events', href: '/?category=Events', current: location.search === '?category=Events' },
     { name: 'Onboarding', href: '/onboarding', current: location.pathname === '/onboarding' },
     { name: 'Knowledge Base', href: '/knowledge-base', current: location.pathname === '/knowledge-base' },
   ];

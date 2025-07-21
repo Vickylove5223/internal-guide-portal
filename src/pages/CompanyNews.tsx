@@ -1,6 +1,5 @@
-
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   Card, 
   CardContent, 
@@ -17,8 +16,19 @@ import {
 
 const CompanyNews = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all');
+
+  // Get category from URL params
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    if (categoryParam) {
+      setActiveTab(categoryParam);
+    } else {
+      setActiveTab('all');
+    }
+  }, [searchParams]);
 
   const posts = [
     {
@@ -87,6 +97,15 @@ const CompanyNews = () => {
     navigate(`/post/${postId}`);
   };
 
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    if (value === 'all') {
+      navigate('/');
+    } else {
+      navigate(`/?category=${encodeURIComponent(value)}`);
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <div className="flex">
@@ -109,7 +128,7 @@ const CompanyNews = () => {
             </div>
 
             {/* Category Tabs */}
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
+            <Tabs value={activeTab} onValueChange={handleTabChange} className="mb-8">
               <TabsList>
                 {categories.map((category) => (
                   <TabsTrigger key={category.value} value={category.value}>
