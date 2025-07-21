@@ -20,7 +20,6 @@ const CompanyEvents = () => {
       date: '2024-01-25',
       time: '9:00 AM - 5:00 PM',
       location: 'Conference Center, Building A',
-      attendees: 45,
       category: 'Company Events',
       image: '/lovable-uploads/ffe33128-72d3-4275-8536-d3aa5f60ceb6.png'
     },
@@ -32,7 +31,6 @@ const CompanyEvents = () => {
       date: '2024-02-15',
       time: '8:00 AM - 6:00 PM',
       location: 'Mountain View Resort',
-      attendees: 120,
       category: 'Company Events',
       image: '/lovable-uploads/b2ecc921-4815-458d-9cca-04946e0dcd22.png'
     },
@@ -44,7 +42,6 @@ const CompanyEvents = () => {
       date: '2024-02-01',
       time: '2:00 PM - 4:00 PM',
       location: 'Main Auditorium',
-      attendees: 200,
       category: 'Company Events'
     },
     {
@@ -55,7 +52,6 @@ const CompanyEvents = () => {
       date: '2024-02-20',
       time: '10:00 AM - 3:00 PM',
       location: 'Innovation Lab',
-      attendees: 80,
       category: 'Company Events'
     }
   ];
@@ -85,18 +81,18 @@ const CompanyEvents = () => {
             {/* Featured Upcoming Event */}
             {upcomingEvent && (
               <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200"
+                className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 h-40"
                 onClick={() => handleEventClick(upcomingEvent.id)}
               >
-                <div className="flex">
-                  <div className="w-24 h-32 flex-shrink-0 bg-blue-600 text-white flex flex-col items-center justify-center">
+                <div className="flex h-full">
+                  <div className="w-24 h-full flex-shrink-0 bg-blue-600 text-white flex flex-col items-center justify-center">
                     <div className="text-sm font-medium">{formatEventDate(upcomingEvent.date).month}</div>
                     <div className="text-2xl font-bold">{formatEventDate(upcomingEvent.date).day}</div>
                     <div className="text-sm">{formatEventDate(upcomingEvent.date).year}</div>
                   </div>
                   
                   {upcomingEvent.image && (
-                    <div className="w-48 h-32 flex-shrink-0">
+                    <div className="w-48 h-full flex-shrink-0">
                       <img 
                         src={upcomingEvent.image} 
                         alt={upcomingEvent.title}
@@ -144,18 +140,18 @@ const CompanyEvents = () => {
                     {otherEvents.map((event) => (
                       <Card 
                         key={event.id} 
-                        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden bg-transparent border-0"
+                        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden bg-transparent border-0 h-24"
                         onClick={() => handleEventClick(event.id)}
                       >
-                        <div className="flex">
-                          <div className="w-20 h-24 flex-shrink-0 bg-gray-600 text-white flex flex-col items-center justify-center rounded-l-lg">
+                        <div className="flex h-full">
+                          <div className="w-20 h-full flex-shrink-0 bg-gray-600 text-white flex flex-col items-center justify-center rounded-l-lg">
                             <div className="text-xs font-medium">{formatEventDate(event.date).month}</div>
                             <div className="text-lg font-bold">{formatEventDate(event.date).day}</div>
                             <div className="text-xs">{formatEventDate(event.date).year}</div>
                           </div>
                           
                           {event.image && (
-                            <div className="w-32 h-24 flex-shrink-0">
+                            <div className="w-32 h-full flex-shrink-0">
                               <img 
                                 src={event.image} 
                                 alt={event.title}

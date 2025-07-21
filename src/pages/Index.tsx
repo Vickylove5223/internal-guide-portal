@@ -117,12 +117,12 @@ const Index = () => {
             {/* Featured Latest Post */}
             {latestPost && (
               <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden mb-8 bg-transparent border-0"
+                className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden mb-8 bg-transparent border-0 h-40"
                 onClick={() => handleCardClick(latestPost.id)}
               >
-                <div className="flex">
+                <div className="flex h-full">
                   {latestPost.image && (
-                    <div className="w-48 h-32 flex-shrink-0">
+                    <div className="w-48 h-full flex-shrink-0">
                       <img 
                         src={latestPost.image} 
                         alt={latestPost.title}
@@ -159,12 +159,12 @@ const Index = () => {
                     {otherPosts.map((post) => (
                       <Card 
                         key={post.id} 
-                        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden bg-transparent border-0"
+                        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden bg-transparent border-0 h-32"
                         onClick={() => handleCardClick(post.id)}
                       >
-                        <div className="flex">
+                        <div className="flex h-full">
                           {post.image && (
-                            <div className="w-48 h-32 flex-shrink-0">
+                            <div className="w-48 h-full flex-shrink-0">
                               <img 
                                 src={post.image} 
                                 alt={post.title}

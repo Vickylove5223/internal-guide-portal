@@ -48,12 +48,12 @@ const HRUpdates = () => {
             {/* Featured Latest Post */}
             {latestPost && (
               <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden mb-8 bg-transparent border-0"
+                className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden mb-8 bg-transparent border-0 h-32"
                 onClick={() => handleCardClick(latestPost.id)}
               >
-                <div className="flex">
+                <div className="flex h-full">
                   {latestPost.image && (
-                    <div className="w-48 h-32 flex-shrink-0">
+                    <div className="w-48 h-full flex-shrink-0">
                       <img 
                         src={latestPost.image} 
                         alt={latestPost.title}
@@ -89,12 +89,12 @@ const HRUpdates = () => {
                     {otherPosts.map((post) => (
                       <Card 
                         key={post.id} 
-                        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden bg-transparent border-0"
+                        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden bg-transparent border-0 h-32"
                         onClick={() => handleCardClick(post.id)}
                       >
-                        <div className="flex">
+                        <div className="flex h-full">
                           {post.image && (
-                            <div className="w-48 h-32 flex-shrink-0">
+                            <div className="w-48 h-full flex-shrink-0">
                               <img 
                                 src={post.image} 
                                 alt={post.title}
@@ -128,7 +128,7 @@ const HRUpdates = () => {
                       <img
                         src="/lovable-uploads/3d5b1ac3-5c8f-49a4-b3bb-872eeb6148fe.png"
                         alt="Our Products"
-                        className="w-full h-auto rounded-lg shadow-lg"
+                        className="w-full h-auto rounded-lg"
                       />
                     </div>
                   </div>
@@ -153,7 +153,7 @@ const HRUpdates = () => {
                     <img
                       src="/lovable-uploads/3d5b1ac3-5c8f-49a4-b3bb-872eeb6148fe.png"
                       alt="Our Products"
-                      className="w-full h-auto rounded-lg shadow-lg"
+                      className="w-full h-auto rounded-lg"
                     />
                   </div>
                 </div>
