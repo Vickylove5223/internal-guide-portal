@@ -11,14 +11,14 @@ const PoliticalNews = () => {
   return (
     <div className="min-h-screen">
       <div className="flex">
-        <div className="flex-1 p-6 pr-0">
+        <div className="flex-1 px-[100px] py-6">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Political News</h1>
             <p className="text-gray-600 mb-6">Political developments and regulatory updates</p>
             
             <div className="flex flex-col lg:flex-row gap-6">
               <div className="flex-1">
-                <Card className="p-8 text-center border-0">
+                <Card className="p-8 text-center bg-transparent border-0">
                   <CardContent>
                     <p className="text-gray-500">No political news posts available at the moment.</p>
                   </CardContent>

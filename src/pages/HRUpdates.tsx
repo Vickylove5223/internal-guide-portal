@@ -40,7 +40,7 @@ const HRUpdates = () => {
   return (
     <div className="min-h-screen">
       <div className="flex">
-        <div className="flex-1 p-6 pr-0">
+        <div className="flex-1 px-[100px] py-6">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">HR Updates</h1>
             <p className="text-gray-600 mb-6">Human resources news and policy updates</p>
@@ -48,29 +48,29 @@ const HRUpdates = () => {
             {/* Featured Latest Post */}
             {latestPost && (
               <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden mb-8 border-0"
+                className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden mb-8 bg-transparent border-0"
                 onClick={() => handleCardClick(latestPost.id)}
               >
-                <div className="flex flex-col">
+                <div className="flex">
                   {latestPost.image && (
-                    <div className="w-full h-64">
+                    <div className="w-48 h-32 flex-shrink-0">
                       <img 
                         src={latestPost.image} 
                         alt={latestPost.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-l-lg"
                       />
                     </div>
                   )}
                   
-                  <div className="p-6">
-                    <CardHeader className="p-0 pb-4">
-                      <CardTitle className="text-2xl hover:text-blue-600 transition-colors cursor-pointer">{latestPost.title}</CardTitle>
+                  <div className="flex-1 flex flex-col">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-2xl line-clamp-2 hover:text-blue-600 transition-colors cursor-pointer">{latestPost.title}</CardTitle>
                     </CardHeader>
-                    <CardContent className="p-0">
-                      <p className="text-gray-600 mb-6 leading-relaxed">
+                    <CardContent className="pt-0 flex-1">
+                      <p className="text-gray-600 mb-4 leading-relaxed">
                         {latestPost.content}
                       </p>
-                      <div className="flex items-center justify-between text-sm text-gray-500">
+                      <div className="flex items-center space-x-4 text-sm text-gray-500">
                         <span>{latestPost.author}</span>
                         <span>{formatDate(latestPost.date)}</span>
                       </div>
@@ -89,7 +89,7 @@ const HRUpdates = () => {
                     {otherPosts.map((post) => (
                       <Card 
                         key={post.id} 
-                        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden border-0"
+                        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden bg-transparent border-0"
                         onClick={() => handleCardClick(post.id)}
                       >
                         <div className="flex">
@@ -98,7 +98,7 @@ const HRUpdates = () => {
                               <img 
                                 src={post.image} 
                                 alt={post.title}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover rounded-l-lg"
                               />
                             </div>
                           )}
@@ -111,7 +111,7 @@ const HRUpdates = () => {
                               <p className="text-gray-600 text-sm line-clamp-2 mb-4">
                                 {post.content}
                               </p>
-                              <div className="flex items-center justify-between text-sm text-gray-500">
+                              <div className="flex items-center space-x-4 text-sm text-gray-500">
                                 <span>{post.author}</span>
                                 <span>{formatDate(post.date)}</span>
                               </div>
@@ -140,7 +140,7 @@ const HRUpdates = () => {
             {otherPosts.length === 0 && (
               <div className="flex flex-col lg:flex-row gap-6">
                 <div className="flex-1">
-                  <Card className="p-8 text-center border-0">
+                  <Card className="p-8 text-center bg-transparent border-0">
                     <CardContent>
                       <p className="text-gray-500">No additional HR updates available at the moment.</p>
                     </CardContent>
