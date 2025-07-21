@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -27,6 +26,8 @@ const BusinessNews = () => {
     }
   ];
 
+  const [latestPost, ...otherPosts] = posts;
+
   const handleCardClick = (postId: number) => {
     navigate(`/post/${postId}`);
   };
@@ -39,48 +40,93 @@ const BusinessNews = () => {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Business News</h1>
             <p className="text-gray-600 mb-6">Technology updates and business developments</p>
             
-            <div className="space-y-6">
-              {posts.map((post) => (
-                <Card 
-                  key={post.id} 
-                  className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
-                  onClick={() => handleCardClick(post.id)}
-                >
-                  <div className="flex">
-                    {post.image && (
-                      <div className="w-48 h-32 flex-shrink-0">
-                        <img 
-                          src={post.image} 
-                          alt={post.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                    
-                    <div className="flex-1 flex flex-col">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
-                      </CardHeader>
-                      <CardContent className="pt-0 flex-1">
-                        <p className="text-gray-600 text-sm line-clamp-2 mb-4">
-                          {post.content}
-                        </p>
-                        <div className="flex items-center justify-between text-sm text-gray-500">
-                          <div className="flex items-center">
-                            <User className="h-4 w-4 mr-1" />
-                            <span>{post.author}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Calendar className="h-4 w-4 mr-1" />
-                            <span>{new Date(post.date).toLocaleDateString()}</span>
-                          </div>
-                        </div>
-                      </CardContent>
+            {/* Featured Latest Post */}
+            {latestPost && (
+              <Card 
+                className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden mb-8"
+                onClick={() => handleCardClick(latestPost.id)}
+              >
+                <div className="flex flex-col">
+                  {latestPost.image && (
+                    <div className="w-full h-64">
+                      <img 
+                        src={latestPost.image} 
+                        alt={latestPost.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
+                  )}
+                  
+                  <div className="p-6">
+                    <CardHeader className="p-0 pb-4">
+                      <CardTitle className="text-2xl">{latestPost.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <p className="text-gray-600 mb-6 leading-relaxed">
+                        {latestPost.content}
+                      </p>
+                      <div className="flex items-center justify-between text-sm text-gray-500">
+                        <div className="flex items-center">
+                          <User className="h-4 w-4 mr-1" />
+                          <span>{latestPost.author}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 mr-1" />
+                          <span>{new Date(latestPost.date).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                    </CardContent>
                   </div>
-                </Card>
-              ))}
-            </div>
+                </div>
+              </Card>
+            )}
+
+            {/* Other Posts Listing */}
+            {otherPosts.length > 0 && (
+              <div className="space-y-6">
+                <h2 className="text-xl font-semibold text-gray-900">More Business News</h2>
+                {otherPosts.map((post) => (
+                  <Card 
+                    key={post.id} 
+                    className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
+                    onClick={() => handleCardClick(post.id)}
+                  >
+                    <div className="flex">
+                      {post.image && (
+                        <div className="w-48 h-32 flex-shrink-0">
+                          <img 
+                            src={post.image} 
+                            alt={post.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      
+                      <div className="flex-1 flex flex-col">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-0 flex-1">
+                          <p className="text-gray-600 text-sm line-clamp-2 mb-4">
+                            {post.content}
+                          </p>
+                          <div className="flex items-center justify-between text-sm text-gray-500">
+                            <div className="flex items-center">
+                              <User className="h-4 w-4 mr-1" />
+                              <span>{post.author}</span>
+                            </div>
+                            <div className="flex items-center">
+                              <Calendar className="h-4 w-4 mr-1" />
+                              <span>{new Date(post.date).toLocaleDateString()}</span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
