@@ -35,7 +35,7 @@ const Suggestions = () => {
       description: 'Allow employees to have flexible working hours to improve work-life balance.',
       submittedBy: 'John Doe',
       submittedAt: '2024-01-18T14:20:00Z',
-      status: 'under_review',
+      status: 'reviewed',
       priority: 'high'
     },
     {
@@ -45,7 +45,7 @@ const Suggestions = () => {
       description: 'Organize monthly team building activities to improve team cohesion.',
       submittedBy: 'Sarah Johnson',
       submittedAt: '2024-01-15T09:15:00Z',
-      status: 'implemented',
+      status: 'reviewed',
       priority: 'low',
       response: 'Great suggestion! We will start organizing monthly team building activities starting next month.'
     },
@@ -56,7 +56,7 @@ const Suggestions = () => {
       description: 'The current project management software is outdated and slow. Consider upgrading to a more modern solution.',
       submittedBy: 'Mike Wilson',
       submittedAt: '2024-01-12T11:45:00Z',
-      status: 'rejected',
+      status: 'reviewed',
       priority: 'high',
       response: 'We have evaluated this suggestion but currently lack budget for software upgrades this quarter.'
     }
@@ -74,9 +74,7 @@ const Suggestions = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'under_review': return 'bg-blue-100 text-blue-800';
-      case 'implemented': return 'bg-green-100 text-green-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
+      case 'reviewed': return 'bg-blue-100 text-blue-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -93,9 +91,7 @@ const Suggestions = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pending': return <Clock className="h-4 w-4" />;
-      case 'under_review': return <Eye className="h-4 w-4" />;
-      case 'implemented': return <CheckCircle className="h-4 w-4" />;
-      case 'rejected': return <XCircle className="h-4 w-4" />;
+      case 'reviewed': return <Eye className="h-4 w-4" />;
       default: return <Clock className="h-4 w-4" />;
     }
   };
@@ -226,9 +222,7 @@ const Suggestions = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="under_review">Under Review</SelectItem>
-                    <SelectItem value="implemented">Implemented</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="reviewed">Reviewed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -265,63 +259,9 @@ const Suggestions = () => {
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Suggestions Management</h1>
-          <p className="text-gray-600">Review and respond to employee suggestions</p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <MessageSquare className="h-5 w-5 text-gray-400" />
-          <span className="text-sm text-gray-600">{filteredSuggestions.length} suggestions</span>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Clock className="h-4 w-4 text-yellow-600" />
-              <div>
-                <p className="text-sm text-gray-600">Pending</p>
-                <p className="text-lg font-semibold">{suggestions.filter(s => s.status === 'pending').length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Eye className="h-4 w-4 text-blue-600" />
-              <div>
-                <p className="text-sm text-gray-600">Under Review</p>
-                <p className="text-lg font-semibold">{suggestions.filter(s => s.status === 'under_review').length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <div>
-                <p className="text-sm text-gray-600">Implemented</p>
-                <p className="text-lg font-semibold">{suggestions.filter(s => s.status === 'implemented').length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <XCircle className="h-4 w-4 text-red-600" />
-              <div>
-                <p className="text-sm text-gray-600">Rejected</p>
-                <p className="text-lg font-semibold">{suggestions.filter(s => s.status === 'rejected').length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Suggestions Management</h1>
+        <p className="text-gray-600">Review and respond to employee suggestions</p>
       </div>
 
       {/* Filters */}
@@ -358,9 +298,7 @@ const Suggestions = () => {
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="under_review">Under Review</SelectItem>
-                <SelectItem value="implemented">Implemented</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
+                <SelectItem value="reviewed">Reviewed</SelectItem>
               </SelectContent>
             </Select>
           </div>

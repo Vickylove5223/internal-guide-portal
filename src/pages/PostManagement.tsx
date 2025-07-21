@@ -1,213 +1,135 @@
 import React, { useState } from 'react';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { 
-  Plus, 
-  Search, 
-  FileEdit,
-  Calendar,
-  User,
-  MoreHorizontal,
-  Edit,
-  Trash2,
-  Eye,
-  Megaphone,
-  Newspaper,
-  BookOpen,
-  FileText
-} from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, Search, Eye, Edit, Trash2, MoreHorizontal, FileText, BookOpen, MessageSquare } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { DataTable } from '@/components/ui/data-table';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { DataTable } from '@/components/ui/data-table';
-import { useNavigate } from 'react-router-dom';
 
 const PostManagement = () => {
-  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
-  const [activeSection, setActiveSection] = useState('all-posts');
 
-  const allPosts = [
+  const posts = [
     {
       id: 1,
-      type: 'events',
-      title: 'Q4 Company All-Hands Meeting',
-      content: 'Join us for our quarterly review and planning session...',
-      author: 'Sarah Johnson',
-      department: 'Company-wide',
-      status: 'published',
-      publishedAt: '2024-01-15T10:00:00Z',
-      icon: Calendar
+      title: 'Company Quarterly Results',
+      category: 'Company News',
+      status: 'Published',
+      author: 'John Smith',
+      createdAt: '2024-01-20T10:30:00Z',
+      views: 1250
     },
     {
       id: 2,
-      type: 'company-news',
-      title: 'Company Wins Industry Award',
-      content: 'We are proud to announce that our company has been recognized...',
-      author: 'Emma Wilson',
-      department: 'Company-wide',
-      status: 'published',
-      publishedAt: '2024-01-13T09:00:00Z',
-      icon: Newspaper
+      title: 'New Employee Benefits Package',
+      category: 'HR Updates',
+      status: 'Draft',
+      author: 'Sarah Johnson',
+      createdAt: '2024-01-19T14:20:00Z',
+      views: 0
     },
     {
       id: 3,
-      type: 'finance',
-      title: 'Q4 Financial Results',
-      content: 'Updated financial report with quarterly results...',
-      author: 'David Kim',
-      department: 'Finance',
-      status: 'draft',
-      publishedAt: null,
-      icon: FileText
-    },
-    {
-      id: 4,
-      type: 'politics-news',
-      title: 'Government Policy Update',
-      content: 'New regulations affecting our industry...',
-      author: 'Lisa Chang',
-      department: 'Legal',
-      status: 'scheduled',
-      publishedAt: null,
-      icon: Megaphone
+      title: 'Annual Company Retreat',
+      category: 'Company Events',
+      status: 'Published',
+      author: 'Mike Wilson',
+      createdAt: '2024-01-18T09:15:00Z',
+      views: 890
     }
   ];
 
-  const internalDocs = [
+  const documents = [
     {
       id: 1,
       title: 'Employee Handbook 2024',
-      content: 'Updated policies and procedures for all employees...',
+      category: 'HR',
+      status: 'Published',
       author: 'HR Team',
-      department: 'Human Resources',
-      status: 'published',
-      publishedAt: '2024-01-10T08:00:00Z',
-      type: 'handbook'
+      createdAt: '2024-01-15T11:30:00Z',
+      downloads: 45
     },
     {
       id: 2,
       title: 'IT Security Guidelines',
-      content: 'Comprehensive security protocols and best practices...',
-      author: 'IT Security',
-      department: 'Information Technology',
-      status: 'published',
-      publishedAt: '2024-01-05T14:30:00Z',
-      type: 'guidelines'
-    },
-    {
-      id: 3,
-      title: 'Project Management Standards',
-      content: 'Standard operating procedures for project management...',
-      author: 'PMO',
-      department: 'Operations',
-      status: 'draft',
-      publishedAt: null,
-      type: 'standards'
+      category: 'IT',
+      status: 'Published',
+      author: 'IT Team',
+      createdAt: '2024-01-10T16:20:00Z',
+      downloads: 23
     }
   ];
 
-  const currentData = activeSection === 'all-posts' ? allPosts : internalDocs;
+  const suggestions = [
+    {
+      id: 1,
+      title: 'Improve Office Lighting',
+      category: 'Workplace Environment',
+      status: 'Pending',
+      submittedBy: 'Anonymous',
+      submittedAt: '2024-01-20T10:30:00Z'
+    },
+    {
+      id: 2,
+      title: 'Flexible Working Hours',
+      category: 'Employee Benefits',
+      status: 'Reviewed',
+      submittedBy: 'John Doe',
+      submittedAt: '2024-01-18T14:20:00Z'
+    }
+  ];
 
-  const filteredData = currentData.filter(item => {
-    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.content.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = filterType === 'all' || item.type === filterType;
-    const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
+  const filteredPosts = posts.filter(post => {
+    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = filterCategory === 'all' || post.category === filterCategory;
+    const matchesStatus = filterStatus === 'all' || post.status.toLowerCase() === filterStatus.toLowerCase();
     
-    return matchesSearch && matchesType && matchesStatus;
+    return matchesSearch && matchesCategory && matchesStatus;
   });
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'Not published';
+  const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: 'numeric'
     });
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case 'published': return 'bg-green-100 text-green-800';
-      case 'scheduled': return 'bg-blue-100 text-blue-800';
-      case 'draft': return 'bg-gray-100 text-gray-800';
+      case 'draft': return 'bg-yellow-100 text-yellow-800';
+      case 'archived': return 'bg-gray-100 text-gray-800';
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'reviewed': return 'bg-blue-100 text-blue-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'events': return 'bg-blue-100 text-blue-800';
-      case 'company-news': return 'bg-green-100 text-green-800';
-      case 'finance': return 'bg-orange-100 text-orange-800';
-      case 'politics-news': return 'bg-pink-100 text-pink-800';
-      case 'handbook': return 'bg-purple-100 text-purple-800';
-      case 'guidelines': return 'bg-cyan-100 text-cyan-800';
-      case 'standards': return 'bg-indigo-100 text-indigo-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const menuItems = [
-    { id: 'all-posts', label: 'All Posts', count: allPosts.length },
-    { id: 'all-internal-docs', label: 'All Internal Docs', count: internalDocs.length }
-  ];
-
-  const handleRowClick = (item: any) => {
-    navigate(`/post-management/edit/${item.id}`);
-  };
-
-  const columns = [
+  const postColumns = [
     {
       key: 'title',
       header: 'Title',
       className: 'font-medium',
-      render: (value: string, item: any) => (
-        <div>
-          <div className="font-medium">{value}</div>
-          <div className="text-sm text-gray-500">{item.content.substring(0, 60)}...</div>
-        </div>
-      )
+      render: (value: string) => <span className="font-medium">{value}</span>
     },
     {
-      key: 'author',
-      header: 'Author',
-      render: (value: string) => (
-        <div className="flex items-center">
-          <User className="h-4 w-4 mr-2 text-gray-400" />
-          {value}
-        </div>
-      )
-    },
-    {
-      key: 'type',
+      key: 'category',
       header: 'Category',
       render: (value: string) => (
-        <Badge className={`text-xs ${getTypeColor(value)}`}>
-          {value.replace('-', ' ')}
+        <Badge variant="outline" className="text-xs">
+          {value}
         </Badge>
       )
     },
@@ -221,10 +143,22 @@ const PostManagement = () => {
       )
     },
     {
-      key: 'publishedAt',
-      header: 'Date',
-      render: (value: string | null) => (
+      key: 'author',
+      header: 'Author',
+      render: (value: string) => <span className="text-sm text-gray-600">{value}</span>
+    },
+    {
+      key: 'createdAt',
+      header: 'Created',
+      render: (value: string) => (
         <div className="text-sm text-gray-600">{formatDate(value)}</div>
+      )
+    },
+    {
+      key: 'views',
+      header: 'Views',
+      render: (value: number) => (
+        <div className="text-sm text-gray-600">{value.toLocaleString()}</div>
       )
     },
     {
@@ -256,122 +190,242 @@ const PostManagement = () => {
     }
   ];
 
-  const handleNewPost = () => {
-    navigate('/post-management/new');
-  };
+  const documentColumns = [
+    {
+      key: 'title',
+      header: 'Title',
+      className: 'font-medium',
+      render: (value: string) => <span className="font-medium">{value}</span>
+    },
+    {
+      key: 'category',
+      header: 'Category',
+      render: (value: string) => (
+        <Badge variant="outline" className="text-xs">
+          {value}
+        </Badge>
+      )
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      render: (value: string) => (
+        <Badge className={`text-xs ${getStatusColor(value)}`}>
+          {value}
+        </Badge>
+      )
+    },
+    {
+      key: 'author',
+      header: 'Author',
+      render: (value: string) => <span className="text-sm text-gray-600">{value}</span>
+    },
+    {
+      key: 'createdAt',
+      header: 'Created',
+      render: (value: string) => (
+        <div className="text-sm text-gray-600">{formatDate(value)}</div>
+      )
+    },
+    {
+      key: 'downloads',
+      header: 'Downloads',
+      render: (value: number) => (
+        <div className="text-sm text-gray-600">{value}</div>
+      )
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      render: () => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <Eye className="h-4 w-4 mr-2" />
+              View
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Edit className="h-4 w-4 mr-2" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600">
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    }
+  ];
+
+  const suggestionColumns = [
+    {
+      key: 'title',
+      header: 'Title',
+      className: 'font-medium',
+      render: (value: string) => <span className="font-medium">{value}</span>
+    },
+    {
+      key: 'category',
+      header: 'Category',
+      render: (value: string) => (
+        <Badge variant="outline" className="text-xs">
+          {value}
+        </Badge>
+      )
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      render: (value: string) => (
+        <Badge className={`text-xs ${getStatusColor(value)}`}>
+          {value}
+        </Badge>
+      )
+    },
+    {
+      key: 'submittedBy',
+      header: 'Submitted By',
+      render: (value: string) => <span className="text-sm text-gray-600">{value}</span>
+    },
+    {
+      key: 'submittedAt',
+      header: 'Submitted',
+      render: (value: string) => (
+        <div className="text-sm text-gray-600">{formatDate(value)}</div>
+      )
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      render: () => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <Eye className="h-4 w-4 mr-2" />
+              View
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Edit className="h-4 w-4 mr-2" />
+              Review
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    }
+  ];
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Management
-          </h1>
-          <p className="text-gray-600">Create, edit, and manage all posts across the platform</p>
+          <h1 className="text-2xl font-bold text-gray-900">Content Management</h1>
+          <p className="text-gray-600">Manage posts, documents, and suggestions</p>
         </div>
-        <Button onClick={handleNewPost}>
-          <Plus className="h-4 w-4 mr-2" />
-          New Post
-        </Button>
+        <Link to="/post-management/new">
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Create Post
+          </Button>
+        </Link>
       </div>
 
-      {/* Sub Navigation */}
-      <div className="border-b">
-        <nav className="flex space-x-8">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveSection(item.id)}
-              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeSection === item.id
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              {item.label}
-              <Badge variant="secondary" className="ml-2">
-                {item.count}
-              </Badge>
-            </button>
-          ))}
-        </nav>
-      </div>
+      {/* Tabs */}
+      <Tabs defaultValue="posts" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="posts" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            All Posts
+          </TabsTrigger>
+          <TabsTrigger value="knowledge-base" className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4" />
+            All Knowledge Base
+          </TabsTrigger>
+          <TabsTrigger value="suggestions" className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4" />
+            Suggestions
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Filters */}
-      <Card>
-        <CardContent className="p-4 bg-gray-50">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search posts..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
+        <TabsContent value="posts" className="space-y-6">
+          {/* Filters */}
+          <Card>
+            <CardContent className="p-4 bg-gray-50">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      placeholder="Search posts..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+                <Select value={filterCategory} onValueChange={setFilterCategory}>
+                  <SelectTrigger className="w-full md:w-[180px]">
+                    <SelectValue placeholder="Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    <SelectItem value="Company News">Company News</SelectItem>
+                    <SelectItem value="HR Updates">HR Updates</SelectItem>
+                    <SelectItem value="Company Events">Company Events</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                  <SelectTrigger className="w-full md:w-[140px]">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="published">Published</SelectItem>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="archived">Archived</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-            </div>
-            <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger className="w-full md:w-[180px]">
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="events">Events</SelectItem>
-                <SelectItem value="politics-news">Politics News</SelectItem>
-                <SelectItem value="finance">Finance</SelectItem>
-                <SelectItem value="company-news">Company News</SelectItem>
-                {activeSection === 'all-internal-docs' && (
-                  <>
-                    <SelectItem value="handbook">Handbook</SelectItem>
-                    <SelectItem value="guidelines">Guidelines</SelectItem>
-                    <SelectItem value="standards">Standards</SelectItem>
-                  </>
-                )}
-              </SelectContent>
-            </Select>
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-full md:w-[140px]">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="published">Published</SelectItem>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="scheduled">Scheduled</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
 
-      {/* Data Table */}
-      <DataTable
-        columns={columns}
-        data={filteredData}
-        onRowClick={handleRowClick}
-      />
+          {/* Posts Table */}
+          <DataTable
+            columns={postColumns}
+            data={filteredPosts}
+            onRowClick={(post) => console.log('Edit post:', post)}
+          />
+        </TabsContent>
 
-      {filteredData.length === 0 && (
-        <Card>
-          <CardContent className="p-12 text-center">
-            <FileEdit className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No items found</h3>
-            <p className="text-gray-600 mb-4">
-              {searchTerm || filterType !== 'all' || filterStatus !== 'all' 
-                ? 'Try adjusting your search criteria or filters.'
-                : 'Get started by creating your first post.'
-              }
-            </p>
-            <Button onClick={handleNewPost}>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Post
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+        <TabsContent value="knowledge-base" className="space-y-6">
+          {/* Knowledge Base Documents Table */}
+          <DataTable
+            columns={documentColumns}
+            data={documents}
+            onRowClick={(doc) => console.log('Edit document:', doc)}
+          />
+        </TabsContent>
+
+        <TabsContent value="suggestions" className="space-y-6">
+          {/* Suggestions Table */}
+          <DataTable
+            columns={suggestionColumns}
+            data={suggestions}
+            onRowClick={(suggestion) => console.log('View suggestion:', suggestion)}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

@@ -64,12 +64,7 @@ const Layout = ({ children }: LayoutProps) => {
     { name: 'Compliances', href: '/compliances', current: location.pathname === '/compliances' },
   ];
 
-  const adminItems = user?.role === 'admin' ? [
-    { name: 'Members', href: '/members', current: location.pathname === '/members' },
-    { name: 'Management', href: '/post-management', current: location.pathname === '/post-management' },
-  ] : [];
-
-  const allItems = [...navigationItems, ...adminItems];
+  const allItems = navigationItems;
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
