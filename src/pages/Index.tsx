@@ -18,7 +18,7 @@ const Index = () => {
       content: 'We are pleased to announce our strongest Q4 performance in company history, with revenue growth of 35% year-over-year and expansion into three new markets.',
       author: 'Jennifer Adams',
       date: '2024-01-18',
-      category: 'Company News',
+      category: 'All Updates',
       image: '/lovable-uploads/b2ecc921-4815-458d-9cca-04946e0dcd22.png'
     },
     {
@@ -36,7 +36,7 @@ const Index = () => {
       content: 'Our new partnership will enhance our technology capabilities and expand our reach in international markets, providing better solutions for our clients.',
       author: 'Michael Thompson',
       date: '2024-01-16',
-      category: 'Company News',
+      category: 'All Updates',
       image: '/lovable-uploads/e6293d53-5a45-4a9c-babb-c7ce15f22a7e.png'
     },
     {
@@ -45,7 +45,7 @@ const Index = () => {
       content: 'Our new innovation lab will focus on emerging technologies including AI, blockchain, and IoT solutions to drive the next generation of our products.',
       author: 'Dr. Emily Chen',
       date: '2024-01-14',
-      category: 'Company News'
+      category: 'All Updates'
     },
     {
       id: 2,
@@ -62,7 +62,7 @@ const Index = () => {
       content: 'We are committed to achieving carbon neutrality by 2030 through our comprehensive sustainability program including renewable energy adoption and waste reduction.',
       author: 'Robert Green',
       date: '2024-01-12',
-      category: 'Company News'
+      category: 'All Updates'
     },
     {
       id: 3,
@@ -79,7 +79,7 @@ const Index = () => {
       content: 'Discover how our solutions have helped clients achieve remarkable results. This month we highlight three case studies showcasing innovation and growth.',
       author: 'Amanda Martinez',
       date: '2024-01-10',
-      category: 'Company News'
+      category: 'All Updates'
     },
     {
       id: 4,
