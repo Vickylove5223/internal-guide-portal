@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -202,7 +203,7 @@ const DepartmentDocuments = () => {
             </div>
           </div>
           <div>
-            <Badge variant={doc.completed ? 'success' : 'outline'} className={doc.completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+            <Badge variant={doc.completed ? 'secondary' : 'outline'} className={doc.completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
               {doc.completed ? 'Published' : 'Draft'}
             </Badge>
           </div>
