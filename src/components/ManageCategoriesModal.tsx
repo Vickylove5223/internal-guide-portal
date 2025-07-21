@@ -32,28 +32,49 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
   // Default categories based on type
   const getDefaultCategories = () => {
     if (type === 'departments') {
+      // Departments for Knowledge Base (from navigation structure)
       return [
-        { id: 1, name: 'HR', contentCount: 5 },
-        { id: 2, name: 'IT', contentCount: 3 },
-        { id: 3, name: 'Finance', contentCount: 8 },
-        { id: 4, name: 'Marketing', contentCount: 2 },
-        { id: 5, name: 'Operations', contentCount: 4 },
-        { id: 6, name: 'Legal', contentCount: 1 },
+        { id: 1, name: 'HR', contentCount: 12 },
+        { id: 2, name: 'IT', contentCount: 8 },
+        { id: 3, name: 'Finance', contentCount: 15 },
+        { id: 4, name: 'Marketing', contentCount: 6 },
+        { id: 5, name: 'Operations', contentCount: 10 },
+        { id: 6, name: 'Legal', contentCount: 4 },
+        { id: 7, name: 'Sales', contentCount: 7 },
+        { id: 8, name: 'Customer Service', contentCount: 5 },
+        { id: 9, name: 'Research & Development', contentCount: 3 },
+        { id: 10, name: 'Quality Assurance', contentCount: 2 },
+        { id: 11, name: 'Administration', contentCount: 9 },
+        { id: 12, name: 'Procurement', contentCount: 4 },
       ];
     } else {
-      // Categories for posts and suggestions
+      // Categories for posts and suggestions (comprehensive list from navigation + suggestion box)
       return [
-        { id: 1, name: 'Company News', contentCount: 5 },
-        { id: 2, name: 'HR Updates', contentCount: 3 },
-        { id: 3, name: 'Company Events', contentCount: 8 },
-        { id: 4, name: 'General Improvement', contentCount: 2 },
-        { id: 5, name: 'Workplace Environment', contentCount: 4 },
-        { id: 6, name: 'Technology & Systems', contentCount: 1 },
-        { id: 7, name: 'Process Improvement', contentCount: 6 },
-        { id: 8, name: 'Employee Benefits', contentCount: 3 },
-        { id: 9, name: 'Training & Development', contentCount: 2 },
-        { id: 10, name: 'Communication', contentCount: 1 },
-        { id: 11, name: 'Other', contentCount: 0 },
+        // Main navigation categories
+        { id: 1, name: 'Company News', contentCount: 15 },
+        { id: 2, name: 'HR Updates', contentCount: 8 },
+        { id: 3, name: 'Company Events', contentCount: 12 },
+        { id: 4, name: 'Business News', contentCount: 6 },
+        { id: 5, name: 'Political News', contentCount: 4 },
+        { id: 6, name: 'Announcements', contentCount: 10 },
+        
+        // Suggestion box categories
+        { id: 7, name: 'General Improvement', contentCount: 5 },
+        { id: 8, name: 'Workplace Environment', contentCount: 7 },
+        { id: 9, name: 'Technology & Systems', contentCount: 3 },
+        { id: 10, name: 'Process Improvement', contentCount: 9 },
+        { id: 11, name: 'Employee Benefits', contentCount: 6 },
+        { id: 12, name: 'Training & Development', contentCount: 4 },
+        { id: 13, name: 'Communication', contentCount: 2 },
+        { id: 14, name: 'Work-Life Balance', contentCount: 3 },
+        { id: 15, name: 'Safety & Security', contentCount: 2 },
+        { id: 16, name: 'Facilities & Infrastructure', contentCount: 4 },
+        { id: 17, name: 'Cost Reduction', contentCount: 1 },
+        { id: 18, name: 'Customer Experience', contentCount: 3 },
+        { id: 19, name: 'Innovation & Creativity', contentCount: 2 },
+        { id: 20, name: 'Team Collaboration', contentCount: 5 },
+        { id: 21, name: 'Management & Leadership', contentCount: 1 },
+        { id: 22, name: 'Other', contentCount: 8 },
       ];
     }
   };
