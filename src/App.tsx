@@ -25,6 +25,8 @@ import KnowledgeBase from "./pages/KnowledgeBase";
 import MemberManagement from "./pages/MemberManagement";
 import PostManagement from "./pages/PostManagement";
 import CreatePost from "./pages/CreatePost";
+import CreateEvent from "./pages/CreateEvent";
+import CreateKnowledgeBase from "./pages/CreateKnowledgeBase";
 import DepartmentDocuments from "./pages/DepartmentDocuments";
 import DocumentView from "./pages/DocumentView";
 import SuggestionBox from "./pages/SuggestionBox";
@@ -104,6 +106,27 @@ const App = () => (
                 <Layout>
                   <SuggestionBox />
                 </Layout>
+              } />
+              <Route path="/create-post" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <CreatePost />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/create-event" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <CreateEvent />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/create-knowledge-base" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <CreateKnowledgeBase />
+                  </Layout>
+                </ProtectedRoute>
               } />
               <Route path="/post-management" element={
                 <ProtectedRoute>
