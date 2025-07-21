@@ -27,8 +27,7 @@ const Suggestions = () => {
       description: 'The office lighting is too dim in the afternoon. Consider adding more natural lighting or LED lights.',
       submittedBy: 'Anonymous',
       submittedAt: '2024-01-20T10:30:00Z',
-      status: 'pending',
-      priority: 'medium'
+      status: 'pending'
     },
     {
       id: 2,
@@ -37,8 +36,7 @@ const Suggestions = () => {
       description: 'Allow employees to have flexible working hours to improve work-life balance.',
       submittedBy: 'John Doe',
       submittedAt: '2024-01-18T14:20:00Z',
-      status: 'reviewed',
-      priority: 'high'
+      status: 'reviewed'
     },
     {
       id: 3,
@@ -48,7 +46,6 @@ const Suggestions = () => {
       submittedBy: 'Sarah Johnson',
       submittedAt: '2024-01-15T09:15:00Z',
       status: 'reviewed',
-      priority: 'low',
       response: 'Great suggestion! We will start organizing monthly team building activities starting next month.'
     },
     {
@@ -59,7 +56,6 @@ const Suggestions = () => {
       submittedBy: 'Mike Wilson',
       submittedAt: '2024-01-12T11:45:00Z',
       status: 'reviewed',
-      priority: 'high',
       response: 'We have evaluated this suggestion but currently lack budget for software upgrades this quarter.'
     }
   ]);
@@ -77,15 +73,6 @@ const Suggestions = () => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'reviewed': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800';
-      case 'medium': return 'bg-orange-100 text-orange-800';
-      case 'low': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -175,15 +162,6 @@ const Suggestions = () => {
       )
     },
     {
-      key: 'priority',
-      header: 'Priority',
-      render: (value: string) => (
-        <Badge className={`text-xs ${getPriorityColor(value)}`}>
-          {value}
-        </Badge>
-      )
-    },
-    {
       key: 'status',
       header: 'Status',
       render: (value: string) => (
@@ -200,19 +178,6 @@ const Suggestions = () => {
       header: 'Date',
       render: (value: string) => (
         <div className="text-sm text-gray-600">{formatDate(value)}</div>
-      )
-    },
-    {
-      key: 'actions',
-      header: 'Actions',
-      render: (value: any, item: any) => (
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => handleSuggestionClick(item)}
-        >
-          <Eye className="h-4 w-4" />
-        </Button>
       )
     }
   ];
@@ -280,17 +245,9 @@ const Suggestions = () => {
           </DialogHeader>
           {selectedSuggestion && (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium">Category</label>
-                  <p className="text-sm text-gray-600">{selectedSuggestion.category}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Priority</label>
-                  <Badge className={`text-xs ${getPriorityColor(selectedSuggestion.priority)} ml-2`}>
-                    {selectedSuggestion.priority}
-                  </Badge>
-                </div>
+              <div>
+                <label className="text-sm font-medium">Category</label>
+                <p className="text-sm text-gray-600">{selectedSuggestion.category}</p>
               </div>
               <div>
                 <label className="text-sm font-medium">Description</label>

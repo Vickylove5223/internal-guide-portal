@@ -11,26 +11,39 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Save, Eye, Upload, FileText } from 'lucide-react';
+import { ArrowLeft, Save, Eye, Upload, FileText, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useToast } from '@/hooks/use-toast';
-import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 
 const CreateKnowledgeBase = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [department, setDepartment] = useState('');
+  const [departments, setDepartments] = useState<string[]>([]);
   const [status, setStatus] = useState('draft');
   const [documentType, setDocumentType] = useState('');
-  const [tags, setTags] = useState('');
-  const [summary, setSummary] = useState('');
-  const [attachments, setAttachments] = useState<File[]>([]);
+  const [featuredImage, setFeaturedImage] = useState<File | null>(null);
 
-  const handleSave = async () => {
+  const departmentOptions = [
+    'Human Resources',
+    'Information Technology', 
+    'Finance',
+    'Operations',
+    'Legal',
+    'Marketing',
+    'Sales',
+    'Customer Service',
+    'Research & Development',
+    'Quality Assurance',
+    'Procurement',
+    'Administration'
+  ];
+
+  const handleSaveDocument = async () => {
     if (!title.trim()) {
       toast({
         title: "Validation Error",
@@ -49,10 +62,10 @@ const CreateKnowledgeBase = () => {
       return;
     }
 
-    if (!department) {
+    if (departments.length === 0) {
       toast({
         title: "Validation Error",
-        description: "Please select a department for your document.",
+        description: "Please select at least one department for your document.",
         variant: "destructive"
       });
       return;
@@ -73,12 +86,10 @@ const CreateKnowledgeBase = () => {
       console.log('Saving knowledge base document:', { 
         title, 
         content, 
-        department, 
+        departments, 
         status, 
-        documentType, 
-        tags, 
-        summary,
-        attachments: attachments.map(f => f.name)
+        documentType,
+        featuredImage: featuredImage?.name
       });
       
       toast({
@@ -117,20 +128,19 @@ const CreateKnowledgeBase = () => {
               h1 { color: #333; }
               .content { line-height: 1.6; }
               .meta { background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0; }
-              .department { background: #f0f0f0; padding: 5px 10px; border-radius: 15px; display: inline-block; margin-bottom: 10px; }
-              .document-type { background: #e0f2fe; padding: 5px 10px; border-radius: 15px; display: inline-block; margin-left: 10px; }
-              .summary { font-style: italic; margin: 15px 0; padding: 10px; background: #f5f5f5; border-left: 4px solid #2196f3; }
+              .department { background: #f0f0f0; padding: 5px 10px; border-radius: 15px; display: inline-block; margin: 5px; }
+              .document-type { background: #e0f2fe; padding: 5px 10px; border-radius: 15px; display: inline-block; margin-bottom: 10px; }
             </style>
           </head>
           <body>
             <div>
-              <span class="department">${department}</span>
               <span class="document-type">${documentType}</span>
             </div>
+            <div>
+              ${departments.map(dept => `<span class="department">${dept}</span>`).join('')}
+            </div>
             <h1>${title}</h1>
-            ${summary ? `<div class="summary">${summary}</div>` : ''}
             <div class="content">${content}</div>
-            ${tags ? `<div class="meta"><strong>Tags:</strong> ${tags}</div>` : ''}
           </body>
         </html>
       `);
@@ -138,15 +148,25 @@ const CreateKnowledgeBase = () => {
     }
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      setAttachments(prev => [...prev, ...Array.from(files)]);
+  const handleFeaturedImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setFeaturedImage(file);
     }
   };
 
-  const removeAttachment = (index: number) => {
-    setAttachments(prev => prev.filter((_, i) => i !== index));
+  const removeFeaturedImage = () => {
+    setFeaturedImage(null);
+  };
+
+  const addDepartment = (department: string) => {
+    if (!departments.includes(department)) {
+      setDepartments([...departments, department]);
+    }
+  };
+
+  const removeDepartment = (department: string) => {
+    setDepartments(departments.filter(d => d !== department));
   };
 
   const quillModules = {
@@ -165,6 +185,14 @@ const CreateKnowledgeBase = () => {
     'list', 'bullet', 'link', 'image', 'blockquote', 'code-block'
   ];
 
+  const getActionText = () => {
+    switch (status) {
+      case 'published': return 'Publish Document';
+      case 'review': return 'Submit for Review';
+      default: return 'Save Document';
+    }
+  };
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
@@ -177,16 +205,6 @@ const CreateKnowledgeBase = () => {
             <h1 className="text-2xl font-bold text-gray-900">Create Knowledge Base Document</h1>
             <p className="text-gray-600">Create documentation and guides</p>
           </div>
-        </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" onClick={handlePreview}>
-            <Eye className="h-4 w-4 mr-2" />
-            Preview
-          </Button>
-          <Button onClick={handleSave}>
-            <Save className="h-4 w-4 mr-2" />
-            Save Document
-          </Button>
         </div>
       </div>
 
@@ -209,52 +227,55 @@ const CreateKnowledgeBase = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="department">Department</Label>
-                  <Select value={department} onValueChange={setDepartment}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select department" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="hr">Human Resources</SelectItem>
-                      <SelectItem value="it">Information Technology</SelectItem>
-                      <SelectItem value="finance">Finance</SelectItem>
-                      <SelectItem value="operations">Operations</SelectItem>
-                      <SelectItem value="legal">Legal</SelectItem>
-                      <SelectItem value="marketing">Marketing</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="documentType">Document Type</Label>
-                  <Select value={documentType} onValueChange={setDocumentType}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select document type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="policy">Policy</SelectItem>
-                      <SelectItem value="procedure">Procedure</SelectItem>
-                      <SelectItem value="guideline">Guideline</SelectItem>
-                      <SelectItem value="handbook">Handbook</SelectItem>
-                      <SelectItem value="manual">Manual</SelectItem>
-                      <SelectItem value="faq">FAQ</SelectItem>
-                      <SelectItem value="template">Template</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <Label htmlFor="documentType">Document Type</Label>
+                <Select value={documentType} onValueChange={setDocumentType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select document type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="policy">Policy</SelectItem>
+                    <SelectItem value="procedure">Procedure</SelectItem>
+                    <SelectItem value="guideline">Guideline</SelectItem>
+                    <SelectItem value="handbook">Handbook</SelectItem>
+                    <SelectItem value="manual">Manual</SelectItem>
+                    <SelectItem value="faq">FAQ</SelectItem>
+                    <SelectItem value="template">Template</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
-                <Label htmlFor="summary">Summary</Label>
-                <Textarea
-                  id="summary"
-                  placeholder="Brief summary of the document..."
-                  value={summary}
-                  onChange={(e) => setSummary(e.target.value)}
-                  rows={3}
-                />
+                <Label htmlFor="departments">Departments</Label>
+                <Select onValueChange={addDepartment}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select departments" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {departmentOptions.map((dept) => (
+                      <SelectItem 
+                        key={dept} 
+                        value={dept}
+                        disabled={departments.includes(dept)}
+                      >
+                        {dept}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {departments.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {departments.map((dept, index) => (
+                      <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                        {dept}
+                        <X 
+                          className="h-3 w-3 cursor-pointer" 
+                          onClick={() => removeDepartment(dept)}
+                        />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </div>
               
               <div>
@@ -271,25 +292,56 @@ const CreateKnowledgeBase = () => {
                   />
                 </div>
               </div>
-
-              <div>
-                <Label htmlFor="tags">Tags</Label>
-                <Input
-                  id="tags"
-                  placeholder="Enter tags separated by commas..."
-                  value={tags}
-                  onChange={(e) => setTags(e.target.value)}
-                />
-                <p className="text-sm text-gray-500 mt-1">
-                  Use tags to help others find this document (e.g., onboarding, security, benefits)
-                </p>
-              </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Sidebar */}
         <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Featured Image</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <input
+                  id="featured-image-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFeaturedImageUpload}
+                  className="hidden"
+                />
+                <Button
+                  variant="outline"
+                  onClick={() => document.getElementById('featured-image-upload')?.click()}
+                  className="w-full"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Upload Featured Image
+                </Button>
+              </div>
+
+              {featuredImage && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    <div className="flex items-center space-x-2">
+                      <FileText className="h-4 w-4" />
+                      <span className="text-sm truncate">{featuredImage.name}</span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={removeFeaturedImage}
+                      className="h-6 w-6 p-0"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Publish Settings</CardTitle>
@@ -308,57 +360,17 @@ const CreateKnowledgeBase = () => {
                   </SelectContent>
                 </Select>
               </div>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Attachments</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="file-upload">Upload Files</Label>
-                <div className="mt-2">
-                  <input
-                    id="file-upload"
-                    type="file"
-                    multiple
-                    onChange={handleFileUpload}
-                    className="hidden"
-                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
-                  />
-                  <Button
-                    variant="outline"
-                    onClick={() => document.getElementById('file-upload')?.click()}
-                    className="w-full"
-                  >
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload Files
-                  </Button>
-                </div>
+              <div className="flex space-x-2">
+                <Button variant="outline" onClick={handlePreview} className="flex-1">
+                  <Eye className="h-4 w-4 mr-2" />
+                  Preview
+                </Button>
+                <Button onClick={handleSaveDocument} className="flex-1">
+                  <Save className="h-4 w-4 mr-2" />
+                  {getActionText()}
+                </Button>
               </div>
-
-              {attachments.length > 0 && (
-                <div className="space-y-2">
-                  <Label>Uploaded Files</Label>
-                  {attachments.map((file, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                      <div className="flex items-center space-x-2">
-                        <FileText className="h-4 w-4" />
-                        <span className="text-sm truncate">{file.name}</span>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeAttachment(index)}
-                        className="h-6 w-6 p-0"
-                      >
-                        ×
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
             </CardContent>
           </Card>
         </div>
