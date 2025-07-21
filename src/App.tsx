@@ -42,7 +42,7 @@ const App = () => (
           <CategoryProvider>
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/signin" element={<SignIn />} />
+              <Route path="/sign-in" element={<SignIn />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/set-new-password" element={<SetNewPassword />} />
               <Route path="/otp-verification" element={<OTPVerification />} />

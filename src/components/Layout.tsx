@@ -99,7 +99,7 @@ const Layout = ({ children, onCategorySelect, selectedCategory }: LayoutProps) =
         navigate('/suggestion-box');
         break;
       case 'login':
-        navigate('/signin');
+        navigate('/sign-in');
         break;
       case 'logout':
         logout();
