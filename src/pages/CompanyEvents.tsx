@@ -6,7 +6,7 @@ import {
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
-import { Calendar, MapPin, Users, Clock } from 'lucide-react';
+import { Calendar, MapPin, Clock } from 'lucide-react';
 
 const CompanyEvents = () => {
   const navigate = useNavigate();
@@ -125,10 +125,6 @@ const CompanyEvents = () => {
                           <MapPin className="h-4 w-4" />
                           <span>{upcomingEvent.location}</span>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Users className="h-4 w-4" />
-                          <span>{upcomingEvent.attendees} attending</span>
-                        </div>
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-gray-500">
                         <span>Organized by {upcomingEvent.author}</span>
@@ -184,10 +180,6 @@ const CompanyEvents = () => {
                                 <div className="flex items-center gap-1">
                                   <MapPin className="h-3 w-3" />
                                   <span>{event.location}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Users className="h-3 w-3" />
-                                  <span>{event.attendees}</span>
                                 </div>
                               </div>
                               <div className="text-xs text-gray-500">

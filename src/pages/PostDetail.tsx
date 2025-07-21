@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,9 +9,7 @@ import {
   Calendar,
   User,
   MapPin,
-  Clock,
-  Users,
-  CheckCircle
+  Clock
 } from 'lucide-react';
 
 const PostDetail = () => {
@@ -20,7 +17,6 @@ const PostDetail = () => {
   const { toast } = useToast();
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(24);
-  const [isRSVPed, setIsRSVPed] = useState(false);
 
   // Sample post/event data - in real app this would come from API
   const getPostData = (postId: string) => {
@@ -146,14 +142,6 @@ const PostDetail = () => {
     }
   };
 
-  const handleRSVP = () => {
-    setIsRSVPed(!isRSVPed);
-    toast({
-      title: isRSVPed ? "RSVP Cancelled" : "RSVP Confirmed!",
-      description: isRSVPed ? "You've cancelled your RSVP for this event" : "Thanks for confirming your attendance",
-    });
-  };
-
   const formatEventDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
@@ -177,35 +165,6 @@ const PostDetail = () => {
 
         {/* Post/Event Header */}
         <div className="mb-8">
-          {post.isEvent && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Calendar className="h-5 w-5 text-blue-600" />
-                <span className="text-blue-800 font-medium">Company Event</span>
-              </div>
-              <div className="grid md:grid-cols-3 gap-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-gray-600" />
-                  <span>{formatEventDate(post.date)}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-gray-600" />
-                  <span>{post.time}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-gray-600" />
-                  <span>{post.location}</span>
-                </div>
-              </div>
-              {post.attendees && (
-                <div className="flex items-center gap-2 mt-3 text-sm">
-                  <Users className="h-4 w-4 text-gray-600" />
-                  <span>{post.attendees} people attending</span>
-                </div>
-              )}
-            </div>
-          )}
-
           <h1 className="text-5xl font-bold text-gray-900 mb-4 leading-tight">{post.title}</h1>
           
           <div className="flex items-center space-x-4 text-gray-600 mb-6">
@@ -245,17 +204,6 @@ const PostDetail = () => {
               <Share2 className="h-4 w-4" />
               <span>Share</span>
             </Button>
-            {post.isEvent && (
-              <Button
-                variant={isRSVPed ? "default" : "outline"}
-                size="sm"
-                onClick={handleRSVP}
-                className="flex items-center space-x-2"
-              >
-                {isRSVPed ? <CheckCircle className="h-4 w-4" /> : <Calendar className="h-4 w-4" />}
-                <span>{isRSVPed ? 'RSVP Confirmed' : 'RSVP'}</span>
-              </Button>
-            )}
           </div>
         </div>
 
@@ -270,6 +218,30 @@ const PostDetail = () => {
           </div>
         )}
 
+        {/* Event Info (moved below image) */}
+        {post.isEvent && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Calendar className="h-5 w-5 text-blue-600" />
+              <span className="text-blue-800 font-medium">Company Event</span>
+            </div>
+            <div className="grid md:grid-cols-3 gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-gray-600" />
+                <span>{formatEventDate(post.date)}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-gray-600" />
+                <span>{post.time}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-gray-600" />
+                <span>{post.location}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Post/Event Content */}
         <div className="bg-white rounded-lg p-8 mb-8 shadow-sm">
           <div 
@@ -278,8 +250,8 @@ const PostDetail = () => {
           />
         </div>
 
-        {/* Bottom Action Buttons */}
-        <div className="flex items-center justify-center space-x-4 bg-white rounded-lg p-6 shadow-sm">
+        {/* Bottom Action Buttons (removed background) */}
+        <div className="flex items-center justify-center space-x-4 p-6">
           <Button
             variant={liked ? "default" : "outline"}
             onClick={handleLike}
@@ -296,16 +268,6 @@ const PostDetail = () => {
             <Share2 className="h-4 w-4" />
             <span>Share</span>
           </Button>
-          {post.isEvent && (
-            <Button
-              variant={isRSVPed ? "default" : "outline"}
-              onClick={handleRSVP}
-              className="flex items-center space-x-2"
-            >
-              {isRSVPed ? <CheckCircle className="h-4 w-4" /> : <Calendar className="h-4 w-4" />}
-              <span>{isRSVPed ? 'RSVP Confirmed' : 'RSVP for Event'}</span>
-            </Button>
-          )}
         </div>
       </div>
     </div>
