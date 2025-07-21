@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,8 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Search, Eye, Edit, Trash2, MoreHorizontal, FileText, BookOpen, MessageSquare } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Plus, Search, Eye, Edit, Trash2, MoreHorizontal, FileText, BookOpen, MessageSquare, Calendar } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { DataTable } from '@/components/ui/data-table';
 import {
   DropdownMenu,
@@ -16,6 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 const PostManagement = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -68,6 +70,36 @@ const PostManagement = () => {
       author: 'IT Team',
       createdAt: '2024-01-10T16:20:00Z',
       downloads: 23
+    }
+  ];
+
+  const events = [
+    {
+      id: 1,
+      title: 'Annual Company Retreat 2024',
+      category: 'Company Events',
+      status: 'Published',
+      author: 'HR Team',
+      createdAt: '2024-01-20T10:30:00Z',
+      attendees: 125
+    },
+    {
+      id: 2,
+      title: 'Quarterly All-Hands Meeting',
+      category: 'Company Events',
+      status: 'Published',
+      author: 'Executive Team',
+      createdAt: '2024-01-18T14:20:00Z',
+      attendees: 89
+    },
+    {
+      id: 3,
+      title: 'Team Building Workshop',
+      category: 'HR Events',
+      status: 'Draft',
+      author: 'HR Team',
+      createdAt: '2024-01-15T09:15:00Z',
+      attendees: 0
     }
   ];
 
@@ -263,6 +295,79 @@ const PostManagement = () => {
     }
   ];
 
+  const eventColumns = [
+    {
+      key: 'title',
+      header: 'Title',
+      className: 'font-medium',
+      render: (value: string) => <span className="font-medium">{value}</span>
+    },
+    {
+      key: 'category',
+      header: 'Category',
+      render: (value: string) => (
+        <Badge variant="outline" className="text-xs">
+          {value}
+        </Badge>
+      )
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      render: (value: string) => (
+        <Badge className={`text-xs ${getStatusColor(value)}`}>
+          {value}
+        </Badge>
+      )
+    },
+    {
+      key: 'author',
+      header: 'Author',
+      render: (value: string) => <span className="text-sm text-gray-600">{value}</span>
+    },
+    {
+      key: 'createdAt',
+      header: 'Created',
+      render: (value: string) => (
+        <div className="text-sm text-gray-600">{formatDate(value)}</div>
+      )
+    },
+    {
+      key: 'attendees',
+      header: 'Attendees',
+      render: (value: number) => (
+        <div className="text-sm text-gray-600">{value}</div>
+      )
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      render: () => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <Eye className="h-4 w-4 mr-2" />
+              View
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Edit className="h-4 w-4 mr-2" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600">
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    }
+  ];
+
   const suggestionColumns = [
     {
       key: 'title',
@@ -325,13 +430,29 @@ const PostManagement = () => {
     }
   ];
 
+  const handlePostEdit = (post: any) => {
+    navigate(`/post-management/edit/${post.id}`);
+  };
+
+  const handleDocumentEdit = (doc: any) => {
+    navigate(`/knowledge-base/edit/${doc.id}`);
+  };
+
+  const handleEventEdit = (event: any) => {
+    navigate(`/events/edit/${event.id}`);
+  };
+
+  const handleSuggestionEdit = (suggestion: any) => {
+    navigate(`/suggestions/edit/${suggestion.id}`);
+  };
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Content Management</h1>
-          <p className="text-gray-600">Manage posts, documents, and suggestions</p>
+          <h1 className="text-2xl font-bold text-gray-900">Management</h1>
+          <p className="text-gray-600">Manage posts, documents, events, and suggestions</p>
         </div>
         <Link to="/post-management/new">
           <Button>
@@ -343,7 +464,7 @@ const PostManagement = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="posts" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="posts" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             All Posts
@@ -352,6 +473,10 @@ const PostManagement = () => {
             <BookOpen className="h-4 w-4" />
             All Knowledge Base
           </TabsTrigger>
+          <TabsTrigger value="events" className="flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            Events
+          </TabsTrigger>
           <TabsTrigger value="suggestions" className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
             Suggestions
@@ -359,9 +484,16 @@ const PostManagement = () => {
         </TabsList>
 
         <TabsContent value="posts" className="space-y-6">
+          <div className="flex justify-between items-center">
+            <div></div>
+            <Button variant="link" className="text-sm text-blue-600 hover:underline p-0">
+              Manage Categories
+            </Button>
+          </div>
+
           {/* Filters */}
           <Card>
-            <CardContent className="p-4 bg-gray-50">
+            <CardContent className="p-4">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
                   <div className="relative">
@@ -404,25 +536,55 @@ const PostManagement = () => {
           <DataTable
             columns={postColumns}
             data={filteredPosts}
-            onRowClick={(post) => console.log('Edit post:', post)}
+            onRowClick={handlePostEdit}
           />
         </TabsContent>
 
         <TabsContent value="knowledge-base" className="space-y-6">
+          <div className="flex justify-between items-center">
+            <div></div>
+            <Button variant="link" className="text-sm text-blue-600 hover:underline p-0">
+              Manage Categories
+            </Button>
+          </div>
+
           {/* Knowledge Base Documents Table */}
           <DataTable
             columns={documentColumns}
             data={documents}
-            onRowClick={(doc) => console.log('Edit document:', doc)}
+            onRowClick={handleDocumentEdit}
+          />
+        </TabsContent>
+
+        <TabsContent value="events" className="space-y-6">
+          <div className="flex justify-between items-center">
+            <div></div>
+            <Button variant="link" className="text-sm text-blue-600 hover:underline p-0">
+              Manage Categories
+            </Button>
+          </div>
+
+          {/* Events Table */}
+          <DataTable
+            columns={eventColumns}
+            data={events}
+            onRowClick={handleEventEdit}
           />
         </TabsContent>
 
         <TabsContent value="suggestions" className="space-y-6">
+          <div className="flex justify-between items-center">
+            <div></div>
+            <Button variant="link" className="text-sm text-blue-600 hover:underline p-0">
+              Manage Categories
+            </Button>
+          </div>
+
           {/* Suggestions Table */}
           <DataTable
             columns={suggestionColumns}
             data={suggestions}
-            onRowClick={(suggestion) => console.log('View suggestion:', suggestion)}
+            onRowClick={handleSuggestionEdit}
           />
         </TabsContent>
       </Tabs>
