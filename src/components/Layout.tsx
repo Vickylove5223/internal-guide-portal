@@ -41,28 +41,30 @@ import {
   LogIn
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCategories } from '@/contexts/CategoryContext';
+import { ManageCategoriesModal, getDefaultCategories } from '@/components/ManageCategoriesModal';
 
 interface LayoutProps {
   children: React.ReactNode;
+  onCategorySelect?: (category: string) => void;
+  selectedCategory?: string;
 }
 
-const Layout = ({ children }: LayoutProps) => {
+const Layout = ({ children, onCategorySelect, selectedCategory }: LayoutProps) => {
   const { user, logout } = useAuth();
+  const { categories } = useCategories();
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const navigationItems = [
-    { name: 'All Updates', href: '/', current: location.pathname === '/' && !location.search },
-    { name: 'Announcements', href: '/announcements', current: location.pathname === '/announcements' },
-    { name: 'HR Updates', href: '/hr-updates', current: location.pathname === '/hr-updates' },
-    { name: 'Business News', href: '/business-news', current: location.pathname === '/business-news' },
-    { name: 'Political News', href: '/political-news', current: location.pathname === '/political-news' },
-    { name: 'Company Events', href: '/company-events', current: location.pathname === '/company-events' },
-    { name: 'Compliances', href: '/compliances', current: location.pathname === '/compliances' },
-  ];
+  const navigationItems = categories.map(cat => ({
+    name: cat.name,
+    href: `/${cat.slug}`,
+    slug: cat.slug,
+    current: selectedCategory === cat.slug,
+  }));
 
   const allItems = navigationItems;
 
@@ -230,17 +232,17 @@ const Layout = ({ children }: LayoutProps) => {
           <div className="hidden md:block border-t-2 border-gray-300 pt-4 pb-4">
             <nav className="flex justify-center space-x-8">
               {allItems.map((item) => (
-                <Link
+                <button
                   key={item.name}
-                  to={item.href}
+                  onClick={() => onCategorySelect && onCategorySelect(item.slug)}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    item.current
+                    selectedCategory === item.slug
                       ? 'text-primary bg-primary/10'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                   }`}
                 >
                   {item.name}
-                </Link>
+                </button>
               ))}
             </nav>
           </div>
@@ -257,16 +259,16 @@ const Layout = ({ children }: LayoutProps) => {
               <CarouselContent className="-ml-2 md:-ml-4">
                 {allItems.map((item) => (
                   <CarouselItem key={item.name} className="pl-2 md:pl-4 basis-auto">
-                    <Link
-                      to={item.href}
+                    <button
+                      onClick={() => onCategorySelect && onCategorySelect(item.slug)}
                       className={`px-4 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap block ${
-                        item.current
+                        selectedCategory === item.slug
                           ? 'text-primary bg-primary/10'
                           : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }`}
                     >
                       {item.name}
-                    </Link>
+                    </button>
                   </CarouselItem>
                 ))}
               </CarouselContent>

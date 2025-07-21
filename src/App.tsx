@@ -8,23 +8,15 @@ import { AuthProvider } from "./contexts/AuthContext";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
 import ResetPassword from "./pages/ResetPassword";
 import SetNewPassword from "./pages/SetNewPassword";
 import OTPVerification from "./pages/OTPVerification";
-import Overview from "./pages/Overview";
-import Announcements from "./pages/Announcements";
 import CompanyNews from "./pages/CompanyNews";
-import BusinessNews from "./pages/BusinessNews";
-import PoliticalNews from "./pages/PoliticalNews";
-import HRUpdates from "./pages/HRUpdates";
 import CompanyEvents from "./pages/CompanyEvents";
-import Compliances from "./pages/Compliances";
 import PostDetail from "./pages/PostDetail";
 import CreatePost from "./pages/CreatePost";
 import PostManagement from "./pages/PostManagement";
-import MediaLibrary from "./pages/MediaLibrary";
 import MemberManagement from "./pages/MemberManagement";
 import KnowledgeBase from "./pages/KnowledgeBase";
 import CreateKnowledgeBase from "./pages/CreateKnowledgeBase";
@@ -36,6 +28,7 @@ import DocumentView from "./pages/DocumentView";
 import SuggestionBox from "./pages/SuggestionBox";
 import ManageDepartments from "./pages/ManageDepartments";
 import DepartmentsManagement from "./pages/DepartmentsManagement";
+import { CategoryProvider } from './contexts/CategoryContext';
 
 const queryClient = new QueryClient();
 
@@ -46,205 +39,134 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/set-new-password" element={<SetNewPassword />} />
-            <Route path="/otp-verification" element={<OTPVerification />} />
-            
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <Layout>
-                  <Dashboard />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/overview" element={
-              <ProtectedRoute>
-                <Layout>
-                  <Overview />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/announcements" element={
-              <ProtectedRoute>
-                <Layout>
-                  <Announcements />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/company-news" element={
-              <ProtectedRoute>
+          <CategoryProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/set-new-password" element={<SetNewPassword />} />
+              <Route path="/otp-verification" element={<OTPVerification />} />
+              
+              
+              
+              <Route path="/company-news" element={
                 <Layout>
                   <CompanyNews />
                 </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/business-news" element={
-              <ProtectedRoute>
-                <Layout>
-                  <BusinessNews />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/political-news" element={
-              <ProtectedRoute>
-                <Layout>
-                  <PoliticalNews />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/hr-updates" element={
-              <ProtectedRoute>
-                <Layout>
-                  <HRUpdates />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/company-events" element={
-              <ProtectedRoute>
+              } />
+              
+              
+              <Route path="/company-events" element={
                 <Layout>
                   <CompanyEvents />
                 </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/compliances" element={
-              <ProtectedRoute>
-                <Layout>
-                  <Compliances />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/post/:id" element={
-              <ProtectedRoute>
+              } />
+              
+              
+              <Route path="/post/:id" element={
                 <Layout>
                   <PostDetail />
                 </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/create-post" element={
-              <ProtectedRoute>
-                <Layout>
-                  <CreatePost />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/post-management" element={
-              <ProtectedRoute>
-                <Layout>
-                  <PostManagement />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/media-library" element={
-              <ProtectedRoute>
-                <Layout>
-                  <MediaLibrary />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/member-management" element={
-              <ProtectedRoute>
-                <Layout>
-                  <MemberManagement />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/knowledge-base" element={
-              <ProtectedRoute>
+              } />
+              
+              <Route path="/create-post" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <CreatePost />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/post-management" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <PostManagement />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              
+              <Route path="/member-management" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <MemberManagement />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/knowledge-base" element={
                 <Layout>
                   <KnowledgeBase />
                 </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/knowledge-base/:department" element={
-              <ProtectedRoute>
+              } />
+              
+              <Route path="/knowledge-base/:department" element={
                 <Layout>
                   <DepartmentDocuments />
                 </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/knowledge-base/:department/document/:id" element={
-              <ProtectedRoute>
+              } />
+              
+              <Route path="/knowledge-base/:department/document/:id" element={
                 <Layout>
                   <DocumentView />
                 </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/create-knowledge-base" element={
-              <ProtectedRoute>
-                <Layout>
-                  <CreateKnowledgeBase />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/create-event" element={
-              <ProtectedRoute>
-                <Layout>
-                  <CreateEvent />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/settings" element={
-              <ProtectedRoute>
-                <Layout>
-                  <Settings />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/onboarding-docs" element={
-              <ProtectedRoute>
-                <Layout>
-                  <OnboardingDocs />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/suggestion-box" element={
-              <ProtectedRoute>
+              } />
+              
+              <Route path="/create-knowledge-base" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <CreateKnowledgeBase />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/create-event" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <CreateEvent />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Settings />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/onboarding-docs" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <OnboardingDocs />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/suggestion-box" element={
                 <Layout>
                   <SuggestionBox />
                 </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/departments-management" element={
-              <ProtectedRoute>
-                <Layout>
-                  <DepartmentsManagement />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/manage-departments/:department" element={
-              <ProtectedRoute>
-                <Layout>
-                  <ManageDepartments />
-                </Layout>
-              </ProtectedRoute>
-            } />
-          </Routes>
+              } />
+              
+              <Route path="/departments-management" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <DepartmentsManagement />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/manage-departments/:department" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ManageDepartments />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+            </Routes>
+          </CategoryProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

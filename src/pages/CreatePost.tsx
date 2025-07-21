@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useToast } from '@/hooks/use-toast';
+import { useCategories } from '@/contexts/CategoryContext';
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -27,31 +28,7 @@ const CreatePost = () => {
   const [featuredImage, setFeaturedImage] = useState<File | null>(null);
   const [featuredImagePreview, setFeaturedImagePreview] = useState<string>('');
 
-  // Categories from ManageCategoriesModal default data
-  const categories = [
-    'Company News',
-    'HR Updates', 
-    'Company Events',
-    'Business News',
-    'Political News',
-    'Announcements',
-    'General Improvement',
-    'Workplace Environment',
-    'Technology & Systems',
-    'Process Improvement',
-    'Employee Benefits',
-    'Training & Development',
-    'Communication',
-    'Work-Life Balance',
-    'Safety & Security',
-    'Facilities & Infrastructure',
-    'Cost Reduction',
-    'Customer Experience',
-    'Innovation & Creativity',
-    'Team Collaboration',
-    'Management & Leadership',
-    'Other'
-  ];
+  const { categories } = useCategories();
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -219,8 +196,8 @@ const CreatePost = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((cat) => (
-                      <SelectItem key={cat} value={cat.toLowerCase().replace(/\s+/g, '-')}>
-                        {cat}
+                      <SelectItem key={cat.name} value={cat.name}>
+                        {cat.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

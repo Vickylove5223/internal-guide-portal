@@ -17,6 +17,7 @@ import {
 import { CreateContentModal } from '@/components/CreateContentModal';
 import { ManageCategoriesModal } from '@/components/ManageCategoriesModal';
 import { useToast } from '@/hooks/use-toast';
+import { useCategories } from '@/contexts/CategoryContext';
 
 const PostManagement = () => {
   const navigate = useNavigate();
@@ -33,6 +34,7 @@ const PostManagement = () => {
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
   const [showDepartmentsModal, setShowDepartmentsModal] = useState(false);
   const [managementType, setManagementType] = useState<'categories' | 'departments'>('categories');
+  const { categories } = useCategories();
 
   const [posts, setPosts] = useState([
     {
@@ -538,9 +540,9 @@ const PostManagement = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="Company News">Company News</SelectItem>
-                <SelectItem value="HR Updates">HR Updates</SelectItem>
-                <SelectItem value="Company Events">Company Events</SelectItem>
+                {categories.map((cat) => (
+                  <SelectItem key={cat.name} value={cat.name}>{cat.name}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
