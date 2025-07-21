@@ -53,8 +53,6 @@ const Layout = ({ children }: LayoutProps) => {
     { name: 'HR Updates', href: '/?category=HR Updates', current: location.search === '?category=HR%20Updates' },
     { name: 'Tech Updates', href: '/?category=Tech Updates', current: location.search === '?category=Tech%20Updates' },
     { name: 'Events', href: '/?category=Events', current: location.search === '?category=Events' },
-    { name: 'Onboarding', href: '/onboarding', current: location.pathname === '/onboarding' },
-    { name: 'Knowledge Base', href: '/knowledge-base', current: location.pathname === '/knowledge-base' },
   ];
 
   const adminItems = user?.role === 'admin' ? [
@@ -212,7 +210,7 @@ const Layout = ({ children }: LayoutProps) => {
           </div>
 
           {/* Navigation Menu - Desktop */}
-          <div className="hidden md:block border-t border-gray-100 pt-4 pb-4">
+          <div className="hidden md:block border-t border-gray-200 pt-4 pb-4">
             <nav className="flex justify-center space-x-8">
               {allItems.map((item) => (
                 <Link

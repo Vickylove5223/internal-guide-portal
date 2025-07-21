@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
@@ -6,10 +7,7 @@ import {
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Search,
   Calendar,
   User
 } from 'lucide-react';
@@ -17,7 +15,6 @@ import {
 const CompanyNews = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all');
 
   // Get category from URL params
@@ -78,32 +75,13 @@ const CompanyNews = () => {
     }
   ];
 
-  const categories = [
-    { value: 'all', label: 'All' },
-    { value: 'Company Updates', label: 'Company Updates' },
-    { value: 'HR Updates', label: 'HR Updates' },
-    { value: 'Tech Updates', label: 'Tech Updates' },
-    { value: 'Events', label: 'Events' }
-  ];
-
   const filteredPosts = posts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.content.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = activeTab === 'all' || post.category === activeTab;
-    return matchesSearch && matchesCategory;
+    return matchesCategory;
   });
 
   const handleCardClick = (postId: number) => {
     navigate(`/post/${postId}`);
-  };
-
-  const handleTabChange = (value: string) => {
-    setActiveTab(value);
-    if (value === 'all') {
-      navigate('/');
-    } else {
-      navigate(`/?category=${encodeURIComponent(value)}`);
-    }
   };
 
   return (
@@ -116,74 +94,51 @@ const CompanyNews = () => {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">All Updates</h1>
             <p className="text-gray-600 mb-6">Stay informed with the latest company news and announcements</p>
             
-            {/* Search Bar */}
-            <div className="relative mb-6">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="Search updates..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 max-w-md"
-              />
-            </div>
-
-            {/* Category Tabs */}
-            <Tabs value={activeTab} onValueChange={handleTabChange} className="mb-8">
-              <TabsList>
-                {categories.map((category) => (
-                  <TabsTrigger key={category.value} value={category.value}>
-                    {category.label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              <TabsContent value={activeTab} className="mt-6">
-                {/* Posts List - 1 per row */}
-                <div className="space-y-6">
-                  {filteredPosts.map((post) => (
-                    <Card 
-                      key={post.id} 
-                      className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
-                      onClick={() => handleCardClick(post.id)}
-                    >
-                      <div className="flex">
-                        {/* Image on the left */}
-                        {post.image && (
-                          <div className="w-48 h-32 flex-shrink-0">
-                            <img 
-                              src={post.image} 
-                              alt={post.title}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        )}
-                        
-                        {/* Content on the right */}
-                        <div className="flex-1 flex flex-col">
-                          <CardHeader className="pb-3">
-                            <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
-                          </CardHeader>
-                          <CardContent className="pt-0 flex-1">
-                            <p className="text-gray-600 text-sm line-clamp-2 mb-4">
-                              {post.content}
-                            </p>
-                            <div className="flex items-center justify-between text-sm text-gray-500">
-                              <div className="flex items-center">
-                                <User className="h-4 w-4 mr-1" />
-                                <span>{post.author}</span>
-                              </div>
-                              <div className="flex items-center">
-                                <Calendar className="h-4 w-4 mr-1" />
-                                <span>{new Date(post.date).toLocaleDateString()}</span>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </div>
+            {/* Posts List - 1 per row */}
+            <div className="space-y-6">
+              {filteredPosts.map((post) => (
+                <Card 
+                  key={post.id} 
+                  className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
+                  onClick={() => handleCardClick(post.id)}
+                >
+                  <div className="flex">
+                    {/* Image on the left */}
+                    {post.image && (
+                      <div className="w-48 h-32 flex-shrink-0">
+                        <img 
+                          src={post.image} 
+                          alt={post.title}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-            </Tabs>
+                    )}
+                    
+                    {/* Content on the right */}
+                    <div className="flex-1 flex flex-col">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-0 flex-1">
+                        <p className="text-gray-600 text-sm line-clamp-2 mb-4">
+                          {post.content}
+                        </p>
+                        <div className="flex items-center justify-between text-sm text-gray-500">
+                          <div className="flex items-center">
+                            <User className="h-4 w-4 mr-1" />
+                            <span>{post.author}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Calendar className="h-4 w-4 mr-1" />
+                            <span>{new Date(post.date).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
 
