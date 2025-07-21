@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,9 +17,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { CreateContentModal } from '@/components/CreateContentModal';
 import { ManageCategoriesModal } from '@/components/ManageCategoriesModal';
+import { useToast } from '@/hooks/use-toast';
 
 const PostManagement = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -32,15 +35,14 @@ const PostManagement = () => {
   const [showDepartmentsModal, setShowDepartmentsModal] = useState(false);
   const [managementType, setManagementType] = useState<'categories' | 'departments'>('categories');
 
-  const posts = [
+  const [posts, setPosts] = useState([
     {
       id: 1,
       title: 'Company Quarterly Results',
       category: 'Company News',
       status: 'Published',
       author: 'John Smith',
-      createdAt: '2024-01-20T10:30:00Z',
-      views: 1250
+      createdAt: '2024-01-20T10:30:00Z'
     },
     {
       id: 2,
@@ -48,8 +50,7 @@ const PostManagement = () => {
       category: 'HR Updates',
       status: 'Draft',
       author: 'Sarah Johnson',
-      createdAt: '2024-01-19T14:20:00Z',
-      views: 0
+      createdAt: '2024-01-19T14:20:00Z'
     },
     {
       id: 3,
@@ -57,20 +58,18 @@ const PostManagement = () => {
       category: 'Company Events',
       status: 'Published',
       author: 'Mike Wilson',
-      createdAt: '2024-01-18T09:15:00Z',
-      views: 890
+      createdAt: '2024-01-18T09:15:00Z'
     }
-  ];
+  ]);
 
-  const documents = [
+  const [documents, setDocuments] = useState([
     {
       id: 1,
       title: 'Employee Handbook 2024',
       category: 'HR',
       status: 'Published',
       author: 'HR Team',
-      createdAt: '2024-01-15T11:30:00Z',
-      downloads: 45
+      createdAt: '2024-01-15T11:30:00Z'
     },
     {
       id: 2,
@@ -78,20 +77,18 @@ const PostManagement = () => {
       category: 'IT',
       status: 'Published',
       author: 'IT Team',
-      createdAt: '2024-01-10T16:20:00Z',
-      downloads: 23
+      createdAt: '2024-01-10T16:20:00Z'
     }
-  ];
+  ]);
 
-  const events = [
+  const [events, setEvents] = useState([
     {
       id: 1,
       title: 'Annual Company Retreat 2024',
       category: 'Company Events',
       status: 'Published',
       author: 'HR Team',
-      createdAt: '2024-01-20T10:30:00Z',
-      attendees: 125
+      createdAt: '2024-01-20T10:30:00Z'
     },
     {
       id: 2,
@@ -99,8 +96,7 @@ const PostManagement = () => {
       category: 'Company Events',
       status: 'Published',
       author: 'Executive Team',
-      createdAt: '2024-01-18T14:20:00Z',
-      attendees: 89
+      createdAt: '2024-01-18T14:20:00Z'
     },
     {
       id: 3,
@@ -108,10 +104,9 @@ const PostManagement = () => {
       category: 'HR Events',
       status: 'Draft',
       author: 'HR Team',
-      createdAt: '2024-01-15T09:15:00Z',
-      attendees: 0
+      createdAt: '2024-01-15T09:15:00Z'
     }
-  ];
+  ]);
 
   const suggestions = [
     {
@@ -174,6 +169,71 @@ const PostManagement = () => {
     }
   };
 
+  const handlePostAction = (action: string, item: any) => {
+    switch (action) {
+      case 'view':
+        navigate(`/post/${item.id}`);
+        break;
+      case 'edit':
+        navigate(`/post-management/edit/${item.id}`);
+        break;
+      case 'delete':
+        setPosts(prev => prev.filter(p => p.id !== item.id));
+        toast({
+          title: "Post deleted",
+          description: "The post has been successfully deleted.",
+        });
+        break;
+    }
+  };
+
+  const handleDocumentAction = (action: string, item: any) => {
+    switch (action) {
+      case 'view':
+        navigate(`/knowledge-base/document/${item.id}`);
+        break;
+      case 'edit':
+        navigate(`/knowledge-base/edit/${item.id}`);
+        break;
+      case 'delete':
+        setDocuments(prev => prev.filter(d => d.id !== item.id));
+        toast({
+          title: "Document deleted",
+          description: "The document has been successfully deleted.",
+        });
+        break;
+    }
+  };
+
+  const handleEventAction = (action: string, item: any) => {
+    switch (action) {
+      case 'view':
+        navigate(`/events/${item.id}`);
+        break;
+      case 'edit':
+        navigate(`/events/edit/${item.id}`);
+        break;
+      case 'delete':
+        setEvents(prev => prev.filter(e => e.id !== item.id));
+        toast({
+          title: "Event deleted",
+          description: "The event has been successfully deleted.",
+        });
+        break;
+    }
+  };
+
+  const handleSuggestionAction = (action: string, item: any) => {
+    switch (action) {
+      case 'view':
+        navigate(`/suggestions`);
+        break;
+      case 'review':
+        navigate(`/suggestions`);
+        break;
+    }
+  };
+
   const postColumns = [
     {
       key: 'title',
@@ -212,13 +272,6 @@ const PostManagement = () => {
       )
     },
     {
-      key: 'views',
-      header: 'Views',
-      render: (value: number) => (
-        <div className="text-sm text-gray-600">{value.toLocaleString()}</div>
-      )
-    },
-    {
       key: 'actions',
       header: 'Actions',
       render: (value: any, item: any) => (
@@ -229,15 +282,18 @@ const PostManagement = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handlePostAction('view', item)}>
               <Eye className="h-4 w-4 mr-2" />
               View
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handlePostAction('edit', item)}>
               <Edit className="h-4 w-4 mr-2" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
+            <DropdownMenuItem 
+              className="text-red-600"
+              onClick={() => handlePostAction('delete', item)}
+            >
               <Trash2 className="h-4 w-4 mr-2" />
               Delete
             </DropdownMenuItem>
@@ -285,16 +341,9 @@ const PostManagement = () => {
       )
     },
     {
-      key: 'downloads',
-      header: 'Downloads',
-      render: (value: number) => (
-        <div className="text-sm text-gray-600">{value}</div>
-      )
-    },
-    {
       key: 'actions',
       header: 'Actions',
-      render: () => (
+      render: (value: any, item: any) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm">
@@ -302,15 +351,18 @@ const PostManagement = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDocumentAction('view', item)}>
               <Eye className="h-4 w-4 mr-2" />
               View
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDocumentAction('edit', item)}>
               <Edit className="h-4 w-4 mr-2" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
+            <DropdownMenuItem 
+              className="text-red-600"
+              onClick={() => handleDocumentAction('delete', item)}
+            >
               <Trash2 className="h-4 w-4 mr-2" />
               Delete
             </DropdownMenuItem>
@@ -358,16 +410,9 @@ const PostManagement = () => {
       )
     },
     {
-      key: 'attendees',
-      header: 'Attendees',
-      render: (value: number) => (
-        <div className="text-sm text-gray-600">{value}</div>
-      )
-    },
-    {
       key: 'actions',
       header: 'Actions',
-      render: () => (
+      render: (value: any, item: any) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm">
@@ -375,15 +420,18 @@ const PostManagement = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleEventAction('view', item)}>
               <Eye className="h-4 w-4 mr-2" />
               View
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleEventAction('edit', item)}>
               <Edit className="h-4 w-4 mr-2" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
+            <DropdownMenuItem 
+              className="text-red-600"
+              onClick={() => handleEventAction('delete', item)}
+            >
               <Trash2 className="h-4 w-4 mr-2" />
               Delete
             </DropdownMenuItem>
@@ -433,7 +481,7 @@ const PostManagement = () => {
     {
       key: 'actions',
       header: 'Actions',
-      render: () => (
+      render: (value: any, item: any) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm">
@@ -441,11 +489,11 @@ const PostManagement = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleSuggestionAction('view', item)}>
               <Eye className="h-4 w-4 mr-2" />
               View
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleSuggestionAction('review', item)}>
               <Edit className="h-4 w-4 mr-2" />
               Review
             </DropdownMenuItem>
@@ -454,22 +502,6 @@ const PostManagement = () => {
       )
     }
   ];
-
-  const handlePostEdit = (post: any) => {
-    navigate(`/post-management/edit/${post.id}`);
-  };
-
-  const handleDocumentEdit = (doc: any) => {
-    navigate(`/knowledge-base/edit/${doc.id}`);
-  };
-
-  const handleEventEdit = (event: any) => {
-    navigate(`/events/edit/${event.id}`);
-  };
-
-  const handleSuggestionEdit = (suggestion: any) => {
-    navigate(`/suggestions/edit/${suggestion.id}`);
-  };
 
   const handleShowCategoriesModal = (type: 'categories' | 'departments') => {
     setManagementType(type);
@@ -568,7 +600,6 @@ const PostManagement = () => {
           <DataTable
             columns={postColumns}
             data={filteredPosts}
-            onRowClick={handlePostEdit}
           />
         </TabsContent>
 
@@ -625,7 +656,6 @@ const PostManagement = () => {
           <DataTable
             columns={documentColumns}
             data={filteredDocuments}
-            onRowClick={handleDocumentEdit}
           />
         </TabsContent>
 
@@ -664,7 +694,6 @@ const PostManagement = () => {
           <DataTable
             columns={eventColumns}
             data={filteredEvents}
-            onRowClick={handleEventEdit}
           />
         </TabsContent>
 
@@ -684,7 +713,6 @@ const PostManagement = () => {
           <DataTable
             columns={suggestionColumns}
             data={suggestions}
-            onRowClick={handleSuggestionEdit}
           />
         </TabsContent>
       </Tabs>
