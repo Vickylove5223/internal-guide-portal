@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   ArrowLeft,
   Search,
@@ -19,7 +20,7 @@ import {
   User,
   Clock,
   CheckCircle,
-  Eye
+  ChevronRight
 } from 'lucide-react';
 
 const DepartmentDocuments = () => {
@@ -27,7 +28,7 @@ const DepartmentDocuments = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const departmentDocuments = [
+  const allDocuments = [
     {
       id: 1,
       title: 'Welcome & Company Overview',
@@ -37,6 +38,7 @@ const DepartmentDocuments = () => {
       completed: true,
       required: true,
       department: 'HR',
+      category: 'general',
       documents: [
         { name: 'Welcome Guide', type: 'pdf', size: '2.1 MB' },
         { name: 'Company Culture Video', type: 'video', size: '45 MB' }
@@ -51,6 +53,7 @@ const DepartmentDocuments = () => {
       completed: true,
       required: true,
       department: 'IT',
+      category: 'departments',
       documents: [
         { name: 'IT Setup Guide', type: 'pdf', size: '1.8 MB' },
         { name: 'Security Protocols', type: 'pdf', size: '3.2 MB' }
@@ -65,6 +68,7 @@ const DepartmentDocuments = () => {
       completed: false,
       required: true,
       department: 'HR',
+      category: 'departments',
       documents: [
         { name: 'Employee Handbook', type: 'pdf', size: '5.4 MB' },
         { name: 'Benefits Overview', type: 'pdf', size: '2.7 MB' }
@@ -72,16 +76,17 @@ const DepartmentDocuments = () => {
     },
     {
       id: 4,
-      title: 'Role-Specific Training',
-      description: 'Training materials specific to your role and department',
-      type: 'video',
-      duration: '45 min',
+      title: 'Product Documentation',
+      description: 'Comprehensive guides for our products and features',
+      type: 'document',
+      duration: '25 min',
       completed: false,
-      required: true,
-      department: 'Various',
+      required: false,
+      department: 'Product',
+      category: 'products',
       documents: [
-        { name: 'Department Overview', type: 'video', size: '120 MB' },
-        { name: 'Role Guidelines', type: 'pdf', size: '1.9 MB' }
+        { name: 'Product Overview', type: 'pdf', size: '3.1 MB' },
+        { name: 'Feature Guide', type: 'pdf', size: '2.8 MB' }
       ]
     },
     {
@@ -93,6 +98,7 @@ const DepartmentDocuments = () => {
       completed: false,
       required: false,
       department: 'IT',
+      category: 'general',
       documents: [
         { name: 'Tool Tutorials', type: 'interactive', size: '15 MB' },
         { name: 'System Access Guide', type: 'pdf', size: '2.3 MB' }
@@ -100,16 +106,17 @@ const DepartmentDocuments = () => {
     },
     {
       id: 6,
-      title: 'Meet Your Team',
-      description: 'Get to know your colleagues and team structure',
-      type: 'social',
-      duration: '30 min',
+      title: 'Product Roadmap',
+      description: 'Future plans and development timeline for products',
+      type: 'document',
+      duration: '15 min',
       completed: false,
       required: false,
-      department: 'HR',
+      department: 'Product',
+      category: 'products',
       documents: [
-        { name: 'Team Directory', type: 'pdf', size: '1.2 MB' },
-        { name: 'Org Chart', type: 'pdf', size: '800 KB' }
+        { name: 'Q1 Roadmap', type: 'pdf', size: '1.9 MB' },
+        { name: 'Long-term Vision', type: 'pdf', size: '2.1 MB' }
       ]
     }
   ];
@@ -131,9 +138,100 @@ const DepartmentDocuments = () => {
 
   const departmentName = department?.charAt(0).toUpperCase() + department?.slice(1);
 
-  const filteredDocuments = departmentDocuments.filter(doc =>
-    doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    doc.description.toLowerCase().includes(searchTerm.toLowerCase())
+  const filterDocuments = (category: string) => {
+    return allDocuments
+      .filter(doc => doc.category === category)
+      .filter(doc =>
+        doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doc.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+  };
+
+  const renderDocumentCards = (documents: typeof allDocuments) => (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {documents.map((doc, index) => {
+        const TypeIcon = getTypeIcon(doc.type);
+        return (
+          <Card
+            key={doc.id}
+            className={`transition-all cursor-pointer ${
+              doc.completed 
+                ? 'bg-green-50 border-green-200' 
+                : 'hover:bg-gray-50 border-gray-200'
+            }`}
+            onClick={() => handleCardClick(doc.id)}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-start space-x-4">
+                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                  doc.completed 
+                    ? 'bg-green-500 text-white' 
+                    : 'bg-gray-200 text-gray-600'
+                }`}>
+                  {doc.completed ? (
+                    <CheckCircle className="h-5 w-5" />
+                  ) : (
+                    <span className="text-sm font-medium">{index + 1}</span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <h3 className="font-semibold text-gray-900">{doc.title}</h3>
+                    {doc.required && (
+                      <Badge variant="destructive" className="text-xs">Required</Badge>
+                    )}
+                    <Badge variant="outline" className="text-xs">{doc.department}</Badge>
+                  </div>
+                  <p className="text-gray-700 mb-3">{doc.description}</p>
+                  <div className="flex items-center space-x-4 mb-3">
+                    <div className="flex items-center text-sm text-gray-600">
+                      <TypeIcon className="h-4 w-4 mr-1" />
+                      {doc.type}
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Clock className="h-4 w-4 mr-1" />
+                      {doc.duration}
+                    </div>
+                  </div>
+                  <div className="space-y-2 mb-4">
+                    {doc.documents.map((docFile, docIndex) => {
+                      const FileIcon = getTypeIcon(docFile.type);
+                      return (
+                        <div key={docIndex} className="flex items-center justify-between bg-white rounded border p-2">
+                          <div className="flex items-center space-x-2">
+                            <FileIcon className="h-4 w-4 text-gray-500" />
+                            <span className="text-sm text-gray-900">{docFile.name}</span>
+                            <span className="text-xs text-gray-500">({docFile.size})</span>
+                          </div>
+                          <Button variant="ghost" size="sm">
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  );
+
+  const renderEmptyState = (category: string) => (
+    <Card>
+      <CardContent className="p-12 text-center">
+        <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+        <h3 className="text-lg font-medium text-gray-900 mb-2">No documents found</h3>
+        <p className="text-gray-600">
+          {searchTerm 
+            ? 'Try adjusting your search terms.'
+            : `No ${category} documents available for the ${departmentName} department yet.`
+          }
+        </p>
+      </CardContent>
+    </Card>
   );
 
   return (
@@ -164,91 +262,35 @@ const DepartmentDocuments = () => {
         />
       </div>
 
-      {/* Documents Grid - 2 columns like Onboarding */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {filteredDocuments.map((doc, index) => {
-          const TypeIcon = getTypeIcon(doc.type);
-          return (
-            <Card
-              key={doc.id}
-              className={`transition-all cursor-pointer ${
-                doc.completed 
-                  ? 'bg-green-50 border-green-200' 
-                  : 'hover:bg-gray-50 border-gray-200'
-              }`}
-              onClick={() => handleCardClick(doc.id)}
-            >
-              <CardContent className="p-6">
-                <div className="flex items-start space-x-4">
-                  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                    doc.completed 
-                      ? 'bg-green-500 text-white' 
-                      : 'bg-gray-200 text-gray-600'
-                  }`}>
-                    {doc.completed ? (
-                      <CheckCircle className="h-5 w-5" />
-                    ) : (
-                      <span className="text-sm font-medium">{index + 1}</span>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <h3 className="font-semibold text-gray-900">{doc.title}</h3>
-                      {doc.required && (
-                        <Badge variant="destructive" className="text-xs">Required</Badge>
-                      )}
-                      <Badge variant="outline" className="text-xs">{doc.department}</Badge>
-                    </div>
-                    <p className="text-gray-700 mb-3">{doc.description}</p>
-                    <div className="flex items-center space-x-4 mb-3">
-                      <div className="flex items-center text-sm text-gray-600">
-                        <TypeIcon className="h-4 w-4 mr-1" />
-                        {doc.type}
-                      </div>
-                      <div className="flex items-center text-sm text-gray-600">
-                        <Clock className="h-4 w-4 mr-1" />
-                        {doc.duration}
-                      </div>
-                    </div>
-                    <div className="space-y-2 mb-4">
-                      {doc.documents.map((docFile, docIndex) => {
-                        const FileIcon = getTypeIcon(docFile.type);
-                        return (
-                          <div key={docIndex} className="flex items-center justify-between bg-white rounded border p-2">
-                            <div className="flex items-center space-x-2">
-                              <FileIcon className="h-4 w-4 text-gray-500" />
-                              <span className="text-sm text-gray-900">{docFile.name}</span>
-                              <span className="text-xs text-gray-500">({docFile.size})</span>
-                            </div>
-                            <Button variant="ghost" size="sm">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+      {/* Tabs */}
+      <Tabs defaultValue="general" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="general">General</TabsTrigger>
+          <TabsTrigger value="departments">Departments</TabsTrigger>
+          <TabsTrigger value="products">Products</TabsTrigger>
+        </TabsList>
 
-      {filteredDocuments.length === 0 && (
-        <Card>
-          <CardContent className="p-12 text-center">
-            <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No documents found</h3>
-            <p className="text-gray-600">
-              {searchTerm 
-                ? 'Try adjusting your search terms.'
-                : `No documents available for the ${departmentName} department yet.`
-              }
-            </p>
-          </CardContent>
-        </Card>
-      )}
+        <TabsContent value="general" className="space-y-6">
+          {filterDocuments('general').length > 0 
+            ? renderDocumentCards(filterDocuments('general'))
+            : renderEmptyState('general')
+          }
+        </TabsContent>
+
+        <TabsContent value="departments" className="space-y-6">
+          {filterDocuments('departments').length > 0 
+            ? renderDocumentCards(filterDocuments('departments'))
+            : renderEmptyState('department')
+          }
+        </TabsContent>
+
+        <TabsContent value="products" className="space-y-6">
+          {filterDocuments('products').length > 0 
+            ? renderDocumentCards(filterDocuments('products'))
+            : renderEmptyState('product')
+          }
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

@@ -9,7 +9,7 @@ import {
   User,
   Clock,
   Eye,
-  Download
+  Share2
 } from 'lucide-react';
 
 const DocumentView = () => {
@@ -60,7 +60,6 @@ const DocumentView = () => {
     author: 'Sarah Johnson',
     lastUpdated: '2024-01-15T10:30:00Z',
     version: '3.2',
-    status: 'approved',
     views: 1247
   };
 
@@ -70,15 +69,6 @@ const DocumentView = () => {
       month: 'long',
       day: 'numeric'
     });
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'approved': return 'bg-green-100 text-green-800';
-      case 'draft': return 'bg-yellow-100 text-yellow-800';
-      case 'review': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
   };
 
   const departmentName = department?.charAt(0).toUpperCase() + department?.slice(1);
@@ -97,15 +87,12 @@ const DocumentView = () => {
             <div className="flex-1">
               <div className="flex items-center space-x-2 mb-1">
                 <FileText className="h-5 w-5 text-gray-600" />
-                <Badge className={`text-xs ${getStatusColor(document.status)}`}>
-                  {document.status}
-                </Badge>
               </div>
               <h1 className="text-xl font-bold text-gray-900">{document.title}</h1>
             </div>
             <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
-              Download
+              <Share2 className="h-4 w-4 mr-2" />
+              Share
             </Button>
           </div>
         </div>
