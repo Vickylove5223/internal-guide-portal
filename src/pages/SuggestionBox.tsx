@@ -6,11 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MessageSquare, Send } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { MessageSquare, Send, Lightbulb } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const SuggestionBox = () => {
   const [formData, setFormData] = useState({
+    fullName: '',
     title: '',
     category: '',
     description: '',
@@ -37,12 +39,29 @@ const SuggestionBox = () => {
     }));
   };
 
+  const handleAnonymousChange = (checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      anonymous: checked,
+      fullName: checked ? '' : prev.fullName
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title || !formData.category || !formData.description) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!formData.anonymous && !formData.fullName) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter your full name or select anonymous submission.",
         variant: "destructive"
       });
       return;
@@ -56,6 +75,7 @@ const SuggestionBox = () => {
       
       // Reset form
       setFormData({
+        fullName: '',
         title: '',
         category: '',
         description: '',
@@ -96,13 +116,65 @@ const SuggestionBox = () => {
       {/* Suggestion Form */}
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle>Submit a Suggestion</CardTitle>
-          <CardDescription>
-            Your input helps us create a better workplace for everyone.
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Submit a Suggestion</CardTitle>
+              <CardDescription>
+                Your input helps us create a better workplace for everyone.
+              </CardDescription>
+            </div>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <Lightbulb className="h-4 w-4" />
+                  Tip
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Suggestion Guidelines</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-3 text-sm text-gray-600">
+                  <p>• Be specific and clear in your suggestion</p>
+                  <p>• Explain the problem or opportunity you've identified</p>
+                  <p>• Suggest a solution or improvement</p>
+                  <p>• Consider the potential impact and benefits</p>
+                  <p>• All suggestions are reviewed by management</p>
+                  <p>• You'll receive feedback on your suggestion within 5-7 business days</p>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Name or Anonymous */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="anonymous"
+                  checked={formData.anonymous}
+                  onChange={(e) => handleAnonymousChange(e.target.checked)}
+                  className="rounded border-gray-300"
+                />
+                <Label htmlFor="anonymous">Submit anonymously</Label>
+              </div>
+              
+              {!formData.anonymous && (
+                <div className="space-y-2">
+                  <Label htmlFor="fullName">Full Name *</Label>
+                  <Input
+                    id="fullName"
+                    placeholder="Enter your full name"
+                    value={formData.fullName}
+                    onChange={(e) => handleInputChange('fullName', e.target.value)}
+                    required={!formData.anonymous}
+                  />
+                </div>
+              )}
+            </div>
+
             {/* Title */}
             <div className="space-y-2">
               <Label htmlFor="title">Suggestion Title *</Label>
@@ -162,23 +234,6 @@ const SuggestionBox = () => {
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
-
-      {/* Guidelines */}
-      <Card className="max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-lg">Suggestion Guidelines</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid gap-3 text-sm text-gray-600">
-            <p>• Be specific and clear in your suggestion</p>
-            <p>• Explain the problem or opportunity you've identified</p>
-            <p>• Suggest a solution or improvement</p>
-            <p>• Consider the potential impact and benefits</p>
-            <p>• All suggestions are reviewed by management</p>
-            <p>• You'll receive feedback on your suggestion within 5-7 business days</p>
-          </div>
         </CardContent>
       </Card>
     </div>

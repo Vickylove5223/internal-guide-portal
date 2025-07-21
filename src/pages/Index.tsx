@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -138,8 +139,9 @@ const Index = () => {
                       <p className="text-gray-600 mb-4 leading-relaxed">
                         {latestPost.content}
                       </p>
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <div className="flex items-center space-x-2 text-sm text-gray-500">
                         <span>{latestPost.author}</span>
+                        <span>•</span>
                         <span>{formatDate(latestPost.date)}</span>
                       </div>
                     </CardContent>
@@ -179,8 +181,9 @@ const Index = () => {
                               <p className="text-gray-600 text-sm line-clamp-2 mb-4">
                                 {post.content}
                               </p>
-                              <div className="flex items-center space-x-4 text-sm text-gray-500">
+                              <div className="flex items-center space-x-2 text-sm text-gray-500">
                                 <span>{post.author}</span>
+                                <span>•</span>
                                 <span>{formatDate(post.date)}</span>
                               </div>
                             </CardContent>
