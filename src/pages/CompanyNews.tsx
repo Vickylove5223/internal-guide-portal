@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Card, 
   CardContent, 
@@ -9,73 +9,53 @@ import {
 
 const CompanyNews = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState('all');
-
-  // Get category from URL params
-  useEffect(() => {
-    const categoryParam = searchParams.get('category');
-    if (categoryParam) {
-      setActiveTab(categoryParam);
-    } else {
-      setActiveTab('all');
-    }
-  }, [searchParams]);
 
   const posts = [
     {
-      id: 1,
-      title: 'Q4 Company Performance Review',
-      content: 'We are excited to share our outstanding Q4 results. Revenue increased by 23% compared to last quarter, and we successfully onboarded 50 new team members across all departments.',
-      author: 'Sarah Johnson',
-      date: '2024-01-15',
-      category: 'Company Updates',
+      id: 8,
+      title: 'Q4 Financial Results Announcement',
+      content: 'We are pleased to announce our strongest Q4 performance in company history, with revenue growth of 35% year-over-year and expansion into three new markets.',
+      author: 'Jennifer Adams',
+      date: '2024-01-18',
+      category: 'Company News',
       image: '/lovable-uploads/b2ecc921-4815-458d-9cca-04946e0dcd22.png'
     },
     {
-      id: 2,
-      title: 'New Employee Benefits Package',
-      content: 'Starting February 1st, we are introducing enhanced benefits including improved health insurance, flexible working arrangements, and professional development stipends.',
-      author: 'Mike Chen',
-      date: '2024-01-12',
-      category: 'HR Updates',
-      image: '/lovable-uploads/7124d00e-de42-4a9f-9389-2253760ab3cf.png'
-    },
-    {
-      id: 3,
-      title: 'Technology Infrastructure Upgrade',
-      content: 'Our IT team has completed a major infrastructure upgrade that will improve system performance by 40% and enhance security protocols across all platforms.',
-      author: 'David Rodriguez',
-      date: '2024-01-10',
-      category: 'Tech Updates',
-      image: '/lovable-uploads/9fc527b2-adcd-4fa9-b4bc-1c6bb1fe93bb.png'
-    },
-    {
-      id: 4,
-      title: 'Quarterly Team Building Event',
-      content: 'Join us for our quarterly team building event on January 25th. Activities include workshops, networking sessions, and celebration of team achievements.',
-      author: 'Lisa Wang',
-      date: '2024-01-08',
-      category: 'Events',
-      image: '/lovable-uploads/ffe33128-72d3-4275-8536-d3aa5f60ceb6.png'
-    },
-    {
-      id: 5,
-      title: 'Sustainability Initiative Launch',
-      content: 'We are proud to announce our new sustainability initiative aimed at reducing our carbon footprint by 30% over the next two years through various green practices.',
-      author: 'Emma Thompson',
-      date: '2024-01-05',
-      category: 'Company Updates',
+      id: 9,
+      title: 'Strategic Partnership with Global Tech Leader',
+      content: 'Our new partnership will enhance our technology capabilities and expand our reach in international markets, providing better solutions for our clients.',
+      author: 'Michael Thompson',
+      date: '2024-01-16',
+      category: 'Company News',
       image: '/lovable-uploads/e6293d53-5a45-4a9c-babb-c7ce15f22a7e.png'
+    },
+    {
+      id: 10,
+      title: 'Innovation Lab Opens in Silicon Valley',
+      content: 'Our new innovation lab will focus on emerging technologies including AI, blockchain, and IoT solutions to drive the next generation of our products.',
+      author: 'Dr. Emily Chen',
+      date: '2024-01-14',
+      category: 'Company News'
+    },
+    {
+      id: 11,
+      title: 'Sustainability Initiative Launch',
+      content: 'We are committed to achieving carbon neutrality by 2030 through our comprehensive sustainability program including renewable energy adoption and waste reduction.',
+      author: 'Robert Green',
+      date: '2024-01-12',
+      category: 'Company News'
+    },
+    {
+      id: 12,
+      title: 'Customer Success Stories Feature',
+      content: 'Discover how our solutions have helped clients achieve remarkable results. This month we highlight three case studies showcasing innovation and growth.',
+      author: 'Amanda Martinez',
+      date: '2024-01-10',
+      category: 'Company News'
     }
   ];
 
-  const filteredPosts = posts.filter(post => {
-    const matchesCategory = activeTab === 'all' || post.category === activeTab;
-    return matchesCategory;
-  });
-
-  const [latestPost, ...otherPosts] = filteredPosts;
+  const [latestPost, ...otherPosts] = posts;
 
   const handleCardClick = (postId: number) => {
     navigate(`/post/${postId}`);
@@ -92,16 +72,15 @@ const CompanyNews = () => {
   return (
     <div className="min-h-screen">
       <div className="flex">
-        {/* Main Content */}
         <div className="flex-1 p-6 pr-0">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">All Updates</h1>
-            <p className="text-gray-600 mb-6">Stay informed with the latest company news and announcements</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Company News</h1>
+            <p className="text-gray-600 mb-6">Latest company developments and achievements</p>
             
             {/* Featured Latest Post */}
             {latestPost && (
               <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden mb-8"
+                className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden mb-8 border-0"
                 onClick={() => handleCardClick(latestPost.id)}
               >
                 <div className="flex flex-col">
@@ -117,7 +96,7 @@ const CompanyNews = () => {
                   
                   <div className="p-6">
                     <CardHeader className="p-0 pb-4">
-                      <CardTitle className="text-2xl hover:text-smartcash-blue transition-colors cursor-pointer">{latestPost.title}</CardTitle>
+                      <CardTitle className="text-2xl hover:text-blue-600 transition-colors cursor-pointer">{latestPost.title}</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
                       <p className="text-gray-600 mb-6 leading-relaxed">
@@ -133,16 +112,16 @@ const CompanyNews = () => {
               </Card>
             )}
 
-            {/* Other Posts Listing */}
+            {/* Other Posts with Sidebar */}
             {otherPosts.length > 0 && (
               <div className="space-y-6">
-                <h2 className="text-xl font-semibold text-gray-900">More Updates</h2>
-                <div className="flex">
-                  <div className="flex-1 space-y-6 pr-6">
+                <h2 className="text-xl font-semibold text-gray-900">More Company News</h2>
+                <div className="flex flex-col lg:flex-row gap-6">
+                  <div className="flex-1 space-y-6">
                     {otherPosts.map((post) => (
                       <Card 
                         key={post.id} 
-                        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
+                        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden border-0"
                         onClick={() => handleCardClick(post.id)}
                       >
                         <div className="flex">
@@ -158,7 +137,7 @@ const CompanyNews = () => {
                           
                           <div className="flex-1 flex flex-col">
                             <CardHeader className="pb-3">
-                              <CardTitle className="text-lg line-clamp-2 hover:text-smartcash-blue transition-colors cursor-pointer">{post.title}</CardTitle>
+                              <CardTitle className="text-lg line-clamp-2 hover:text-blue-600 transition-colors cursor-pointer">{post.title}</CardTitle>
                             </CardHeader>
                             <CardContent className="pt-0 flex-1">
                               <p className="text-gray-600 text-sm line-clamp-2 mb-4">
@@ -176,7 +155,7 @@ const CompanyNews = () => {
                   </div>
                   
                   {/* Sidebar */}
-                  <div className="w-96 pl-6">
+                  <div className="w-full lg:w-96">
                     <div className="sticky top-6">
                       <img
                         src="/lovable-uploads/3d5b1ac3-5c8f-49a4-b3bb-872eeb6148fe.png"
@@ -186,8 +165,8 @@ const CompanyNews = () => {
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

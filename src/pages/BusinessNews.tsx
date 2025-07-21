@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -47,7 +48,7 @@ const BusinessNews = () => {
             {/* Featured Latest Post */}
             {latestPost && (
               <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden mb-8"
+                className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden mb-8 border-0"
                 onClick={() => handleCardClick(latestPost.id)}
               >
                 <div className="flex flex-col">
@@ -63,7 +64,7 @@ const BusinessNews = () => {
                   
                   <div className="p-6">
                     <CardHeader className="p-0 pb-4">
-                      <CardTitle className="text-2xl hover:text-smartcash-blue transition-colors cursor-pointer">{latestPost.title}</CardTitle>
+                      <CardTitle className="text-2xl hover:text-blue-600 transition-colors cursor-pointer">{latestPost.title}</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
                       <p className="text-gray-600 mb-6 leading-relaxed">
@@ -83,12 +84,12 @@ const BusinessNews = () => {
             {otherPosts.length > 0 && (
               <div className="space-y-6">
                 <h2 className="text-xl font-semibold text-gray-900">More Business News</h2>
-                <div className="flex">
-                  <div className="flex-1 space-y-6 pr-6">
+                <div className="flex flex-col lg:flex-row gap-6">
+                  <div className="flex-1 space-y-6">
                     {otherPosts.map((post) => (
                       <Card 
                         key={post.id} 
-                        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
+                        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden border-0"
                         onClick={() => handleCardClick(post.id)}
                       >
                         <div className="flex">
@@ -104,7 +105,7 @@ const BusinessNews = () => {
                           
                           <div className="flex-1 flex flex-col">
                             <CardHeader className="pb-3">
-                              <CardTitle className="text-lg line-clamp-2 hover:text-smartcash-blue transition-colors cursor-pointer">{post.title}</CardTitle>
+                              <CardTitle className="text-lg line-clamp-2 hover:text-blue-600 transition-colors cursor-pointer">{post.title}</CardTitle>
                             </CardHeader>
                             <CardContent className="pt-0 flex-1">
                               <p className="text-gray-600 text-sm line-clamp-2 mb-4">
@@ -122,7 +123,7 @@ const BusinessNews = () => {
                   </div>
                   
                   {/* Sidebar */}
-                  <div className="w-96 pl-6">
+                  <div className="w-full lg:w-96">
                     <div className="sticky top-6">
                       <img
                         src="/lovable-uploads/3d5b1ac3-5c8f-49a4-b3bb-872eeb6148fe.png"
@@ -132,8 +133,32 @@ const BusinessNews = () => {
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+
+            {/* Empty State */}
+            {otherPosts.length === 0 && (
+              <div className="flex flex-col lg:flex-row gap-6">
+                <div className="flex-1">
+                  <Card className="p-8 text-center border-0">
+                    <CardContent>
+                      <p className="text-gray-500">No additional business news available at the moment.</p>
+                    </CardContent>
+                  </Card>
+                </div>
+                
+                {/* Sidebar */}
+                <div className="w-full lg:w-96">
+                  <div className="sticky top-6">
+                    <img
+                      src="/lovable-uploads/3d5b1ac3-5c8f-49a4-b3bb-872eeb6148fe.png"
+                      alt="Our Products"
+                      className="w-full h-auto rounded-lg shadow-lg"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

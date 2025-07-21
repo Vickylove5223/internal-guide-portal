@@ -16,23 +16,26 @@ const PoliticalNews = () => {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Political News</h1>
             <p className="text-gray-600 mb-6">Political developments and regulatory updates</p>
             
-            <div className="space-y-6">
-              <Card className="p-8 text-center">
-                <CardContent>
-                  <p className="text-gray-500">No political news posts available at the moment.</p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
+            <div className="flex flex-col lg:flex-row gap-6">
+              <div className="flex-1">
+                <Card className="p-8 text-center border-0">
+                  <CardContent>
+                    <p className="text-gray-500">No political news posts available at the moment.</p>
+                  </CardContent>
+                </Card>
+              </div>
 
-        <div className="w-96 p-6">
-          <div className="sticky top-6">
-            <img
-              src="/lovable-uploads/3d5b1ac3-5c8f-49a4-b3bb-872eeb6148fe.png"
-              alt="Our Products"
-              className="w-full h-auto rounded-lg shadow-lg"
-            />
+              {/* Sidebar */}
+              <div className="w-full lg:w-96">
+                <div className="sticky top-6">
+                  <img
+                    src="/lovable-uploads/3d5b1ac3-5c8f-49a4-b3bb-872eeb6148fe.png"
+                    alt="Our Products"
+                    className="w-full h-auto rounded-lg shadow-lg"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
