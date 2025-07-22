@@ -40,7 +40,7 @@ export const withSuspense = (Component: React.ComponentType) => {
   };
 };
 
-// Export all lazy components
+// Export all lazy components with error boundaries
 export const LazyIndex = withSuspense(Index);
 export const LazySignIn = withSuspense(SignIn);
 export const LazyResetPassword = withSuspense(ResetPassword);
