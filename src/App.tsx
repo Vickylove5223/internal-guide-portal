@@ -9,30 +9,35 @@ import { CategoryProvider } from './contexts/CategoryContext';
 import ErrorBoundary from "./components/ErrorBoundary";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Index from "./pages/Index";
-import SignIn from "./pages/SignIn";
-import ResetPassword from "./pages/ResetPassword";
-import SetNewPassword from "./pages/SetNewPassword";
-import OTPVerification from "./pages/OTPVerification";
-import CompanyEvents from "./pages/CompanyEvents";
-import PostDetail from "./pages/PostDetail";
-import CreatePost from "./pages/CreatePost";
-import PostManagement from "./pages/PostManagement";
-import MemberManagement from "./pages/MemberManagement";
-import KnowledgeBase from "./pages/KnowledgeBase";
-import CreateKnowledgeBase from "./pages/CreateKnowledgeBase";
-import CreateEvent from "./pages/CreateEvent";
-import DepartmentDocuments from "./pages/DepartmentDocuments";
-import DocumentView from "./pages/DocumentView";
-import SuggestionBox from "./pages/SuggestionBox";
-import ManageDepartments from "./pages/ManageDepartments";
-import DepartmentsManagement from "./pages/DepartmentsManagement";
+import { NetworkStatus } from "./components/NetworkStatus";
+import {
+  LazyIndex,
+  LazySignIn,
+  LazyResetPassword,
+  LazySetNewPassword,
+  LazyOTPVerification,
+  LazyCompanyEvents,
+  LazyPostDetail,
+  LazyCreatePost,
+  LazyPostManagement,
+  LazyMemberManagement,
+  LazyKnowledgeBase,
+  LazyCreateKnowledgeBase,
+  LazyCreateEvent,
+  LazyDepartmentDocuments,
+  LazyDocumentView,
+  LazySuggestionBox,
+  LazyManageDepartments,
+  LazyDepartmentsManagement,
+} from "./components/LazyRoutes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
       refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
     },
   },
 });
@@ -43,20 +48,21 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <NetworkStatus />
         <BrowserRouter>
           <AuthProvider>
             <CategoryProvider>
               <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/sign-in" element={<SignIn />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/set-new-password" element={<SetNewPassword />} />
-                <Route path="/otp-verification" element={<OTPVerification />} />
+                <Route path="/" element={<LazyIndex />} />
+                <Route path="/sign-in" element={<LazySignIn />} />
+                <Route path="/reset-password" element={<LazyResetPassword />} />
+                <Route path="/set-new-password" element={<LazySetNewPassword />} />
+                <Route path="/otp-verification" element={<LazyOTPVerification />} />
                 
                 <Route path="/company-events" element={
                   <ErrorBoundary>
                     <Layout>
-                      <CompanyEvents />
+                      <LazyCompanyEvents />
                     </Layout>
                   </ErrorBoundary>
                 } />
@@ -64,7 +70,7 @@ const App = () => (
                 <Route path="/post/:id" element={
                   <ErrorBoundary>
                     <Layout>
-                      <PostDetail />
+                      <LazyPostDetail />
                     </Layout>
                   </ErrorBoundary>
                 } />
@@ -73,7 +79,7 @@ const App = () => (
                   <ProtectedRoute>
                     <ErrorBoundary>
                       <Layout>
-                        <CreatePost />
+                        <LazyCreatePost />
                       </Layout>
                     </ErrorBoundary>
                   </ProtectedRoute>
@@ -83,7 +89,7 @@ const App = () => (
                   <ProtectedRoute>
                     <ErrorBoundary>
                       <Layout>
-                        <PostManagement />
+                        <LazyPostManagement />
                       </Layout>
                     </ErrorBoundary>
                   </ProtectedRoute>
@@ -93,7 +99,7 @@ const App = () => (
                   <ProtectedRoute>
                     <ErrorBoundary>
                       <Layout>
-                        <MemberManagement />
+                        <LazyMemberManagement />
                       </Layout>
                     </ErrorBoundary>
                   </ProtectedRoute>
@@ -103,7 +109,7 @@ const App = () => (
                   <ProtectedRoute>
                     <ErrorBoundary>
                       <Layout>
-                        <MemberManagement />
+                        <LazyMemberManagement />
                       </Layout>
                     </ErrorBoundary>
                   </ProtectedRoute>
@@ -112,7 +118,7 @@ const App = () => (
                 <Route path="/knowledge-base" element={
                   <ErrorBoundary>
                     <Layout>
-                      <KnowledgeBase />
+                      <LazyKnowledgeBase />
                     </Layout>
                   </ErrorBoundary>
                 } />
@@ -120,7 +126,7 @@ const App = () => (
                 <Route path="/knowledge-base/:department" element={
                   <ErrorBoundary>
                     <Layout>
-                      <DepartmentDocuments />
+                      <LazyDepartmentDocuments />
                     </Layout>
                   </ErrorBoundary>
                 } />
@@ -128,7 +134,7 @@ const App = () => (
                 <Route path="/knowledge-base/:department/document/:id" element={
                   <ErrorBoundary>
                     <Layout>
-                      <DocumentView />
+                      <LazyDocumentView />
                     </Layout>
                   </ErrorBoundary>
                 } />
@@ -137,7 +143,7 @@ const App = () => (
                   <ProtectedRoute>
                     <ErrorBoundary>
                       <Layout>
-                        <CreateKnowledgeBase />
+                        <LazyCreateKnowledgeBase />
                       </Layout>
                     </ErrorBoundary>
                   </ProtectedRoute>
@@ -147,7 +153,7 @@ const App = () => (
                   <ProtectedRoute>
                     <ErrorBoundary>
                       <Layout>
-                        <CreateEvent />
+                        <LazyCreateEvent />
                       </Layout>
                     </ErrorBoundary>
                   </ProtectedRoute>
@@ -156,7 +162,7 @@ const App = () => (
                 <Route path="/suggestion-box" element={
                   <ErrorBoundary>
                     <Layout>
-                      <SuggestionBox />
+                      <LazySuggestionBox />
                     </Layout>
                   </ErrorBoundary>
                 } />
@@ -165,7 +171,7 @@ const App = () => (
                   <ProtectedRoute>
                     <ErrorBoundary>
                       <Layout>
-                        <DepartmentsManagement />
+                        <LazyDepartmentsManagement />
                       </Layout>
                     </ErrorBoundary>
                   </ProtectedRoute>
@@ -175,7 +181,7 @@ const App = () => (
                   <ProtectedRoute>
                     <ErrorBoundary>
                       <Layout>
-                        <ManageDepartments />
+                        <LazyManageDepartments />
                       </Layout>
                     </ErrorBoundary>
                   </ProtectedRoute>
@@ -185,7 +191,7 @@ const App = () => (
                   <ProtectedRoute>
                     <ErrorBoundary>
                       <Layout>
-                        <CreatePost />
+                        <LazyCreatePost />
                       </Layout>
                     </ErrorBoundary>
                   </ProtectedRoute>
@@ -194,7 +200,7 @@ const App = () => (
                   <ProtectedRoute>
                     <ErrorBoundary>
                       <Layout>
-                        <CreateKnowledgeBase />
+                        <LazyCreateKnowledgeBase />
                       </Layout>
                     </ErrorBoundary>
                   </ProtectedRoute>
@@ -203,7 +209,7 @@ const App = () => (
                   <ProtectedRoute>
                     <ErrorBoundary>
                       <Layout>
-                        <CreateEvent />
+                        <LazyCreateEvent />
                       </Layout>
                     </ErrorBoundary>
                   </ProtectedRoute>
