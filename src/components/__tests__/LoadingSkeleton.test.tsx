@@ -3,6 +3,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { LoadingSkeleton } from '../LoadingSkeleton';
+import { describe, test, expect } from 'vitest';
 
 describe('LoadingSkeleton', () => {
   test('renders card skeleton by default', () => {
