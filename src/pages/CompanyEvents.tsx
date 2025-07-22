@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { 
   Card, 
   CardContent, 
@@ -10,51 +11,12 @@ import { Calendar, MapPin, Clock } from 'lucide-react';
 
 const CompanyEvents = () => {
   const navigate = useNavigate();
-
-  const events = [
-    {
-      id: 4,
-      title: 'Quarterly Team Building Event',
-      content: 'Join us for our quarterly team building event on January 25th. Activities include workshops, networking sessions, and celebration of team achievements.',
-      author: 'Lisa Wang',
-      date: '2024-01-25',
-      time: '9:00 AM - 5:00 PM',
-      location: 'Conference Center, Building A',
-      category: 'Company Events',
-      image: '/lovable-uploads/ffe33128-72d3-4275-8536-d3aa5f60ceb6.png'
-    },
-    {
-      id: 13,
-      title: 'Annual Company Retreat 2024',
-      content: 'Three-day company retreat featuring strategic planning sessions, team building activities, and recreational events in a beautiful mountain setting.',
-      author: 'Sarah Johnson',
-      date: '2024-02-15',
-      time: '8:00 AM - 6:00 PM',
-      location: 'Mountain View Resort',
-      category: 'Company Events',
-      image: '/lovable-uploads/b2ecc921-4815-458d-9cca-04946e0dcd22.png'
-    },
-    {
-      id: 14,
-      title: 'Q1 All-Hands Meeting',
-      content: 'Quarterly all-hands meeting to review Q4 results, discuss Q1 goals, and celebrate team achievements. Includes presentations from each department.',
-      author: 'Mike Chen',
-      date: '2024-02-01',
-      time: '2:00 PM - 4:00 PM',
-      location: 'Main Auditorium',
-      category: 'Company Events'
-    },
-    {
-      id: 15,
-      title: 'Innovation Showcase',
-      content: 'Annual innovation showcase where teams present their latest projects and innovative solutions. Includes demos, presentations, and networking.',
-      author: 'Dr. Emily Chen',
-      date: '2024-02-20',
-      time: '10:00 AM - 3:00 PM',
-      location: 'Innovation Lab',
-      category: 'Company Events'
-    }
-  ];
+  const [events, setEvents] = React.useState([]);
+  // Load events from localStorage
+  useEffect(() => {
+    const storedEvents = localStorage.getItem('events');
+    if (storedEvents) setEvents(JSON.parse(storedEvents));
+  }, []);
 
   const [upcomingEvent, ...otherEvents] = events;
 

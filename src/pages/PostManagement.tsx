@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,6 +18,10 @@ import { CreateContentModal } from '@/components/CreateContentModal';
 import { ManageCategoriesModal } from '@/components/ManageCategoriesModal';
 import { useToast } from '@/hooks/use-toast';
 import { useCategories } from '@/contexts/CategoryContext';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+
+const PAGE_SIZE = 15;
 
 const PostManagement = () => {
   const navigate = useNavigate();
@@ -35,6 +39,12 @@ const PostManagement = () => {
   const [showDepartmentsModal, setShowDepartmentsModal] = useState(false);
   const [managementType, setManagementType] = useState<'categories' | 'departments'>('categories');
   const { categories } = useCategories();
+
+  // Pagination state for each tab
+  const [postPage, setPostPage] = useState(1);
+  const [docPage, setDocPage] = useState(1);
+  const [eventPage, setEventPage] = useState(1);
+  const [suggestionPage, setSuggestionPage] = useState(1);
 
   const [posts, setPosts] = useState([
     {
@@ -138,7 +148,7 @@ const PostManagement = () => {
     }
   ]);
 
-  const suggestions = [
+  const [suggestions, setSuggestions] = useState([
     {
       id: 1,
       title: 'Improve Office Lighting',
@@ -155,7 +165,47 @@ const PostManagement = () => {
       submittedBy: 'John Doe',
       submittedAt: '2024-01-18T14:20:00Z'
     }
-  ];
+  ]);
+
+  // Load posts from localStorage on mount
+  useEffect(() => {
+    const storedPosts = localStorage.getItem('posts');
+    if (storedPosts) {
+      setPosts(JSON.parse(storedPosts));
+    }
+  }, []);
+
+  // Save posts to localStorage whenever posts change
+  useEffect(() => {
+    localStorage.setItem('posts', JSON.stringify(posts));
+  }, [posts]);
+
+  // Load documents and events from localStorage on mount
+  useEffect(() => {
+    const storedDocs = localStorage.getItem('documents');
+    if (storedDocs) setDocuments(JSON.parse(storedDocs));
+    const storedEvents = localStorage.getItem('events');
+    if (storedEvents) setEvents(JSON.parse(storedEvents));
+  }, []);
+
+  // Save documents and events to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('documents', JSON.stringify(documents));
+  }, [documents]);
+  useEffect(() => {
+    localStorage.setItem('events', JSON.stringify(events));
+  }, [events]);
+
+  // Load suggestions from localStorage on mount
+  useEffect(() => {
+    const storedSuggestions = localStorage.getItem('suggestions');
+    if (storedSuggestions) setSuggestions(JSON.parse(storedSuggestions));
+  }, []);
+
+  // Save suggestions to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('suggestions', JSON.stringify(suggestions));
+  }, [suggestions]);
 
   const filteredPosts = posts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -180,6 +230,11 @@ const PostManagement = () => {
     
     return matchesSearch && matchesStatus;
   });
+
+  const paginatedPosts = filteredPosts.slice((postPage - 1) * PAGE_SIZE, postPage * PAGE_SIZE);
+  const paginatedDocuments = filteredDocuments.slice((docPage - 1) * PAGE_SIZE, docPage * PAGE_SIZE);
+  const paginatedEvents = filteredEvents.slice((eventPage - 1) * PAGE_SIZE, eventPage * PAGE_SIZE);
+  const paginatedSuggestions = suggestions.slice((suggestionPage - 1) * PAGE_SIZE, suggestionPage * PAGE_SIZE);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -206,7 +261,9 @@ const PostManagement = () => {
         navigate(`/post/${item.id}`);
         break;
       case 'edit':
-        navigate(`/post-management/edit/${item.id}`);
+        // Open edit modal with post data
+        setEditingPost(item);
+        setShowEditModal(true);
         break;
       case 'delete':
         setPosts(prev => prev.filter(p => p.id !== item.id));
@@ -218,13 +275,82 @@ const PostManagement = () => {
     }
   };
 
+  // Add/Edit Post Modal logic
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingPost, setEditingPost] = useState<any | null>(null);
+
+  const handleSavePost = (post: any) => {
+    if (editingPost) {
+      // Edit existing
+      setPosts(prev => prev.map(p => p.id === editingPost.id ? { ...editingPost, ...post } : p));
+    } else {
+      // Add new
+      setPosts(prev => [
+        ...prev,
+        { ...post, id: Date.now(), status: 'Published', author: 'Admin', createdAt: new Date().toISOString() }
+      ]);
+    }
+    setShowEditModal(false);
+    setEditingPost(null);
+  };
+
+  // Add/Edit Document Modal logic
+  const [showEditDocModal, setShowEditDocModal] = useState(false);
+  const [editingDoc, setEditingDoc] = useState<any | null>(null);
+  const handleSaveDoc = (doc: any) => {
+    if (editingDoc) {
+      setDocuments(prev => prev.map(d => d.id === editingDoc.id ? { ...editingDoc, ...doc } : d));
+    } else {
+      setDocuments(prev => [
+        ...prev,
+        { ...doc, id: Date.now(), status: 'Published', author: 'Admin', createdAt: new Date().toISOString() }
+      ]);
+    }
+    setShowEditDocModal(false);
+    setEditingDoc(null);
+  };
+
+  // Add/Edit Event Modal logic
+  const [showEditEventModal, setShowEditEventModal] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<any | null>(null);
+  const handleSaveEvent = (event: any) => {
+    if (editingEvent) {
+      setEvents(prev => prev.map(e => e.id === editingEvent.id ? { ...editingEvent, ...event } : e));
+    } else {
+      setEvents(prev => [
+        ...prev,
+        { ...event, id: Date.now(), status: 'Published', author: 'Admin', createdAt: new Date().toISOString() }
+      ]);
+    }
+    setShowEditEventModal(false);
+    setEditingEvent(null);
+  };
+
+  // Add/Edit Suggestion Modal logic
+  const [showEditSuggestionModal, setShowEditSuggestionModal] = useState(false);
+  const [editingSuggestion, setEditingSuggestion] = useState<any | null>(null);
+  const handleSaveSuggestion = (suggestion: any) => {
+    if (editingSuggestion) {
+      setSuggestions(prev => prev.map(s => s.id === editingSuggestion.id ? { ...editingSuggestion, ...suggestion } : s));
+    } else {
+      setSuggestions(prev => [
+        ...prev,
+        { ...suggestion, id: Date.now(), status: 'Pending', submittedBy: 'Anonymous', submittedAt: new Date().toISOString() }
+      ]);
+    }
+    setShowEditSuggestionModal(false);
+    setEditingSuggestion(null);
+  };
+
+  // Update handleDocumentAction and handleEventAction
   const handleDocumentAction = (action: string, item: any) => {
     switch (action) {
       case 'view':
         navigate(`/knowledge-base/document/${item.id}`);
         break;
       case 'edit':
-        navigate(`/knowledge-base/edit/${item.id}`);
+        setEditingDoc(item);
+        setShowEditDocModal(true);
         break;
       case 'delete':
         setDocuments(prev => prev.filter(d => d.id !== item.id));
@@ -235,14 +361,14 @@ const PostManagement = () => {
         break;
     }
   };
-
   const handleEventAction = (action: string, item: any) => {
     switch (action) {
       case 'view':
         navigate(`/events/${item.id}`);
         break;
       case 'edit':
-        navigate(`/events/edit/${item.id}`);
+        setEditingEvent(item);
+        setShowEditEventModal(true);
         break;
       case 'delete':
         setEvents(prev => prev.filter(e => e.id !== item.id));
@@ -254,15 +380,31 @@ const PostManagement = () => {
     }
   };
 
+  // Update handleSuggestionAction
   const handleSuggestionAction = (action: string, item: any) => {
     switch (action) {
       case 'view':
-        navigate(`/suggestions`);
+        setViewingSuggestion(item);
+        setShowViewSuggestionModal(true);
         break;
       case 'review':
-        navigate(`/suggestions`);
+        setEditingSuggestion(item);
+        setShowEditSuggestionModal(true);
+        break;
+      case 'delete':
+        setDeletingSuggestion(item);
+        setShowDeleteSuggestionConfirm(true);
         break;
     }
+  };
+  const confirmDeleteSuggestion = () => {
+    setSuggestions(prev => prev.filter(s => s.id !== deletingSuggestion.id));
+    setShowDeleteSuggestionConfirm(false);
+    setDeletingSuggestion(null);
+    toast({
+      title: "Suggestion deleted",
+      description: "The suggestion has been successfully deleted.",
+    });
   };
 
   const postColumns = [
@@ -340,15 +482,6 @@ const PostManagement = () => {
       header: 'Title',
       className: 'font-medium',
       render: (value: string) => <span className="font-medium">{value}</span>
-    },
-    {
-      key: 'category',
-      header: 'Category',
-      render: (value: string) => (
-        <Badge variant="outline" className="text-xs">
-          {value}
-        </Badge>
-      )
     },
     {
       key: 'status',
@@ -459,6 +592,13 @@ const PostManagement = () => {
               <Edit className="h-4 w-4 mr-2" />
               Review
             </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="text-red-600"
+              onClick={() => handleSuggestionAction('delete', item)}
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -561,8 +701,15 @@ const PostManagement = () => {
           {/* Posts Table */}
           <DataTable
             columns={postColumns}
-            data={filteredPosts}
+            data={paginatedPosts}
           />
+          {filteredPosts.length > PAGE_SIZE && (
+            <div className="flex justify-center gap-2 mt-4">
+              <Button variant="outline" size="sm" disabled={postPage === 1} onClick={() => setPostPage(postPage - 1)}>Previous</Button>
+              <span className="px-2 py-1 text-sm">Page {postPage} of {Math.ceil(filteredPosts.length / PAGE_SIZE)}</span>
+              <Button variant="outline" size="sm" disabled={postPage === Math.ceil(filteredPosts.length / PAGE_SIZE)} onClick={() => setPostPage(postPage + 1)}>Next</Button>
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="knowledge-base" className="space-y-6">
@@ -615,73 +762,72 @@ const PostManagement = () => {
             </Select>
           </div>
 
-          {/* Knowledge Base Documents Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredDocuments.length === 0 ? (
-              <div className="col-span-full">
-                <Card>
-                  <CardContent className="p-12 text-center">
-                    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No documents found</h3>
-                    <p className="text-gray-600">
-                      {knowledgeSearchTerm ? 'Try adjusting your search terms.' : 'No documents available yet.'}
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            ) : (
-              filteredDocuments.map((doc) => (
-                <Card key={doc.id} className="hover:shadow-lg transition-all duration-200">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between mb-2">
-                      <CardTitle className="text-lg line-clamp-2">{doc.title}</CardTitle>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleDocumentAction('view', doc)}>
-                            <Eye className="h-4 w-4 mr-2" />
-                            View
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleDocumentAction('edit', doc)}>
-                            <Edit className="h-4 w-4 mr-2" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            className="text-red-600"
-                            onClick={() => handleDocumentAction('delete', doc)}
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge variant="outline" className="text-xs">
-                        {doc.category}
-                      </Badge>
-                      <Badge className={`text-xs ${getStatusColor(doc.status)}`}>
-                        {doc.status}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <CardDescription className="text-sm text-gray-600 mb-4 line-clamp-3">
-                      {doc.description}
-                    </CardDescription>
-                    <div className="flex items-center justify-between text-sm text-gray-500">
-                      <span>By {doc.author}</span>
-                      <span>{formatDate(doc.createdAt)}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
+          {/* Knowledge Base Table */}
+          <DataTable
+            columns={[
+              {
+                key: 'title',
+                header: 'Title',
+                className: 'font-medium',
+                render: (value: string) => <span className="font-medium">{value}</span>
+              },
+              {
+                key: 'category',
+                header: 'Department',
+                render: (value: string) => <span className="text-sm text-gray-900">{value}</span>
+              },
+              {
+                key: 'status',
+                header: 'Status',
+                render: (value: string) => <Badge className={`text-xs ${getStatusColor(value)}`}>{value}</Badge>
+              },
+              {
+                key: 'author',
+                header: 'Author',
+                render: (value: string) => <span className="text-sm text-gray-600">{value}</span>
+              },
+              {
+                key: 'createdAt',
+                header: 'Created',
+                render: (value: string) => <div className="text-sm text-gray-600">{formatDate(value)}</div>
+              },
+              {
+                key: 'actions',
+                header: 'Actions',
+                render: (value: any, item: any) => (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => handleDocumentAction('view', item)}>
+                        <Eye className="h-4 w-4 mr-2" />
+                        View
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDocumentAction('edit', item)}>
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-red-600" onClick={() => handleDocumentAction('delete', item)}>
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )
+              }
+            ]}
+            data={paginatedDocuments}
+          />
+          {filteredDocuments.length > PAGE_SIZE && (
+            <div className="flex justify-center gap-2 mt-4">
+              <Button variant="outline" size="sm" disabled={docPage === 1} onClick={() => setDocPage(docPage - 1)}>Previous</Button>
+              <span className="px-2 py-1 text-sm">Page {docPage} of {Math.ceil(filteredDocuments.length / PAGE_SIZE)}</span>
+              <Button variant="outline" size="sm" disabled={docPage === Math.ceil(filteredDocuments.length / PAGE_SIZE)} onClick={() => setDocPage(docPage + 1)}>Next</Button>
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="events" className="space-y-6">
@@ -718,8 +864,15 @@ const PostManagement = () => {
           {/* Events Table */}
           <DataTable
             columns={eventColumns}
-            data={filteredEvents}
+            data={paginatedEvents}
           />
+          {filteredEvents.length > PAGE_SIZE && (
+            <div className="flex justify-center gap-2 mt-4">
+              <Button variant="outline" size="sm" disabled={eventPage === 1} onClick={() => setEventPage(eventPage - 1)}>Previous</Button>
+              <span className="px-2 py-1 text-sm">Page {eventPage} of {Math.ceil(filteredEvents.length / PAGE_SIZE)}</span>
+              <Button variant="outline" size="sm" disabled={eventPage === Math.ceil(filteredEvents.length / PAGE_SIZE)} onClick={() => setEventPage(eventPage + 1)}>Next</Button>
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="suggestions" className="space-y-6">
@@ -737,8 +890,15 @@ const PostManagement = () => {
           {/* Suggestions Table */}
           <DataTable
             columns={suggestionColumns}
-            data={suggestions}
+            data={paginatedSuggestions}
           />
+          {suggestions.length > PAGE_SIZE && (
+            <div className="flex justify-center gap-2 mt-4">
+              <Button variant="outline" size="sm" disabled={suggestionPage === 1} onClick={() => setSuggestionPage(suggestionPage - 1)}>Previous</Button>
+              <span className="px-2 py-1 text-sm">Page {suggestionPage} of {Math.ceil(suggestions.length / PAGE_SIZE)}</span>
+              <Button variant="outline" size="sm" disabled={suggestionPage === Math.ceil(suggestions.length / PAGE_SIZE)} onClick={() => setSuggestionPage(suggestionPage + 1)}>Next</Button>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
 
@@ -759,6 +919,218 @@ const PostManagement = () => {
         onOpenChange={setShowDepartmentsModal} 
         type="departments" 
       />
+
+      {/* Add/Edit Post Modal */}
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingPost ? 'Edit Post' : 'Add Post'}</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              const form = e.target as HTMLFormElement;
+              const formData = new FormData(form);
+              handleSavePost({
+                title: formData.get('title'),
+                content: formData.get('content'),
+                category: formData.get('category'),
+              });
+            }}
+            className="space-y-4"
+          >
+            <div>
+              <Label htmlFor="title">Title</Label>
+              <Input id="title" name="title" defaultValue={editingPost?.title || ''} required />
+            </div>
+            <div>
+              <Label htmlFor="content">Content</Label>
+              <Input id="content" name="content" defaultValue={editingPost?.content || ''} required />
+            </div>
+            <div>
+              <Label htmlFor="category">Category</Label>
+              <Select name="category" defaultValue={editingPost?.category || categories[0]?.name}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.name} value={cat.name}>{cat.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <DialogFooter>
+              <Button type="submit">Save</Button>
+              <DialogClose asChild>
+                <Button type="button" variant="outline">Cancel</Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+      {/* Add/Edit Document Modal */}
+      <Dialog open={showEditDocModal} onOpenChange={setShowEditDocModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingDoc ? 'Edit Document' : 'Add Document'}</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              const form = e.target as HTMLFormElement;
+              const formData = new FormData(form);
+              handleSaveDoc({
+                title: formData.get('title'),
+                description: formData.get('description'),
+                category: formData.get('category'),
+              });
+            }}
+            className="space-y-4"
+          >
+            <div>
+              <Label htmlFor="title">Title</Label>
+              <Input id="title" name="title" defaultValue={editingDoc?.title || ''} required />
+            </div>
+            <div>
+              <Label htmlFor="description">Description</Label>
+              <Input id="description" name="description" defaultValue={editingDoc?.description || ''} required />
+            </div>
+            <div>
+              <Label htmlFor="category">Department</Label>
+              <Input id="category" name="category" defaultValue={editingDoc?.category || ''} required />
+            </div>
+            <DialogFooter>
+              <Button type="submit">Save</Button>
+              <DialogClose asChild>
+                <Button type="button" variant="outline">Cancel</Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+      {/* Add/Edit Event Modal */}
+      <Dialog open={showEditEventModal} onOpenChange={setShowEditEventModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingEvent ? 'Edit Event' : 'Add Event'}</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              const form = e.target as HTMLFormElement;
+              const formData = new FormData(form);
+              handleSaveEvent({
+                title: formData.get('title'),
+                category: formData.get('category'),
+              });
+            }}
+            className="space-y-4"
+          >
+            <div>
+              <Label htmlFor="title">Title</Label>
+              <Input id="title" name="title" defaultValue={editingEvent?.title || ''} required />
+            </div>
+            <div>
+              <Label htmlFor="category">Category</Label>
+              <Input id="category" name="category" defaultValue={editingEvent?.category || ''} required />
+            </div>
+            <DialogFooter>
+              <Button type="submit">Save</Button>
+              <DialogClose asChild>
+                <Button type="button" variant="outline">Cancel</Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+      {/* Add/Edit Suggestion Modal */}
+      <Dialog open={showEditSuggestionModal} onOpenChange={setShowEditSuggestionModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingSuggestion ? 'Edit Suggestion' : 'Add Suggestion'}</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              const form = e.target as HTMLFormElement;
+              const formData = new FormData(form);
+              handleSaveSuggestion({
+                title: formData.get('title'),
+                category: formData.get('category'),
+                status: formData.get('status'),
+              });
+            }}
+            className="space-y-4"
+          >
+            <div>
+              <Label htmlFor="title">Title</Label>
+              <Input id="title" name="title" defaultValue={editingSuggestion?.title || ''} required />
+            </div>
+            <div>
+              <Label htmlFor="category">Category</Label>
+              <Input id="category" name="category" defaultValue={editingSuggestion?.category || ''} required />
+            </div>
+            <div>
+              <Label htmlFor="status">Status</Label>
+              <Input id="status" name="status" defaultValue={editingSuggestion?.status || 'Pending'} required />
+            </div>
+            <DialogFooter>
+              <Button type="submit">Save</Button>
+              <DialogClose asChild>
+                <Button type="button" variant="outline">Cancel</Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+      {/* View Suggestion Modal */}
+      <Dialog open={showViewSuggestionModal} onOpenChange={setShowViewSuggestionModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>View Suggestion</DialogTitle>
+          </DialogHeader>
+          {viewingSuggestion && (
+            <div className="space-y-4">
+              <div>
+                <Label>Title</Label>
+                <div className="p-2 bg-gray-100 rounded">{viewingSuggestion.title}</div>
+              </div>
+              <div>
+                <Label>Category</Label>
+                <div className="p-2 bg-gray-100 rounded">{viewingSuggestion.category}</div>
+              </div>
+              <div>
+                <Label>Status</Label>
+                <div className="p-2 bg-gray-100 rounded">{viewingSuggestion.status}</div>
+              </div>
+              <div>
+                <Label>Submitted By</Label>
+                <div className="p-2 bg-gray-100 rounded">{viewingSuggestion.submittedBy}</div>
+              </div>
+              <div>
+                <Label>Submitted At</Label>
+                <div className="p-2 bg-gray-100 rounded">{formatDate(viewingSuggestion.submittedAt)}</div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+      {/* Delete Suggestion Confirmation */}
+      <Dialog open={showDeleteSuggestionConfirm} onOpenChange={setShowDeleteSuggestionConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Suggestion</DialogTitle>
+          </DialogHeader>
+          <p>Are you sure you want to delete this suggestion?</p>
+          <DialogFooter>
+            <Button onClick={confirmDeleteSuggestion} variant="destructive">Delete</Button>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

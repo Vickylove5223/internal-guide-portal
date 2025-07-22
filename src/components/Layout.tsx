@@ -61,9 +61,9 @@ const Layout = ({ children, onCategorySelect, selectedCategory }: LayoutProps) =
 
   const navigationItems = categories.map(cat => ({
     name: cat.name,
-    href: `/${cat.slug}`,
+    href: cat.name === 'Company Events' ? '/company-events' : `/${cat.slug}`,
     slug: cat.slug,
-    current: selectedCategory === cat.slug,
+    current: cat.name === 'Company Events' ? location.pathname === '/company-events' : selectedCategory === cat.slug,
   }));
 
   const allItems = navigationItems;
@@ -233,9 +233,9 @@ const Layout = ({ children, onCategorySelect, selectedCategory }: LayoutProps) =
               {allItems.map((item) => (
                 <button
                   key={item.name}
-                  onClick={() => onCategorySelect && onCategorySelect(item.slug)}
+                  onClick={() => item.name === 'Company Events' ? navigate('/company-events') : onCategorySelect && onCategorySelect(item.slug)}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    selectedCategory === item.slug
+                    item.current
                       ? 'text-primary bg-primary/10'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                   }`}
@@ -259,9 +259,9 @@ const Layout = ({ children, onCategorySelect, selectedCategory }: LayoutProps) =
                 {allItems.map((item) => (
                   <CarouselItem key={item.name} className="pl-2 md:pl-4 basis-auto">
                     <button
-                      onClick={() => onCategorySelect && onCategorySelect(item.slug)}
+                      onClick={() => item.name === 'Company Events' ? navigate('/company-events') : onCategorySelect && onCategorySelect(item.slug)}
                       className={`px-4 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap block ${
-                        selectedCategory === item.slug
+                        item.current
                           ? 'text-primary bg-primary/10'
                           : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }`}

@@ -1,11 +1,20 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, GripVertical, Eye, Edit, Trash2 } from 'lucide-react';
+import { ArrowLeft, GripVertical, Eye, Edit, Trash2, MoreHorizontal } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const ManageDepartments = () => {
   const { department } = useParams();
@@ -91,6 +100,23 @@ const ManageDepartments = () => {
   const currentDept = departmentData[department as keyof typeof departmentData];
   const [documents, setDocuments] = useState(currentDept?.documents || []);
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
+  const [editingDoc, setEditingDoc] = useState<any | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [deleteDoc, setDeleteDoc] = useState<any | null>(null);
+
+  // Load documents from localStorage on mount
+  useEffect(() => {
+    if (department) {
+      const storedDocs = localStorage.getItem(`deptdocs_${department}`);
+      if (storedDocs) setDocuments(JSON.parse(storedDocs));
+    }
+  }, [department]);
+  // Save documents to localStorage whenever they change
+  useEffect(() => {
+    if (department) {
+      localStorage.setItem(`deptdocs_${department}`, JSON.stringify(documents));
+    }
+  }, [documents, department]);
 
   if (!currentDept) {
     return (
@@ -168,16 +194,35 @@ const ManageDepartments = () => {
         navigate(`/knowledge-base/${department}/document/${document.id}`);
         break;
       case 'edit':
-        navigate(`/knowledge-base/edit/${document.id}`);
+        setEditingDoc(document);
+        setShowEditModal(true);
         break;
       case 'delete':
-        setDocuments(prev => prev.filter(d => d.id !== document.id));
-        toast({
-          title: "Document deleted",
-          description: "The document has been successfully deleted.",
-        });
+        setDeleteDoc(document);
         break;
     }
+  };
+
+  const handleEdit = (doc: any) => {
+    setEditingDoc(doc);
+    setShowEditModal(true);
+  };
+  const handleDelete = (doc: any) => {
+    setDeleteDoc(doc);
+  };
+  const confirmDelete = () => {
+    setDocuments(documents.filter(d => d.id !== deleteDoc.id));
+    setDeleteDoc(null);
+    toast({
+      title: "Document deleted",
+      description: "The document has been successfully deleted.",
+    });
+  };
+
+  const handleSaveEdit = (doc: any) => {
+    setDocuments(documents.map(d => d.id === editingDoc.id ? { ...editingDoc, ...doc } : d));
+    setShowEditModal(false);
+    setEditingDoc(null);
   };
 
   return (
@@ -189,8 +234,7 @@ const ManageDepartments = () => {
             variant="outline" 
             onClick={() => navigate('/post-management')}
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
+            <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
@@ -226,26 +270,16 @@ const ManageDepartments = () => {
           documents.map((document, index) => (
             <Card 
               key={document.id}
-              className="transition-all duration-200 hover:shadow-md cursor-move"
-              draggable
-              onDragStart={(e) => handleDragStart(e, index)}
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, index)}
+              className="transition-all duration-200 hover:shadow-md"
             >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-4">
-                  {/* Drag Handle */}
-                  <div className="cursor-grab active:cursor-grabbing p-1">
-                    <GripVertical className="h-5 w-5 text-gray-400" />
-                  </div>
-
                   {/* Order Number */}
                   <div className="flex-shrink-0">
                     <Badge variant="outline" className="w-8 h-8 rounded-full flex items-center justify-center">
                       {document.order}
                     </Badge>
                   </div>
-
                   {/* Document Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between">
@@ -262,37 +296,24 @@ const ManageDepartments = () => {
                           <span>{formatDate(document.createdAt)}</span>
                         </div>
                       </div>
-                      
                       <div className="flex items-center space-x-3 ml-4">
                         <Badge className={`text-xs ${getStatusColor(document.status)}`}>
                           {document.status}
                         </Badge>
-                        
                         {/* Actions */}
-                        <div className="flex items-center space-x-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDocumentAction('view', document)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDocumentAction('edit', document)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-600 hover:text-red-700"
-                            onClick={() => handleDocumentAction('delete', document)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm"><MoreHorizontal className="h-4 w-4" /></Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleEdit(document)}>
+                              <Edit className="h-4 w-4 mr-2" /> Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600" onClick={() => handleDelete(document)}>
+                              <Trash2 className="h-4 w-4 mr-2" /> Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </div>
                   </div>
@@ -302,6 +323,42 @@ const ManageDepartments = () => {
           ))
         )}
       </div>
+      {/* Edit Modal */}
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Document</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              const form = e.target as HTMLFormElement;
+              const formData = new FormData(form);
+              handleSaveEdit({
+                title: formData.get('title'),
+                description: formData.get('description'),
+              });
+            }}
+            className="space-y-4"
+          >
+            <div>
+              <Label htmlFor="title">Title</Label>
+              <Input id="title" name="title" defaultValue={editingDoc?.title || ''} required />
+            </div>
+            <div>
+              <Label htmlFor="description">Description</Label>
+              <Input id="description" name="description" defaultValue={editingDoc?.description || ''} required />
+            </div>
+            <DialogFooter>
+              <Button type="submit">Save</Button>
+              <DialogClose asChild>
+                <Button type="button" variant="outline">Cancel</Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+      {/* Edit and Delete Modals (implement as needed) */}
     </div>
   );
 };

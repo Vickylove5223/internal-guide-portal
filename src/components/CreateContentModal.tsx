@@ -39,15 +39,15 @@ export const CreateContentModal: React.FC<CreateContentModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-w-fit p-0">
         <DialogHeader>
           <DialogTitle>Create New Content</DialogTitle>
         </DialogHeader>
         
-        <div className="flex gap-4 py-4 flex-row justify-center">
+        <div className="flex gap-4 py-4 px-4 justify-center">
           <Button
             variant="outline"
-            className="h-20 flex flex-col items-center justify-center space-y-2"
+            className="h-20 flex flex-col items-center justify-center space-y-2 min-w-[140px]"
             onClick={() => handleCreateContent('post')}
           >
             <FileText className="h-8 w-8" />
@@ -55,7 +55,7 @@ export const CreateContentModal: React.FC<CreateContentModalProps> = ({
           </Button>
           <Button
             variant="outline"
-            className="h-20 flex flex-col items-center justify-center space-y-2"
+            className="h-20 flex flex-col items-center justify-center space-y-2 min-w-[140px]"
             onClick={() => handleCreateContent('knowledge-base')}
           >
             <BookOpen className="h-8 w-8" />
@@ -63,7 +63,7 @@ export const CreateContentModal: React.FC<CreateContentModalProps> = ({
           </Button>
           <Button
             variant="outline"
-            className="h-20 flex flex-col items-center justify-center space-y-2"
+            className="h-20 flex flex-col items-center justify-center space-y-2 min-w-[140px]"
             onClick={() => handleCreateContent('event')}
           >
             <Calendar className="h-8 w-8" />

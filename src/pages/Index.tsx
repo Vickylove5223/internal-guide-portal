@@ -1,106 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
+import { useCategories } from '@/contexts/CategoryContext';
 
 const Index = () => {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState('posts/all-updates');
-
-  const allPosts = [
-    {
-      id: 8,
-      title: 'Q4 Financial Results Announcement',
-      content: 'We are pleased to announce our strongest Q4 performance in company history, with revenue growth of 35% year-over-year and expansion into three new markets.',
-      author: 'Jennifer Adams',
-      date: '2024-01-18',
-      category: 'All Updates',
-      image: '/lovable-uploads/b2ecc921-4815-458d-9cca-04946e0dcd22.png'
-    },
-    {
-      id: 1,
-      title: 'Welcome to Our New Company Portal',
-      content: 'We are excited to announce the launch of our new company portal. This platform will serve as your central hub for all company communications, updates, and resources.',
-      author: 'Sarah Johnson',
-      date: '2024-01-15',
-      category: 'Announcements',
-      image: '/lovable-uploads/57896a25-fe3a-4385-9a9d-a634bdd46940.png'
-    },
-    {
-      id: 9,
-      title: 'Strategic Partnership with Global Tech Leader',
-      content: 'Our new partnership will enhance our technology capabilities and expand our reach in international markets, providing better solutions for our clients.',
-      author: 'Michael Thompson',
-      date: '2024-01-16',
-      category: 'All Updates',
-      image: '/lovable-uploads/e6293d53-5a45-4a9c-babb-c7ce15f22a7e.png'
-    },
-    {
-      id: 10,
-      title: 'Innovation Lab Opens in Silicon Valley',
-      content: 'Our new innovation lab will focus on emerging technologies including AI, blockchain, and IoT solutions to drive the next generation of our products.',
-      author: 'Dr. Emily Chen',
-      date: '2024-01-14',
-      category: 'All Updates'
-    },
-    {
-      id: 2,
-      title: 'New Employee Benefits Package',
-      content: 'Starting February 1st, we are introducing enhanced benefits including improved health insurance, flexible working arrangements, and professional development stipends.',
-      author: 'Mike Chen',
-      date: '2024-01-12',
-      category: 'HR Updates',
-      image: '/lovable-uploads/7124d00e-de42-4a9f-9389-2253760ab3cf.png'
-    },
-    {
-      id: 11,
-      title: 'Sustainability Initiative Launch',
-      content: 'We are committed to achieving carbon neutrality by 2030 through our comprehensive sustainability program including renewable energy adoption and waste reduction.',
-      author: 'Robert Green',
-      date: '2024-01-12',
-      category: 'All Updates'
-    },
-    {
-      id: 3,
-      title: 'Technology Infrastructure Upgrade',
-      content: 'Our IT team has completed a major infrastructure upgrade that will improve system performance by 40% and enhance security protocols across all platforms.',
-      author: 'David Rodriguez',
-      date: '2024-01-10',
-      category: 'Business News',
-      image: '/lovable-uploads/9fc527b2-adcd-4fa9-b4bc-1c6bb1fe93bb.png'
-    },
-    {
-      id: 12,
-      title: 'Customer Success Stories Feature',
-      content: 'Discover how our solutions have helped clients achieve remarkable results. This month we highlight three case studies showcasing innovation and growth.',
-      author: 'Amanda Martinez',
-      date: '2024-01-10',
-      category: 'All Updates'
-    },
-    {
-      id: 4,
-      title: 'Quarterly Team Building Event',
-      content: 'Join us for our quarterly team building event on January 25th. Activities include workshops, networking sessions, and celebration of team achievements.',
-      author: 'Lisa Wang',
-      date: '2024-01-08',
-      category: 'Company Events',
-      image: '/lovable-uploads/ffe33128-72d3-4275-8536-d3aa5f60ceb6.png'
-    }
-  ];
+  const { categories } = useCategories();
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]?.slug || 'posts/all-updates');
+  const [allPosts, setAllPosts] = useState([]);
+  // Load posts from localStorage
+  useEffect(() => {
+    const storedPosts = localStorage.getItem('posts');
+    if (storedPosts) setAllPosts(JSON.parse(storedPosts));
+  }, []);
 
   // Map category names to slugs for filtering
-  const categoryNameToSlug = {
-    'All Updates': 'posts/all-updates',
-    'Announcements': 'posts/announcements',
-    'HR Updates': 'posts/hr-updates',
-    'Business News': 'posts/business-news',
-    'Political News': 'posts/political-news',
-  };
+  const categoryNameToSlug = Object.fromEntries(categories.map(cat => [cat.name, cat.slug]));
 
   const filteredPosts = selectedCategory === 'posts/all-updates'
     ? allPosts
@@ -121,9 +37,7 @@ const Index = () => {
   };
 
   // Find the selected category name for the heading
-  const selectedCategoryName = Object.keys(categoryNameToSlug).find(
-    key => categoryNameToSlug[key] === selectedCategory
-  ) || 'All Updates';
+  const selectedCategoryName = categories.find(cat => cat.slug === selectedCategory)?.name || 'All Updates';
 
   return (
     <Layout onCategorySelect={setSelectedCategory} selectedCategory={selectedCategory}>
@@ -133,7 +47,6 @@ const Index = () => {
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">{selectedCategoryName}</h1>
               <p className="text-gray-600 mb-6">Latest updates from across the company</p>
-              
               {/* Featured Latest Post */}
               {latestPost && (
                 <Card 
@@ -150,7 +63,6 @@ const Index = () => {
                         />
                       </div>
                     )}
-                    
                     <div className="flex-1 flex flex-col">
                       <CardHeader className="pb-3">
                         <CardTitle className="text-2xl line-clamp-2 hover:text-blue-600 transition-colors cursor-pointer">{latestPost.title}</CardTitle>
@@ -169,7 +81,6 @@ const Index = () => {
                   </div>
                 </Card>
               )}
-
               {/* Other Posts with Sidebar */}
               {otherPosts.length > 0 && (
                 <div className="space-y-6">
@@ -192,7 +103,6 @@ const Index = () => {
                                 />
                               </div>
                             )}
-                            
                             <div className="flex-1 flex flex-col">
                               <CardHeader className="pb-3">
                                 <CardTitle className="text-lg line-clamp-2 hover:text-blue-600 transition-colors cursor-pointer">{post.title}</CardTitle>
@@ -212,7 +122,6 @@ const Index = () => {
                         </Card>
                       ))}
                     </div>
-                    
                     {/* Sidebar */}
                     <div className="w-full lg:w-96">
                       <div className="sticky top-6">
