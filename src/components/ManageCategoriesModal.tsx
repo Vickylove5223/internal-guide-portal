@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -36,7 +35,6 @@ export function getDefaultCategories(type = 'categories') {
       'HR Updates',
       'Business News',
       'Political News',
-      'Compliances',
       'Company Events',
     ];
     return cats.map((name, i) => ({

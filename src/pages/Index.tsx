@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -101,7 +100,6 @@ const Index = () => {
     'HR Updates': 'posts/hr-updates',
     'Business News': 'posts/business-news',
     'Political News': 'posts/political-news',
-    'Compliances': 'posts/compliances',
   };
 
   const filteredPosts = selectedCategory === 'posts/all-updates'
