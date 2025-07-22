@@ -1,4 +1,7 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { SafeStorage } from '@/utils/storage';
+import { logger } from '@/utils/logger';
 
 interface User {
   id: string;
@@ -35,20 +38,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    try {
+      const storedUser = SafeStorage.get<User | null>('user', null);
+      if (storedUser) {
+        setUser(storedUser);
+        logger.info('User session restored', { userId: storedUser.id });
+      }
+    } catch (error) {
+      logger.error('Failed to restore user session', error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // Simulate API call
-      console.log('Login attempt:', { email, password });
+      logger.info('Login attempt started', { email });
       
-      // Mock successful login
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock successful login - in production, this would be a real API call
       const mockUser: User = {
         id: '1',
         email,
@@ -59,48 +69,74 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       };
       
       setUser(mockUser);
-      localStorage.setItem('user', JSON.stringify(mockUser));
+      const saved = SafeStorage.set('user', mockUser);
+      
+      if (!saved) {
+        logger.error('Failed to save user to storage');
+        return false;
+      }
+      
+      logger.info('Login successful', { userId: mockUser.id });
       return true;
     } catch (error) {
-      console.error('Login failed:', error);
+      logger.error('Login failed', { email, error });
       return false;
     }
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
+    try {
+      logger.info('Logout initiated', { userId: user?.id });
+      setUser(null);
+      SafeStorage.remove('user');
+      logger.info('Logout successful');
+    } catch (error) {
+      logger.error('Logout failed', error);
+    }
   };
 
   const resetPassword = async (email: string): Promise<boolean> => {
     try {
-      console.log('Password reset request for:', email);
-      // Simulate sending reset email
+      logger.info('Password reset requested', { email });
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      logger.info('Password reset email sent', { email });
       return true;
     } catch (error) {
-      console.error('Password reset failed:', error);
+      logger.error('Password reset failed', { email, error });
       return false;
     }
   };
 
   const verifyOTP = async (otp: string): Promise<boolean> => {
     try {
-      console.log('OTP verification:', otp);
-      // Simulate OTP verification
-      return otp === '123456';
+      logger.info('OTP verification attempted');
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const isValid = otp === '123456';
+      
+      if (isValid) {
+        logger.info('OTP verification successful');
+      } else {
+        logger.warn('OTP verification failed - invalid code');
+      }
+      
+      return isValid;
     } catch (error) {
-      console.error('OTP verification failed:', error);
+      logger.error('OTP verification failed', error);
       return false;
     }
   };
 
   const setNewPassword = async (password: string): Promise<boolean> => {
     try {
-      console.log('Setting new password');
-      // Simulate password update
+      logger.info('New password set attempt');
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      logger.info('New password set successfully');
       return true;
     } catch (error) {
-      console.error('Set new password failed:', error);
+      logger.error('Set new password failed', error);
       return false;
     }
   };
