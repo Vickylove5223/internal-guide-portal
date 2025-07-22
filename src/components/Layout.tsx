@@ -59,12 +59,29 @@ const Layout = ({ children, onCategorySelect, selectedCategory }: LayoutProps) =
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const navigationItems = categories.map(cat => ({
-    name: cat.name,
-    href: cat.name === 'Company Events' ? '/company-events' : `/${cat.slug}`,
-    slug: cat.slug,
-    current: cat.name === 'Company Events' ? location.pathname === '/company-events' : selectedCategory === cat.slug,
-  }));
+  // Filter categories to show only post categories (not departments) in main navigation
+  const postCategories = categories.filter(cat => cat.slug.startsWith('posts/'));
+  
+  const navigationItems = [
+    {
+      name: 'All Updates',
+      href: '/',
+      slug: 'posts/all-updates',
+      current: selectedCategory === 'posts/all-updates' || selectedCategory === '' || !selectedCategory
+    },
+    ...postCategories.map(cat => ({
+      name: cat.name,
+      href: `/${cat.slug}`,
+      slug: cat.slug,
+      current: selectedCategory === cat.slug
+    })),
+    {
+      name: 'Company Events',
+      href: '/company-events',
+      slug: 'company-events',
+      current: location.pathname === '/company-events'
+    }
+  ];
 
   const allItems = navigationItems;
 
@@ -233,7 +250,17 @@ const Layout = ({ children, onCategorySelect, selectedCategory }: LayoutProps) =
               {allItems.map((item) => (
                 <button
                   key={item.name}
-                  onClick={() => item.name === 'Company Events' ? navigate('/company-events') : onCategorySelect && onCategorySelect(item.slug)}
+                  onClick={() => {
+                    if (item.name === 'Company Events') {
+                      navigate('/company-events');
+                    } else if (item.name === 'All Updates') {
+                      navigate('/');
+                      onCategorySelect && onCategorySelect('posts/all-updates');
+                    } else {
+                      navigate('/');
+                      onCategorySelect && onCategorySelect(item.slug);
+                    }
+                  }}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     item.current
                       ? 'text-primary bg-primary/10'
@@ -259,8 +286,18 @@ const Layout = ({ children, onCategorySelect, selectedCategory }: LayoutProps) =
                 {allItems.map((item) => (
                   <CarouselItem key={item.name} className="pl-2 md:pl-4 basis-auto">
                     <button
-                      onClick={() => item.name === 'Company Events' ? navigate('/company-events') : onCategorySelect && onCategorySelect(item.slug)}
-                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap block ${
+                      onClick={() => {
+                        if (item.name === 'Company Events') {
+                          navigate('/company-events');
+                        } else if (item.name === 'All Updates') {
+                          navigate('/');
+                          onCategorySelect && onCategorySelect('posts/all-updates');
+                        } else {
+                          navigate('/');
+                          onCategorySelect && onCategorySelect(item.slug);
+                        }
+                      }}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
                         item.current
                           ? 'text-primary bg-primary/10'
                           : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'

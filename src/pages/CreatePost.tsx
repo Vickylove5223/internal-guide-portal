@@ -4,12 +4,14 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { useCategories } from '@/contexts/CategoryContext';
 import PostForm from '@/components/PostForm';
 import PublishSettings from '@/components/PublishSettings';
 
 const CreatePost = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { updateCategoryPostCounts } = useCategories();
   const { id } = useParams();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -18,24 +20,18 @@ const CreatePost = () => {
   const [featuredImage, setFeaturedImage] = useState<File | null>(null);
   const [featuredImagePreview, setFeaturedImagePreview] = useState<string>('');
 
-  // If editing, load post data (mocked for now)
+  // If editing, load post data from localStorage
   React.useEffect(() => {
     if (id) {
-      // Replace with real fetch logic as needed
-      const post = {
-        title: 'Sample Post',
-        content: 'Sample content',
-        category: 'Announcements',
-        status: 'draft',
-        featuredImage: null,
-        featuredImagePreview: ''
-      };
-      setTitle(post.title);
-      setContent(post.content);
-      setCategory(post.category);
-      setStatus(post.status);
-      setFeaturedImage(post.featuredImage);
-      setFeaturedImagePreview(post.featuredImagePreview);
+      const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+      const post = posts.find((p: any) => p.id === parseInt(id));
+      if (post) {
+        setTitle(post.title);
+        setContent(post.content);
+        setCategory(post.category);
+        setStatus(post.status);
+        setFeaturedImagePreview(post.featuredImage || '');
+      }
     }
   }, [id]);
 
@@ -70,7 +66,39 @@ const CreatePost = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      console.log('Saving post:', { title, content, category, status, featuredImage });
+      // Get existing posts
+      const existingPosts = JSON.parse(localStorage.getItem('posts') || '[]');
+      
+      const postData = {
+        id: id ? parseInt(id) : Date.now(),
+        title: title.trim(),
+        content: content.trim(),
+        category: category,
+        status: status,
+        featuredImage: featuredImagePreview,
+        author: 'Current User', // You can get this from auth context
+        createdAt: id ? existingPosts.find((p: any) => p.id === parseInt(id))?.createdAt || new Date().toISOString() : new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      let updatedPosts;
+      if (id) {
+        // Update existing post
+        updatedPosts = existingPosts.map((p: any) => 
+          p.id === parseInt(id) ? postData : p
+        );
+      } else {
+        // Add new post
+        updatedPosts = [postData, ...existingPosts];
+      }
+      
+      // Save to localStorage
+      localStorage.setItem('posts', JSON.stringify(updatedPosts));
+      
+      // Update category counts
+      updateCategoryPostCounts();
+      
+      console.log('Saving post:', postData);
       
       toast({
         title: "Success",

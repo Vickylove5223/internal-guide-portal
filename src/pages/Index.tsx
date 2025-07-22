@@ -7,22 +7,53 @@ import { useCategories } from '@/contexts/CategoryContext';
 
 const Index = () => {
   const navigate = useNavigate();
-  const { categories } = useCategories();
+  const { categories, updateCategoryPostCounts } = useCategories();
   const [selectedCategory, setSelectedCategory] = useState('posts/all-updates');
   const [allPosts, setAllPosts] = useState([]);
   
   // Load posts from localStorage
   useEffect(() => {
     const storedPosts = localStorage.getItem('posts');
-    if (storedPosts) setAllPosts(JSON.parse(storedPosts));
-  }, []);
+    if (storedPosts) {
+      setAllPosts(JSON.parse(storedPosts));
+      updateCategoryPostCounts(); // Update counts when posts load
+    }
+  }, [updateCategoryPostCounts]);
+
+  // Listen for storage changes to update posts
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'posts') {
+        const storedPosts = localStorage.getItem('posts');
+        if (storedPosts) {
+          setAllPosts(JSON.parse(storedPosts));
+          updateCategoryPostCounts();
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [updateCategoryPostCounts]);
 
   // Map category names to slugs for filtering
   const categoryNameToSlug = Object.fromEntries(categories.map(cat => [cat.name, cat.slug]));
 
-  const filteredPosts = selectedCategory === 'posts/all-updates'
-    ? allPosts
-    : allPosts.filter(post => categoryNameToSlug[post.category] === selectedCategory);
+  // Filter posts based on selected category
+  const filteredPosts = selectedCategory === 'posts/all-updates' || !selectedCategory || selectedCategory === ''
+    ? allPosts.filter(post => post.status === 'published') // Show only published posts in All Updates
+    : allPosts.filter(post => {
+        // For specific categories, show published posts that match the category
+        if (post.status !== 'published') return false;
+        
+        // Match by category name or if the category name matches any category
+        const matchingCategory = categories.find(cat => 
+          cat.name === post.category || 
+          cat.slug === post.category ||
+          cat.name.toLowerCase().replace(/\s+/g, '-') === post.category?.toLowerCase()?.replace(/\s+/g, '-')
+        );
+        return matchingCategory?.slug === selectedCategory;
+      });
 
   const [latestPost, ...otherPosts] = filteredPosts;
 
@@ -39,7 +70,7 @@ const Index = () => {
   };
 
   // Find the selected category name for the heading
-  const selectedCategoryName = selectedCategory === 'posts/all-updates' 
+  const selectedCategoryName = selectedCategory === 'posts/all-updates' || !selectedCategory || selectedCategory === ''
     ? 'All Updates' 
     : categories.find(cat => cat.slug === selectedCategory)?.name || 'All Updates';
 

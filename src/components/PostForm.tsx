@@ -99,11 +99,13 @@ const PostForm: React.FC<PostFormProps> = ({
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
-              {categories.map((cat) => (
-                <SelectItem key={cat.name} value={cat.name}>
-                  {cat.name}
-                </SelectItem>
-              ))}
+              {categories
+                .filter(cat => cat.slug.startsWith('posts/'))
+                .map((cat) => (
+                  <SelectItem key={cat.name} value={cat.name}>
+                    {cat.name}
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
         </div>

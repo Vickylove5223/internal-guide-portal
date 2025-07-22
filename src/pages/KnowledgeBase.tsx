@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Card, 
@@ -13,78 +13,76 @@ import {
   FileText,
   Users,
   Building,
-  DollarSign,
+  BookOpen,
   Briefcase,
   Scale,
   Settings,
-  Lightbulb
+  Lightbulb,
+  GraduationCap
 } from 'lucide-react';
 
 const KnowledgeBase = () => {
-  const departments = [
+  const [documents, setDocuments] = useState([]);
+  const [docTypeCounts, setDocTypeCounts] = useState({});
+
+  // Load documents from localStorage
+  useEffect(() => {
+    const storedDocuments = localStorage.getItem('documents');
+    if (storedDocuments) {
+      const docs = JSON.parse(storedDocuments);
+      setDocuments(docs);
+      
+      // Calculate document counts by type
+      const counts = docs.reduce((acc: any, doc: any) => {
+        if (doc.status === 'published') {
+          acc[doc.docType] = (acc[doc.docType] || 0) + 1;
+        }
+        return acc;
+      }, {});
+      setDocTypeCounts(counts);
+    }
+  }, []);
+
+  const docTypes = [
     {
-      name: 'HR',
-      description: 'Human Resources policies, procedures, and employee information',
-      documentCount: 45,
+      name: 'Onboarding',
+      description: 'New employee guides, orientation materials, and getting started resources',
+      documentCount: docTypeCounts['Onboarding'] || 0,
       color: 'bg-blue-100 text-blue-800',
-      icon: Users,
-      slug: 'hr'
+      icon: GraduationCap,
+      slug: 'onboarding'
     },
     {
-      name: 'IT',
-      description: 'Technical documentation, security protocols, and system guides',
-      documentCount: 67,
+      name: 'Company Policy',
+      description: 'Official company policies, rules, and regulations',
+      documentCount: docTypeCounts['Company Policy'] || 0,
       color: 'bg-green-100 text-green-800',
-      icon: Settings,
-      slug: 'it'
-    },
-    {
-      name: 'Finance',
-      description: 'Financial policies, reporting guidelines, and budget information',
-      documentCount: 23,
-      color: 'bg-purple-100 text-purple-800',
-      icon: DollarSign,
-      slug: 'finance'
-    },
-    {
-      name: 'Sales',
-      description: 'Sales processes, customer guidelines, and performance metrics',
-      documentCount: 34,
-      color: 'bg-orange-100 text-orange-800',
-      icon: Briefcase,
-      slug: 'sales'
-    },
-    {
-      name: 'Marketing',
-      description: 'Brand guidelines, campaign processes, and marketing materials',
-      documentCount: 28,
-      color: 'bg-pink-100 text-pink-800',
-      icon: Lightbulb,
-      slug: 'marketing'
-    },
-    {
-      name: 'Legal',
-      description: 'Legal documents, contracts, and compliance information',
-      documentCount: 12,
-      color: 'bg-red-100 text-red-800',
       icon: Scale,
-      slug: 'legal'
+      slug: 'company-policy'
     },
     {
-      name: 'Operations',
-      description: 'Operational procedures, workflows, and standard practices',
-      documentCount: 19,
-      color: 'bg-yellow-100 text-yellow-800',
-      icon: Building,
-      slug: 'operations'
+      name: 'Procedure',
+      description: 'Step-by-step procedures and operational workflows',
+      documentCount: docTypeCounts['Procedure'] || 0,
+      color: 'bg-purple-100 text-purple-800',
+      icon: Settings,
+      slug: 'procedure'
     },
     {
-      name: 'Product',
-      description: 'Product specifications, development guides, and roadmaps',
-      documentCount: 41,
-      color: 'bg-indigo-100 text-indigo-800',
-      icon: FileText,
-      slug: 'product'
+      name: 'Guideline',
+      description: 'Best practices, recommendations, and helpful guidelines',
+      documentCount: docTypeCounts['Guideline'] || 0,
+      color: 'bg-orange-100 text-orange-800',
+      icon: Lightbulb,
+      slug: 'guideline'
+    },
+    {
+      name: 'Company Products',
+      description: 'Product documentation, specifications, and user guides',
+      documentCount: docTypeCounts['Company Products'] || 0,
+      color: 'bg-pink-100 text-pink-800',
+      icon: BookOpen,
+      slug: 'company-products'
     }
   ];
 
@@ -95,30 +93,30 @@ const KnowledgeBase = () => {
         <h1 className="text-2xl font-bold text-gray-900">
           Knowledge Base
         </h1>
-        <p className="text-gray-600">Access department-specific documents and resources</p>
+        <p className="text-gray-600">Access documents organized by type and category</p>
       </div>
 
-      {/* Department Cards */}
+      {/* Document Type Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {departments.map((dept) => {
-          const IconComponent = dept.icon;
+        {docTypes.map((docType) => {
+          const IconComponent = docType.icon;
           return (
-            <Link key={dept.name} to={`/knowledge-base/${dept.slug}`}>
+            <Link key={docType.name} to={`/knowledge-base/${docType.slug}`}>
               <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer h-full">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between mb-2">
-                    <div className={`p-2 rounded-lg ${dept.color.replace('text-', 'bg-').replace('-800', '-500')}`}>
+                    <div className={`p-2 rounded-lg ${docType.color.replace('text-', 'bg-').replace('-800', '-500')}`}>
                       <IconComponent className="h-6 w-6 text-white" />
                     </div>
                     <Badge variant="outline" className="text-xs">
-                      {dept.documentCount} docs
+                      {docType.documentCount} docs
                     </Badge>
                   </div>
-                  <CardTitle className="text-lg">{dept.name}</CardTitle>
+                  <CardTitle className="text-lg">{docType.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <CardDescription className="text-sm">
-                    {dept.description}
+                  <CardDescription className="text-sm text-gray-600">
+                    {docType.description}
                   </CardDescription>
                 </CardContent>
               </Card>

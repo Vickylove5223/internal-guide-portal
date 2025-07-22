@@ -50,7 +50,7 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
   type,
 }) => {
   const { toast } = useToast();
-  const { categories, setCategories } = useCategories();
+  const { categories, setCategories, updateCategoryPostCounts } = useCategories();
   const [newCategoryName, setNewCategoryName] = useState('');
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editName, setEditName] = useState('');
@@ -68,6 +68,7 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
     };
     setCategories([...categories, newCategory]);
     setNewCategoryName('');
+    updateCategoryPostCounts();
     toast({
       title: "Success",
       description: `${type === 'departments' ? 'Department' : 'Category'} added successfully!`,
@@ -82,6 +83,17 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
   const handleSaveEdit = () => {
     if (!editName.trim() || !editingCategory) return;
     const slugBase = type === 'departments' ? 'departments' : 'posts';
+    
+    // Update posts that reference the old category name
+    const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+    const updatedPosts = posts.map((post: any) => {
+      if (post.category === editingCategory.name || post.category === editingCategory.slug) {
+        return { ...post, category: editName };
+      }
+      return post;
+    });
+    localStorage.setItem('posts', JSON.stringify(updatedPosts));
+    
     setCategories(categories.map(cat => 
       cat.id === editingCategory.id 
         ? { ...cat, name: editName, slug: `${slugBase}/${editName.toLowerCase().replace(/\s+/g, '-')}` }
@@ -89,6 +101,7 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
     ));
     setEditingCategory(null);
     setEditName('');
+    updateCategoryPostCounts();
     toast({
       title: "Success",
       description: `${type === 'departments' ? 'Department' : 'Category'} updated successfully!`,
@@ -111,16 +124,30 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
     if (!deleteCategory) return;
     
     if (reassignTo && deleteCategory.contentCount > 0) {
-      // In a real app, you would reassign the content here
-      toast({
-        title: "Success",
-        description: `Content reassigned and ${type === 'departments' ? 'department' : 'category'} deleted successfully!`,
-      });
+      // Find the target category to reassign to
+      const targetCategory = categories.find(cat => cat.id.toString() === reassignTo);
+      if (targetCategory) {
+        // Update posts that reference the deleted category
+        const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+        const updatedPosts = posts.map((post: any) => {
+          if (post.category === deleteCategory.name || post.category === deleteCategory.slug) {
+            return { ...post, category: targetCategory.name };
+          }
+          return post;
+        });
+        localStorage.setItem('posts', JSON.stringify(updatedPosts));
+        
+        toast({
+          title: "Success",
+          description: `Content reassigned to "${targetCategory.name}" and ${type === 'departments' ? 'department' : 'category'} deleted successfully!`,
+        });
+      }
     }
     
     setCategories(categories.filter(cat => cat.id !== deleteCategory.id));
     setDeleteCategory(null);
     setReassignTo('');
+    updateCategoryPostCounts();
   };
 
   return (

@@ -24,43 +24,70 @@ const CreateKnowledgeBase = () => {
   const { toast } = useToast();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [departments, setDepartments] = useState<string[]>([]);
+  const [docType, setDocType] = useState('');
   const [status, setStatus] = useState('draft');
-  const [documentType, setDocumentType] = useState('');
+  const [author, setAuthor] = useState('');
+  const [departmentTags, setDepartmentTags] = useState<string[]>([]);
+  const [selectedDepartment, setSelectedDepartment] = useState('');
+
+  const docTypeOptions = [
+    'Onboarding',
+    'Company Policy',
+    'Procedure',
+    'Guideline',
+    'Company Products'
+  ];
+
+  const userOptions = [
+    'John Smith',
+    'Sarah Johnson',
+    'Michael Brown',
+    'Emily Davis',
+    'David Wilson',
+    'Jessica Miller',
+    'Robert Taylor',
+    'Amanda Anderson',
+    'Christopher Lee',
+    'Lisa Garcia'
+  ];
 
   const departmentOptions = [
     'Human Resources',
-    'Information Technology', 
+    'Information Technology',
     'Finance',
-    'Operations',
-    'Legal',
-    'Marketing',
     'Sales',
-    'Customer Service',
-    'Research & Development',
-    'Quality Assurance',
-    'Procurement',
-    'Administration'
+    'Marketing',
+    'Legal',
+    'Operations',
+    'Product'
   ];
 
-  // If editing, load document data (mocked for now)
+  // If editing, load document data from localStorage
   React.useEffect(() => {
     if (id) {
-      // Replace with real fetch logic as needed
-      const doc = {
-        title: 'Sample Document',
-        content: 'Sample content',
-        departments: ['HR'],
-        status: 'draft',
-        documentType: 'policy'
-      };
-      setTitle(doc.title);
-      setContent(doc.content);
-      setDepartments(doc.departments);
-      setStatus(doc.status);
-      setDocumentType(doc.documentType);
+      const documents = JSON.parse(localStorage.getItem('documents') || '[]');
+      const doc = documents.find((d: any) => d.id === parseInt(id));
+      if (doc) {
+        setTitle(doc.title);
+        setContent(doc.content);
+        setDocType(doc.docType || '');
+        setStatus(doc.status);
+        setAuthor(doc.author || '');
+        setDepartmentTags(doc.departmentTags || []);
+      }
     }
   }, [id]);
+
+  const handleAddDepartmentTag = () => {
+    if (selectedDepartment && !departmentTags.includes(selectedDepartment)) {
+      setDepartmentTags([...departmentTags, selectedDepartment]);
+      setSelectedDepartment('');
+    }
+  };
+
+  const handleRemoveDepartmentTag = (tagToRemove: string) => {
+    setDepartmentTags(departmentTags.filter(tag => tag !== tagToRemove));
+  };
 
   const handleSaveDocument = async () => {
     if (!title.trim()) {
@@ -81,16 +108,7 @@ const CreateKnowledgeBase = () => {
       return;
     }
 
-    if (departments.length === 0) {
-      toast({
-        title: "Validation Error",
-        description: "Please select at least one department for your document.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!documentType) {
+    if (!docType) {
       toast({
         title: "Validation Error",
         description: "Please select a document type.",
@@ -99,16 +117,48 @@ const CreateKnowledgeBase = () => {
       return;
     }
 
+    if (!author) {
+      toast({
+        title: "Validation Error",
+        description: "Please select an author.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      console.log('Saving knowledge base document:', { 
-        title, 
-        content, 
-        departments, 
-        status, 
-        documentType
-      });
+      // Get existing documents
+      const existingDocuments = JSON.parse(localStorage.getItem('documents') || '[]');
+      
+      const documentData = {
+        id: id ? parseInt(id) : Date.now(),
+        title: title.trim(),
+        content: content.trim(),
+        docType: docType,
+        status: status,
+        author: author,
+        departmentTags: departmentTags,
+        createdAt: id ? existingDocuments.find((d: any) => d.id === parseInt(id))?.createdAt || new Date().toISOString() : new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      let updatedDocuments;
+      if (id) {
+        // Update existing document
+        updatedDocuments = existingDocuments.map((d: any) => 
+          d.id === parseInt(id) ? documentData : d
+        );
+      } else {
+        // Add new document
+        updatedDocuments = [documentData, ...existingDocuments];
+      }
+      
+      // Save to localStorage
+      localStorage.setItem('documents', JSON.stringify(updatedDocuments));
+      
+      console.log('Saving knowledge base document:', documentData);
       
       toast({
         title: "Success",
@@ -146,16 +196,14 @@ const CreateKnowledgeBase = () => {
               h1 { color: #333; }
               .content { line-height: 1.6; }
               .meta { background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0; }
-              .department { background: #f0f0f0; padding: 5px 10px; border-radius: 15px; display: inline-block; margin: 5px; }
-              .document-type { background: #e0f2fe; padding: 5px 10px; border-radius: 15px; display: inline-block; margin-bottom: 10px; }
+              .doc-type { background: #e0f2fe; padding: 5px 10px; border-radius: 15px; display: inline-block; margin-bottom: 10px; }
+              .author { background: #f0f0f0; padding: 5px 10px; border-radius: 15px; display: inline-block; margin: 5px; }
             </style>
           </head>
           <body>
-            <div>
-              <span class="document-type">${documentType}</span>
-            </div>
-            <div>
-              ${departments.map(dept => `<span class="department">${dept}</span>`).join('')}
+            <div class="meta">
+              <span class="doc-type">Type: ${docType}</span>
+              <span class="author">Author: ${author}</span>
             </div>
             <h1>${title}</h1>
             <div class="content">${content}</div>
@@ -166,15 +214,7 @@ const CreateKnowledgeBase = () => {
     }
   };
 
-  const addDepartment = (department: string) => {
-    if (!departments.includes(department)) {
-      setDepartments([...departments, department]);
-    }
-  };
-
-  const removeDepartment = (department: string) => {
-    setDepartments(departments.filter(d => d !== department));
-  };
+  // Removed department functions as we're now using document types
 
   const quillModules = {
     toolbar: [
@@ -235,54 +275,76 @@ const CreateKnowledgeBase = () => {
               </div>
 
               <div>
-                <Label htmlFor="documentType">Document Type</Label>
-                <Select value={documentType} onValueChange={setDocumentType}>
+                <Label htmlFor="docType">Document Type</Label>
+                <Select value={docType} onValueChange={setDocType}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select document type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="policy">Policy</SelectItem>
-                    <SelectItem value="procedure">Procedure</SelectItem>
-                    <SelectItem value="guideline">Guideline</SelectItem>
-                    <SelectItem value="handbook">Handbook</SelectItem>
-                    <SelectItem value="manual">Manual</SelectItem>
-                    <SelectItem value="faq">FAQ</SelectItem>
-                    <SelectItem value="template">Template</SelectItem>
+                    {docTypeOptions.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div>
-                <Label htmlFor="departments">Departments</Label>
-                <Select onValueChange={addDepartment}>
+                <Label htmlFor="author">Author</Label>
+                <Select value={author} onValueChange={setAuthor}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select departments" />
+                    <SelectValue placeholder="Select author" />
                   </SelectTrigger>
                   <SelectContent>
-                    {departmentOptions.map((dept) => (
-                      <SelectItem 
-                        key={dept} 
-                        value={dept}
-                        disabled={departments.includes(dept)}
-                      >
-                        {dept}
+                    {userOptions.map((user) => (
+                      <SelectItem key={user} value={user}>
+                        {user}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                {departments.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {departments.map((dept, index) => (
-                      <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                        {dept}
-                        <X 
-                          className="h-3 w-3 cursor-pointer" 
-                          onClick={() => removeDepartment(dept)}
-                        />
-                      </Badge>
-                    ))}
+              </div>
+
+              <div>
+                <Label htmlFor="departmentTags">Department Tags</Label>
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Select department" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {departmentOptions.map((dept) => (
+                          <SelectItem key={dept} value={dept}>
+                            {dept}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button 
+                      type="button" 
+                      onClick={handleAddDepartmentTag}
+                      disabled={!selectedDepartment || departmentTags.includes(selectedDepartment)}
+                      size="sm"
+                    >
+                      Add
+                    </Button>
                   </div>
-                )}
+                  {departmentTags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {departmentTags.map((tag) => (
+                        <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                          {tag}
+                          <X 
+                            className="h-3 w-3 cursor-pointer" 
+                            onClick={() => handleRemoveDepartmentTag(tag)}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
               
               <div>
@@ -318,18 +380,25 @@ const CreateKnowledgeBase = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="published">Published</SelectItem>
                     <SelectItem value="review">Under Review</SelectItem>
+                    <SelectItem value="published">Published</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="flex space-x-2">
-                <Button variant="outline" onClick={handlePreview} className="flex-1">
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handlePreview}
+                  className="w-full"
+                >
                   <Eye className="h-4 w-4 mr-2" />
                   Preview
                 </Button>
-                <Button onClick={handleSaveDocument} className="flex-1">
+                <Button
+                  onClick={handleSaveDocument}
+                  className="w-full"
+                >
                   <Save className="h-4 w-4 mr-2" />
                   {getActionText()}
                 </Button>

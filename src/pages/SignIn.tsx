@@ -38,7 +38,7 @@ const SignIn = () => {
           title: "Success",
           description: "Signed in successfully",
         });
-        navigate('/');
+        navigate('/post-management');
       } else {
         toast({
           title: "Error",

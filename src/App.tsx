@@ -10,6 +10,8 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { NetworkStatus } from "./components/NetworkStatus";
+import { initializeSampleData } from "./utils/sampleData";
+import "./utils/testHelpers"; // Import for development debugging
 import {
   LazyIndex,
   LazySignIn,
@@ -41,6 +43,9 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+// Initialize sample data when app starts
+initializeSampleData();
 
 const App = () => (
   <ErrorBoundary>

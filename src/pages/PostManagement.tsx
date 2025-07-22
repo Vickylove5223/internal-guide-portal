@@ -696,10 +696,10 @@ const PostManagement = () => {
             <Button 
               variant="outline"
               className="flex items-center gap-2"
-              onClick={() => navigate('/departments-management')}
+              onClick={() => handleShowCategoriesModal('departments')}
             >
               <Settings className="h-4 w-4" />
-              Manage Departments
+              Manage Doc Types
             </Button>
           </div>
 
@@ -718,18 +718,15 @@ const PostManagement = () => {
             </div>
             <Select value={filterDepartment} onValueChange={setFilterDepartment}>
               <SelectTrigger className="w-full md:w-[180px]">
-                <SelectValue placeholder="Department" />
+                <SelectValue placeholder="Doc Type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Departments</SelectItem>
-                <SelectItem value="HR">HR</SelectItem>
-                <SelectItem value="IT">IT</SelectItem>
-                <SelectItem value="Finance">Finance</SelectItem>
-                <SelectItem value="Legal">Legal</SelectItem>
-                <SelectItem value="Operations">Operations</SelectItem>
-                <SelectItem value="Sales">Sales</SelectItem>
-                <SelectItem value="Safety">Safety</SelectItem>
-                <SelectItem value="Customer Service">Customer Service</SelectItem>
+                <SelectItem value="all">All Doc Types</SelectItem>
+                <SelectItem value="Onboarding">Onboarding</SelectItem>
+                <SelectItem value="Company Policy">Company Policy</SelectItem>
+                <SelectItem value="Procedure">Procedure</SelectItem>
+                <SelectItem value="Guideline">Guideline</SelectItem>
+                <SelectItem value="Company Products">Company Products</SelectItem>
               </SelectContent>
             </Select>
             <Select value={knowledgeFilterStatus} onValueChange={setKnowledgeFilterStatus}>
@@ -755,8 +752,8 @@ const PostManagement = () => {
                 render: (value: string) => <span className="font-medium">{value}</span>
               },
               {
-                key: 'category',
-                header: 'Department',
+                key: 'docType',
+                header: 'Doc Type',
                 render: (value: string) => <span className="text-sm text-gray-900">{value}</span>
               },
               {
