@@ -71,124 +71,95 @@ const PostManagement = () => {
   const [deletingSuggestion, setDeletingSuggestion] = useState<any | null>(null);
 
   const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: 'Company Quarterly Results',
-      category: 'Company News',
-      status: 'Published',
-      author: 'John Smith',
-      createdAt: '2024-01-20T10:30:00Z'
-    },
-    {
-      id: 2,
-      title: 'New Employee Benefits Package',
-      category: 'HR Updates',
-      status: 'Draft',
-      author: 'Sarah Johnson',
-      createdAt: '2024-01-19T14:20:00Z'
-    },
-    {
-      id: 3,
-      title: 'Annual Company Retreat',
-      category: 'Company Events',
-      status: 'Published',
-      author: 'Mike Wilson',
-      createdAt: '2024-01-18T09:15:00Z'
-    }
+    { id: 1, title: 'Company Quarterly Results Q4 2024', category: 'Company News', status: 'Published', author: 'John Smith', createdAt: '2024-01-20T10:30:00Z' },
+    { id: 2, title: 'New Employee Benefits Package', category: 'HR Updates', status: 'Draft', author: 'Sarah Johnson', createdAt: '2024-01-19T14:20:00Z' },
+    { id: 3, title: 'Annual Company Retreat Planning', category: 'Company Events', status: 'Published', author: 'Mike Wilson', createdAt: '2024-01-18T09:15:00Z' },
+    { id: 4, title: 'Remote Work Policy Updates', category: 'HR Updates', status: 'Published', author: 'Emma Davis', createdAt: '2024-01-17T16:45:00Z' },
+    { id: 5, title: 'New Product Launch Announcement', category: 'Company News', status: 'Published', author: 'David Brown', createdAt: '2024-01-16T11:30:00Z' },
+    { id: 6, title: 'Team Building Activities Schedule', category: 'Company Events', status: 'Draft', author: 'Lisa Garcia', createdAt: '2024-01-15T13:20:00Z' },
+    { id: 7, title: 'Performance Review Process Changes', category: 'HR Updates', status: 'Published', author: 'Robert Taylor', createdAt: '2024-01-14T08:00:00Z' },
+    { id: 8, title: 'Office Renovation Progress Update', category: 'Company News', status: 'Published', author: 'Jennifer Wilson', createdAt: '2024-01-13T15:30:00Z' },
+    { id: 9, title: 'Holiday Schedule 2024', category: 'HR Updates', status: 'Published', author: 'Michael Anderson', createdAt: '2024-01-12T10:15:00Z' },
+    { id: 10, title: 'Client Success Stories Compilation', category: 'Company News', status: 'Draft', author: 'Amanda White', createdAt: '2024-01-11T12:45:00Z' },
+    { id: 11, title: 'Wellness Program Initiative', category: 'HR Updates', status: 'Published', author: 'Christopher Lee', createdAt: '2024-01-10T09:30:00Z' },
+    { id: 12, title: 'Quarterly Sales Achievement', category: 'Company News', status: 'Published', author: 'Patricia Martinez', createdAt: '2024-01-09T14:00:00Z' },
+    { id: 13, title: 'New Hire Orientation Updates', category: 'HR Updates', status: 'Draft', author: 'Daniel Rodriguez', createdAt: '2024-01-08T11:15:00Z' },
+    { id: 14, title: 'Company Anniversary Celebration', category: 'Company Events', status: 'Published', author: 'Michelle Thompson', createdAt: '2024-01-07T16:20:00Z' },
+    { id: 15, title: 'Sustainability Initiatives Report', category: 'Company News', status: 'Published', author: 'Kevin Clark', createdAt: '2024-01-06T13:45:00Z' },
+    { id: 16, title: 'Training Program Schedule Q1', category: 'HR Updates', status: 'Draft', author: 'Nancy Lewis', createdAt: '2024-01-05T10:00:00Z' },
+    { id: 17, title: 'Customer Feedback Summary', category: 'Company News', status: 'Published', author: 'Steven Walker', createdAt: '2024-01-04T15:10:00Z' },
+    { id: 18, title: 'Security Policy Updates', category: 'Company News', status: 'Published', author: 'Laura Hall', createdAt: '2024-01-03T08:30:00Z' },
+    { id: 19, title: 'Budget Planning Workshop', category: 'Company Events', status: 'Draft', author: 'Paul Allen', createdAt: '2024-01-02T12:00:00Z' },
+    { id: 20, title: 'Year-End Recognition Awards', category: 'HR Updates', status: 'Published', author: 'Maria Young', createdAt: '2024-01-01T17:30:00Z' }
   ]);
 
   const [documents, setDocuments] = useState([
-    {
-      id: 1,
-      title: 'Employee Handbook 2024',
-      description: 'Complete guide for all employees including policies, procedures, and benefits',
-      category: 'HR',
-      status: 'Published',
-      author: 'HR Team',
-      createdAt: '2024-01-15T11:30:00Z'
-    },
-    {
-      id: 2,
-      title: 'IT Security Guidelines',
-      description: 'Security protocols and best practices for system access',
-      category: 'IT',
-      status: 'Published',
-      author: 'IT Team',
-      createdAt: '2024-01-10T16:20:00Z'
-    },
-    {
-      id: 3,
-      title: 'Performance Review Guidelines',
-      description: 'Annual performance review process and evaluation criteria',
-      category: 'HR',
-      status: 'Published',
-      author: 'HR Team',
-      createdAt: '2024-01-08T09:15:00Z'
-    },
-    {
-      id: 4,
-      title: 'Expense Policy 2024',
-      description: 'Updated expense and reimbursement policies',
-      category: 'Finance',
-      status: 'Published',
-      author: 'Finance Team',
-      createdAt: '2024-01-12T13:45:00Z'
-    },
-    {
-      id: 5,
-      title: 'Software Installation Guide',
-      description: 'Step-by-step software installation procedures',
-      category: 'IT',
-      status: 'Draft',
-      author: 'IT Team',
-      createdAt: '2024-01-05T11:20:00Z'
-    }
+    { id: 1, title: 'Employee Handbook 2024', description: 'Complete guide for all employees including policies, procedures, and benefits', category: 'HR', status: 'Published', author: 'HR Team', createdAt: '2024-01-15T11:30:00Z' },
+    { id: 2, title: 'IT Security Guidelines', description: 'Security protocols and best practices for system access', category: 'IT', status: 'Published', author: 'IT Team', createdAt: '2024-01-10T16:20:00Z' },
+    { id: 3, title: 'Performance Review Guidelines', description: 'Annual performance review process and evaluation criteria', category: 'HR', status: 'Published', author: 'HR Team', createdAt: '2024-01-08T09:15:00Z' },
+    { id: 4, title: 'Expense Policy 2024', description: 'Updated expense and reimbursement policies', category: 'Finance', status: 'Published', author: 'Finance Team', createdAt: '2024-01-12T13:45:00Z' },
+    { id: 5, title: 'Software Installation Guide', description: 'Step-by-step software installation procedures', category: 'IT', status: 'Draft', author: 'IT Team', createdAt: '2024-01-05T11:20:00Z' },
+    { id: 6, title: 'Remote Work Best Practices', description: 'Guidelines for effective remote work and collaboration', category: 'HR', status: 'Published', author: 'Operations Team', createdAt: '2024-01-20T10:00:00Z' },
+    { id: 7, title: 'Data Backup Procedures', description: 'Comprehensive data backup and recovery procedures', category: 'IT', status: 'Published', author: 'IT Security', createdAt: '2024-01-18T14:30:00Z' },
+    { id: 8, title: 'Travel and Accommodation Policy', description: 'Business travel guidelines and booking procedures', category: 'Finance', status: 'Published', author: 'Finance Department', createdAt: '2024-01-16T09:45:00Z' },
+    { id: 9, title: 'Code of Conduct', description: 'Professional conduct and ethical guidelines', category: 'HR', status: 'Published', author: 'Legal Team', createdAt: '2024-01-14T15:20:00Z' },
+    { id: 10, title: 'Emergency Response Plan', description: 'Safety procedures and emergency contact information', category: 'Safety', status: 'Published', author: 'Safety Committee', createdAt: '2024-01-13T08:15:00Z' },
+    { id: 11, title: 'Equipment Usage Manual', description: 'Proper usage and maintenance of office equipment', category: 'Operations', status: 'Draft', author: 'Facilities Team', createdAt: '2024-01-11T12:30:00Z' },
+    { id: 12, title: 'Client Communication Standards', description: 'Professional communication guidelines for client interactions', category: 'Sales', status: 'Published', author: 'Sales Team', createdAt: '2024-01-09T16:00:00Z' },
+    { id: 13, title: 'Quality Assurance Checklist', description: 'Quality control procedures and standards', category: 'Operations', status: 'Published', author: 'QA Team', createdAt: '2024-01-07T11:45:00Z' },
+    { id: 14, title: 'Privacy Policy Compliance', description: 'Data protection and privacy compliance guidelines', category: 'Legal', status: 'Published', author: 'Legal Department', createdAt: '2024-01-06T13:20:00Z' },
+    { id: 15, title: 'Project Management Framework', description: 'Standardized project management methodologies', category: 'Operations', status: 'Draft', author: 'Project Office', createdAt: '2024-01-04T10:10:00Z' },
+    { id: 16, title: 'Vendor Management Guidelines', description: 'Procedures for vendor selection and management', category: 'Finance', status: 'Published', author: 'Procurement Team', createdAt: '2024-01-03T14:45:00Z' },
+    { id: 17, title: 'Training Program Catalog', description: 'Available training courses and certification programs', category: 'HR', status: 'Published', author: 'Learning Team', createdAt: '2024-01-02T09:30:00Z' },
+    { id: 18, title: 'Network Security Protocols', description: 'Network access and security configuration guidelines', category: 'IT', status: 'Published', author: 'Network Team', createdAt: '2024-01-01T15:15:00Z' },
+    { id: 19, title: 'Customer Service Standards', description: 'Service level agreements and customer support guidelines', category: 'Customer Service', status: 'Draft', author: 'Support Team', createdAt: '2023-12-30T11:00:00Z' },
+    { id: 20, title: 'Sustainability Guidelines', description: 'Environmental policies and sustainable practices', category: 'Operations', status: 'Published', author: 'Green Team', createdAt: '2023-12-29T16:30:00Z' }
   ]);
 
   const [events, setEvents] = useState([
-    {
-      id: 1,
-      title: 'Annual Company Retreat 2024',
-      category: 'Company Events',
-      status: 'Published',
-      author: 'HR Team',
-      createdAt: '2024-01-20T10:30:00Z'
-    },
-    {
-      id: 2,
-      title: 'Quarterly All-Hands Meeting',
-      category: 'Company Events',
-      status: 'Published',
-      author: 'Executive Team',
-      createdAt: '2024-01-18T14:20:00Z'
-    },
-    {
-      id: 3,
-      title: 'Team Building Workshop',
-      category: 'HR Events',
-      status: 'Draft',
-      author: 'HR Team',
-      createdAt: '2024-01-15T09:15:00Z'
-    }
+    { id: 1, title: 'Annual Company Retreat 2024', category: 'Company Events', status: 'Published', author: 'HR Team', createdAt: '2024-01-20T10:30:00Z' },
+    { id: 2, title: 'Quarterly All-Hands Meeting Q1', category: 'Company Events', status: 'Published', author: 'Executive Team', createdAt: '2024-01-18T14:20:00Z' },
+    { id: 3, title: 'Team Building Workshop', category: 'HR Events', status: 'Draft', author: 'HR Team', createdAt: '2024-01-15T09:15:00Z' },
+    { id: 4, title: 'Product Launch Event', category: 'Marketing Events', status: 'Published', author: 'Marketing Team', createdAt: '2024-01-19T16:45:00Z' },
+    { id: 5, title: 'Customer Appreciation Dinner', category: 'Client Events', status: 'Published', author: 'Sales Team', createdAt: '2024-01-17T11:30:00Z' },
+    { id: 6, title: 'Tech Innovation Summit', category: 'IT Events', status: 'Draft', author: 'IT Department', createdAt: '2024-01-16T13:20:00Z' },
+    { id: 7, title: 'Leadership Development Workshop', category: 'Training Events', status: 'Published', author: 'Learning Team', createdAt: '2024-01-14T08:00:00Z' },
+    { id: 8, title: 'Charity Fundraising Gala', category: 'CSR Events', status: 'Published', author: 'CSR Committee', createdAt: '2024-01-13T15:30:00Z' },
+    { id: 9, title: 'Wellness Week Activities', category: 'Employee Wellness', status: 'Published', author: 'Wellness Team', createdAt: '2024-01-12T10:15:00Z' },
+    { id: 10, title: 'New Hire Orientation Session', category: 'HR Events', status: 'Draft', author: 'Onboarding Team', createdAt: '2024-01-11T12:45:00Z' },
+    { id: 11, title: 'Industry Conference Participation', category: 'External Events', status: 'Published', author: 'Business Development', createdAt: '2024-01-10T09:30:00Z' },
+    { id: 12, title: 'Holiday Party Planning', category: 'Social Events', status: 'Published', author: 'Event Committee', createdAt: '2024-01-09T14:00:00Z' },
+    { id: 13, title: 'Skills Development Bootcamp', category: 'Training Events', status: 'Draft', author: 'Training Department', createdAt: '2024-01-08T11:15:00Z' },
+    { id: 14, title: 'Client Advisory Board Meeting', category: 'Client Events', status: 'Published', author: 'Customer Success', createdAt: '2024-01-07T16:20:00Z' },
+    { id: 15, title: 'Innovation Hackathon', category: 'IT Events', status: 'Published', author: 'Innovation Lab', createdAt: '2024-01-06T13:45:00Z' },
+    { id: 16, title: 'Safety Training Workshop', category: 'Training Events', status: 'Draft', author: 'Safety Team', createdAt: '2024-01-05T10:00:00Z' },
+    { id: 17, title: 'Mentorship Program Launch', category: 'HR Events', status: 'Published', author: 'Career Development', createdAt: '2024-01-04T15:10:00Z' },
+    { id: 18, title: 'Supplier Partner Summit', category: 'Business Events', status: 'Published', author: 'Procurement Team', createdAt: '2024-01-03T08:30:00Z' },
+    { id: 19, title: 'Digital Transformation Seminar', category: 'IT Events', status: 'Draft', author: 'Digital Team', createdAt: '2024-01-02T12:00:00Z' },
+    { id: 20, title: 'Year-End Recognition Ceremony', category: 'Company Events', status: 'Published', author: 'Executive Team', createdAt: '2024-01-01T17:30:00Z' }
   ]);
 
   const [suggestions, setSuggestions] = useState([
-    {
-      id: 1,
-      title: 'Improve Office Lighting',
-      category: 'Workplace Environment',
-      status: 'Pending',
-      submittedBy: 'Anonymous',
-      submittedAt: '2024-01-20T10:30:00Z'
-    },
-    {
-      id: 2,
-      title: 'Flexible Working Hours',
-      category: 'Employee Benefits',
-      status: 'Reviewed',
-      submittedBy: 'John Doe',
-      submittedAt: '2024-01-18T14:20:00Z'
-    }
+    { id: 1, title: 'Improve Office Lighting in Main Floor', category: 'Workplace Environment', status: 'Pending', submittedBy: 'Anonymous', submittedAt: '2024-01-20T10:30:00Z' },
+    { id: 2, title: 'Implement Flexible Working Hours', category: 'Employee Benefits', status: 'Reviewed', submittedBy: 'John Doe', submittedAt: '2024-01-18T14:20:00Z' },
+    { id: 3, title: 'Add More Healthy Snack Options', category: 'Workplace Environment', status: 'Pending', submittedBy: 'Sarah Miller', submittedAt: '2024-01-19T09:15:00Z' },
+    { id: 4, title: 'Upgrade Conference Room Technology', category: 'Technology', status: 'Reviewed', submittedBy: 'Michael Johnson', submittedAt: '2024-01-17T16:45:00Z' },
+    { id: 5, title: 'Create Quiet Work Zones', category: 'Workplace Environment', status: 'Pending', submittedBy: 'Emily Chen', submittedAt: '2024-01-16T11:30:00Z' },
+    { id: 6, title: 'Improve Parking Situation', category: 'Facilities', status: 'Under Review', submittedBy: 'David Wilson', submittedAt: '2024-01-15T13:20:00Z' },
+    { id: 7, title: 'Extend Gym Hours', category: 'Employee Benefits', status: 'Pending', submittedBy: 'Lisa Rodriguez', submittedAt: '2024-01-14T08:00:00Z' },
+    { id: 8, title: 'Better Coffee Machine for Kitchen', category: 'Workplace Environment', status: 'Reviewed', submittedBy: 'Robert Taylor', submittedAt: '2024-01-13T15:30:00Z' },
+    { id: 9, title: 'Mental Health Support Programs', category: 'Employee Benefits', status: 'Under Review', submittedBy: 'Jennifer Brown', submittedAt: '2024-01-12T10:15:00Z' },
+    { id: 10, title: 'Remote Work Equipment Budget', category: 'Technology', status: 'Pending', submittedBy: 'Christopher Lee', submittedAt: '2024-01-11T12:45:00Z' },
+    { id: 11, title: 'Team Building Activities Budget', category: 'Team Activities', status: 'Reviewed', submittedBy: 'Amanda Davis', submittedAt: '2024-01-10T09:30:00Z' },
+    { id: 12, title: 'Improve Cafeteria Menu Variety', category: 'Workplace Environment', status: 'Pending', submittedBy: 'Daniel Martinez', submittedAt: '2024-01-09T14:00:00Z' },
+    { id: 13, title: 'Professional Development Budget', category: 'Employee Benefits', status: 'Under Review', submittedBy: 'Michelle Thompson', submittedAt: '2024-01-08T11:15:00Z' },
+    { id: 14, title: 'Improve Wi-Fi Speed in Office', category: 'Technology', status: 'Reviewed', submittedBy: 'Kevin Clark', submittedAt: '2024-01-07T16:20:00Z' },
+    { id: 15, title: 'Create Mother\'s Room', category: 'Facilities', status: 'Pending', submittedBy: 'Nancy Lewis', submittedAt: '2024-01-06T13:45:00Z' },
+    { id: 16, title: 'Employee Recognition Program', category: 'Employee Benefits', status: 'Under Review', submittedBy: 'Steven Walker', submittedAt: '2024-01-05T10:00:00Z' },
+    { id: 17, title: 'Bike Parking and Shower Facilities', category: 'Facilities', status: 'Pending', submittedBy: 'Laura Hall', submittedAt: '2024-01-04T15:10:00Z' },
+    { id: 18, title: 'Reduce Meeting Times', category: 'Process Improvement', status: 'Reviewed', submittedBy: 'Paul Allen', submittedAt: '2024-01-03T08:30:00Z' },
+    { id: 19, title: 'Standing Desk Options', category: 'Workplace Environment', status: 'Pending', submittedBy: 'Maria Young', submittedAt: '2024-01-02T12:00:00Z' },
+    { id: 20, title: 'Company Newsletter', category: 'Communication', status: 'Under Review', submittedBy: 'James King', submittedAt: '2024-01-01T17:30:00Z' }
   ]);
 
   // Load posts from localStorage on mount
@@ -275,6 +246,7 @@ const PostManagement = () => {
       case 'archived': return 'bg-gray-100 text-gray-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'reviewed': return 'bg-blue-100 text-blue-800';
+      case 'under review': return 'bg-purple-100 text-purple-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -753,6 +725,11 @@ const PostManagement = () => {
                 <SelectItem value="HR">HR</SelectItem>
                 <SelectItem value="IT">IT</SelectItem>
                 <SelectItem value="Finance">Finance</SelectItem>
+                <SelectItem value="Legal">Legal</SelectItem>
+                <SelectItem value="Operations">Operations</SelectItem>
+                <SelectItem value="Sales">Sales</SelectItem>
+                <SelectItem value="Safety">Safety</SelectItem>
+                <SelectItem value="Customer Service">Customer Service</SelectItem>
               </SelectContent>
             </Select>
             <Select value={knowledgeFilterStatus} onValueChange={setKnowledgeFilterStatus}>
