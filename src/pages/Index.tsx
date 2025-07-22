@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,8 +8,9 @@ import { useCategories } from '@/contexts/CategoryContext';
 const Index = () => {
   const navigate = useNavigate();
   const { categories } = useCategories();
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]?.slug || 'posts/all-updates');
+  const [selectedCategory, setSelectedCategory] = useState('posts/all-updates');
   const [allPosts, setAllPosts] = useState([]);
+  
   // Load posts from localStorage
   useEffect(() => {
     const storedPosts = localStorage.getItem('posts');
@@ -37,7 +39,9 @@ const Index = () => {
   };
 
   // Find the selected category name for the heading
-  const selectedCategoryName = categories.find(cat => cat.slug === selectedCategory)?.name || 'All Updates';
+  const selectedCategoryName = selectedCategory === 'posts/all-updates' 
+    ? 'All Updates' 
+    : categories.find(cat => cat.slug === selectedCategory)?.name || 'All Updates';
 
   return (
     <Layout onCategorySelect={setSelectedCategory} selectedCategory={selectedCategory}>

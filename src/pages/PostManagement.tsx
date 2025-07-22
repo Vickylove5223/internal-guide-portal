@@ -71,26 +71,26 @@ const PostManagement = () => {
   const [deletingSuggestion, setDeletingSuggestion] = useState<any | null>(null);
 
   const [posts, setPosts] = useState([
-    { id: 1, title: 'Company Quarterly Results Q4 2024', category: 'Company News', status: 'Published', author: 'John Smith', createdAt: '2024-01-20T10:30:00Z' },
-    { id: 2, title: 'New Employee Benefits Package', category: 'HR Updates', status: 'Draft', author: 'Sarah Johnson', createdAt: '2024-01-19T14:20:00Z' },
+    { id: 1, title: 'Quarterly Performance Review Results', category: 'Announcements', status: 'Published', author: 'John Smith', createdAt: '2024-01-20T10:30:00Z' },
+    { id: 2, title: 'New Employee Benefits Package 2024', category: 'HR Updates', status: 'Draft', author: 'Sarah Johnson', createdAt: '2024-01-19T14:20:00Z' },
     { id: 3, title: 'Annual Company Retreat Planning', category: 'Company Events', status: 'Published', author: 'Mike Wilson', createdAt: '2024-01-18T09:15:00Z' },
     { id: 4, title: 'Remote Work Policy Updates', category: 'HR Updates', status: 'Published', author: 'Emma Davis', createdAt: '2024-01-17T16:45:00Z' },
-    { id: 5, title: 'New Product Launch Announcement', category: 'Company News', status: 'Published', author: 'David Brown', createdAt: '2024-01-16T11:30:00Z' },
+    { id: 5, title: 'Q4 Financial Results Announcement', category: 'Business News', status: 'Published', author: 'David Brown', createdAt: '2024-01-16T11:30:00Z' },
     { id: 6, title: 'Team Building Activities Schedule', category: 'Company Events', status: 'Draft', author: 'Lisa Garcia', createdAt: '2024-01-15T13:20:00Z' },
     { id: 7, title: 'Performance Review Process Changes', category: 'HR Updates', status: 'Published', author: 'Robert Taylor', createdAt: '2024-01-14T08:00:00Z' },
-    { id: 8, title: 'Office Renovation Progress Update', category: 'Company News', status: 'Published', author: 'Jennifer Wilson', createdAt: '2024-01-13T15:30:00Z' },
+    { id: 8, title: 'Market Expansion Strategy Update', category: 'Business News', status: 'Published', author: 'Jennifer Wilson', createdAt: '2024-01-13T15:30:00Z' },
     { id: 9, title: 'Holiday Schedule 2024', category: 'HR Updates', status: 'Published', author: 'Michael Anderson', createdAt: '2024-01-12T10:15:00Z' },
-    { id: 10, title: 'Client Success Stories Compilation', category: 'Company News', status: 'Draft', author: 'Amanda White', createdAt: '2024-01-11T12:45:00Z' },
-    { id: 11, title: 'Wellness Program Initiative', category: 'HR Updates', status: 'Published', author: 'Christopher Lee', createdAt: '2024-01-10T09:30:00Z' },
-    { id: 12, title: 'Quarterly Sales Achievement', category: 'Company News', status: 'Published', author: 'Patricia Martinez', createdAt: '2024-01-09T14:00:00Z' },
+    { id: 10, title: 'Industry Leadership Recognition', category: 'Announcements', status: 'Draft', author: 'Amanda White', createdAt: '2024-01-11T12:45:00Z' },
+    { id: 11, title: 'Wellness Program Initiative Launch', category: 'HR Updates', status: 'Published', author: 'Christopher Lee', createdAt: '2024-01-10T09:30:00Z' },
+    { id: 12, title: 'Economic Outlook Report', category: 'Political News', status: 'Published', author: 'Patricia Martinez', createdAt: '2024-01-09T14:00:00Z' },
     { id: 13, title: 'New Hire Orientation Updates', category: 'HR Updates', status: 'Draft', author: 'Daniel Rodriguez', createdAt: '2024-01-08T11:15:00Z' },
     { id: 14, title: 'Company Anniversary Celebration', category: 'Company Events', status: 'Published', author: 'Michelle Thompson', createdAt: '2024-01-07T16:20:00Z' },
-    { id: 15, title: 'Sustainability Initiatives Report', category: 'Company News', status: 'Published', author: 'Kevin Clark', createdAt: '2024-01-06T13:45:00Z' },
-    { id: 16, title: 'Training Program Schedule Q1', category: 'HR Updates', status: 'Draft', author: 'Nancy Lewis', createdAt: '2024-01-05T10:00:00Z' },
-    { id: 17, title: 'Customer Feedback Summary', category: 'Company News', status: 'Published', author: 'Steven Walker', createdAt: '2024-01-04T15:10:00Z' },
-    { id: 18, title: 'Security Policy Updates', category: 'Company News', status: 'Published', author: 'Laura Hall', createdAt: '2024-01-03T08:30:00Z' },
-    { id: 19, title: 'Budget Planning Workshop', category: 'Company Events', status: 'Draft', author: 'Paul Allen', createdAt: '2024-01-02T12:00:00Z' },
-    { id: 20, title: 'Year-End Recognition Awards', category: 'HR Updates', status: 'Published', author: 'Maria Young', createdAt: '2024-01-01T17:30:00Z' }
+    { id: 15, title: 'CEO Leadership Change Announcement', category: 'Announcements', status: 'Published', author: 'Kevin Clark', createdAt: '2024-01-06T13:45:00Z' },
+    { id: 16, title: 'Professional Development Opportunities', category: 'HR Updates', status: 'Draft', author: 'Nancy Lewis', createdAt: '2024-01-05T10:00:00Z' },
+    { id: 17, title: 'Customer Success Story Feature', category: 'Business News', status: 'Published', author: 'Steven Walker', createdAt: '2024-01-04T15:10:00Z' },
+    { id: 18, title: 'Government Policy Impact Assessment', category: 'Political News', status: 'Published', author: 'Laura Hall', createdAt: '2024-01-03T08:30:00Z' },
+    { id: 19, title: 'Innovation Summit Planning', category: 'Company Events', status: 'Draft', author: 'Paul Allen', createdAt: '2024-01-02T12:00:00Z' },
+    { id: 20, title: 'Year-End Achievement Awards', category: 'Announcements', status: 'Published', author: 'Maria Young', createdAt: '2024-01-01T17:30:00Z' }
   ]);
 
   const [documents, setDocuments] = useState([

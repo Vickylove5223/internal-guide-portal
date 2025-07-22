@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -30,7 +31,6 @@ export function getDefaultCategories(type = 'categories') {
     }));
   } else {
     const cats = [
-      'All Updates',
       'Announcements',
       'HR Updates',
       'Business News',
