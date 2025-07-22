@@ -46,6 +46,30 @@ const PostManagement = () => {
   const [eventPage, setEventPage] = useState(1);
   const [suggestionPage, setSuggestionPage] = useState(1);
 
+  // Add/Edit Post Modal logic
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingPost, setEditingPost] = useState<any | null>(null);
+
+  // Add/Edit Document Modal logic
+  const [showEditDocModal, setShowEditDocModal] = useState(false);
+  const [editingDoc, setEditingDoc] = useState<any | null>(null);
+
+  // Add/Edit Event Modal logic
+  const [showEditEventModal, setShowEditEventModal] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<any | null>(null);
+
+  // Add/Edit Suggestion Modal logic
+  const [showEditSuggestionModal, setShowEditSuggestionModal] = useState(false);
+  const [editingSuggestion, setEditingSuggestion] = useState<any | null>(null);
+
+  // View Suggestion Modal logic
+  const [showViewSuggestionModal, setShowViewSuggestionModal] = useState(false);
+  const [viewingSuggestion, setViewingSuggestion] = useState<any | null>(null);
+
+  // Delete Suggestion Confirmation logic
+  const [showDeleteSuggestionConfirm, setShowDeleteSuggestionConfirm] = useState(false);
+  const [deletingSuggestion, setDeletingSuggestion] = useState<any | null>(null);
+
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -261,7 +285,6 @@ const PostManagement = () => {
         navigate(`/post/${item.id}`);
         break;
       case 'edit':
-        // Open edit modal with post data
         setEditingPost(item);
         setShowEditModal(true);
         break;
@@ -275,16 +298,10 @@ const PostManagement = () => {
     }
   };
 
-  // Add/Edit Post Modal logic
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [editingPost, setEditingPost] = useState<any | null>(null);
-
   const handleSavePost = (post: any) => {
     if (editingPost) {
-      // Edit existing
       setPosts(prev => prev.map(p => p.id === editingPost.id ? { ...editingPost, ...post } : p));
     } else {
-      // Add new
       setPosts(prev => [
         ...prev,
         { ...post, id: Date.now(), status: 'Published', author: 'Admin', createdAt: new Date().toISOString() }
@@ -294,9 +311,6 @@ const PostManagement = () => {
     setEditingPost(null);
   };
 
-  // Add/Edit Document Modal logic
-  const [showEditDocModal, setShowEditDocModal] = useState(false);
-  const [editingDoc, setEditingDoc] = useState<any | null>(null);
   const handleSaveDoc = (doc: any) => {
     if (editingDoc) {
       setDocuments(prev => prev.map(d => d.id === editingDoc.id ? { ...editingDoc, ...doc } : d));
@@ -310,9 +324,6 @@ const PostManagement = () => {
     setEditingDoc(null);
   };
 
-  // Add/Edit Event Modal logic
-  const [showEditEventModal, setShowEditEventModal] = useState(false);
-  const [editingEvent, setEditingEvent] = useState<any | null>(null);
   const handleSaveEvent = (event: any) => {
     if (editingEvent) {
       setEvents(prev => prev.map(e => e.id === editingEvent.id ? { ...editingEvent, ...event } : e));
@@ -326,9 +337,6 @@ const PostManagement = () => {
     setEditingEvent(null);
   };
 
-  // Add/Edit Suggestion Modal logic
-  const [showEditSuggestionModal, setShowEditSuggestionModal] = useState(false);
-  const [editingSuggestion, setEditingSuggestion] = useState<any | null>(null);
   const handleSaveSuggestion = (suggestion: any) => {
     if (editingSuggestion) {
       setSuggestions(prev => prev.map(s => s.id === editingSuggestion.id ? { ...editingSuggestion, ...suggestion } : s));
@@ -342,7 +350,6 @@ const PostManagement = () => {
     setEditingSuggestion(null);
   };
 
-  // Update handleDocumentAction and handleEventAction
   const handleDocumentAction = (action: string, item: any) => {
     switch (action) {
       case 'view':
@@ -380,7 +387,6 @@ const PostManagement = () => {
     }
   };
 
-  // Update handleSuggestionAction
   const handleSuggestionAction = (action: string, item: any) => {
     switch (action) {
       case 'view':
