@@ -189,7 +189,7 @@ const EventDetail = () => {
         
         <CardContent className="space-y-6">
           {/* Event Info Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-gray-50 rounded-lg">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-gray-50 rounded-lg">
             <div className="flex items-center">
               <Calendar className="h-5 w-5 text-gray-500 mr-3" />
               <div>
@@ -204,14 +204,6 @@ const EventDetail = () => {
               <div>
                 <p className="text-sm text-gray-500">Location</p>
                 <p className="font-medium">{event.location}</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center">
-              <Users className="h-5 w-5 text-gray-500 mr-3" />
-              <div>
-                <p className="text-sm text-gray-500">Attendees</p>
-                <p className="font-medium">{event.attendees} registered</p>
               </div>
             </div>
           </div>
@@ -243,9 +235,6 @@ const EventDetail = () => {
 
           {/* Action Buttons */}
           <div className="flex gap-4 pt-6 border-t">
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              RSVP to Event
-            </Button>
             <Button variant="outline">
               Add to Calendar
             </Button>

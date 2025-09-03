@@ -219,24 +219,29 @@ const CompanyEvents = () => {
       {/* Events List */}
       <div className="space-y-4">
         {currentEvents.map((event) => (
-          <Card key={event.id} className="hover:shadow-lg transition-shadow">
+          <Card 
+            key={event.id} 
+            className="hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => navigate(`/event/${event.id}`)}
+          >
             <CardContent className="p-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-start justify-between mb-2">
-                    <CardTitle className="text-xl font-semibold text-gray-900">
-                      {event.title}
-                    </CardTitle>
+              <div className="flex flex-col items-center text-center gap-4">
+                <div className="w-full">
+                  <div className="flex justify-center mb-2">
                     <Badge className={getCategoryColor(event.category)}>
                       {event.category}
                     </Badge>
                   </div>
                   
+                  <CardTitle className="text-xl font-semibold text-gray-900 mb-4">
+                    {event.title}
+                  </CardTitle>
+                  
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                     {event.description}
                   </p>
                   
-                  <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+                  <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
                     <div className="flex items-center">
                       <Calendar className="h-4 w-4 mr-2" />
                       <span>{formatDate(event.date)} at {event.time}</span>
@@ -246,25 +251,7 @@ const CompanyEvents = () => {
                       <MapPin className="h-4 w-4 mr-2" />
                       <span>{event.location}</span>
                     </div>
-                    
-                    <div className="flex items-center">
-                      <Users className="h-4 w-4 mr-2" />
-                      <span>{event.attendees} attendees</span>
-                    </div>
                   </div>
-                </div>
-                
-                <div className="flex gap-2">
-                  <Button 
-                    size="sm" 
-                    onClick={() => navigate(`/event/${event.id}`)}
-                    className="bg-blue-600 hover:bg-blue-700"
-                  >
-                    View Details
-                  </Button>
-                  <Button size="sm" variant="outline">
-                    RSVP
-                  </Button>
                 </div>
               </div>
             </CardContent>
