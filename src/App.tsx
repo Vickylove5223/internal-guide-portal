@@ -32,6 +32,7 @@ import {
   LazySuggestionBox,
   LazyManageDepartments,
   LazyDepartmentsManagement,
+  LazyEventDetail,
 } from "./components/LazyRoutes";
 
 const queryClient = new QueryClient({
@@ -70,6 +71,14 @@ const App: React.FC = () => {
                     <ErrorBoundary>
                       <Layout>
                         <LazyCompanyEvents />
+                      </Layout>
+                    </ErrorBoundary>
+                  } />
+                  
+                  <Route path="/event/:id" element={
+                    <ErrorBoundary>
+                      <Layout>
+                        <LazyEventDetail />
                       </Layout>
                     </ErrorBoundary>
                   } />

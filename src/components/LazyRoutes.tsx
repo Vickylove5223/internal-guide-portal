@@ -21,6 +21,7 @@ const DocumentView = React.lazy(() => import('../pages/DocumentView'));
 const SuggestionBox = React.lazy(() => import('../pages/SuggestionBox'));
 const ManageDepartments = React.lazy(() => import('../pages/ManageDepartments'));
 const DepartmentsManagement = React.lazy(() => import('../pages/DepartmentsManagement'));
+const EventDetail = React.lazy(() => import('../pages/EventDetail'));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -59,3 +60,4 @@ export const LazyDocumentView = withSuspense(DocumentView);
 export const LazySuggestionBox = withSuspense(SuggestionBox);
 export const LazyManageDepartments = withSuspense(ManageDepartments);
 export const LazyDepartmentsManagement = withSuspense(DepartmentsManagement);
+export const LazyEventDetail = withSuspense(EventDetail);
